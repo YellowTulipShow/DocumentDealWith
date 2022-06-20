@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <Title>文档文件操作处理命令</Title>
+        <PackageId>DocumentDealWithCommand</PackageId>
+        <Version>2.0.1</Version>
+        <Authors>YellowTulipShow</Authors>
+        <Description>批量文档文件操作处理命令</Description>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <RepositoryType>git</RepositoryType>
+        <NeutralLanguage>zh</NeutralLanguage>
+        <RepositoryUrl>https://github.com/YellowTulipShow/DocumentDealWithCommand</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/YellowTulipShow/DocumentDealWithCommand</PackageProjectUrl>
+        <Company />
+        <PackageIconUrl />
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <xmlDoc>true</xmlDoc>
+
+        <OutputType>Exe</OutputType>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>gits</ToolCommandName>
+    </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageReference Include="YTS.Log" Version="0.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DocumentDealWithCommand.Logic\DocumentDealWithCommand.Logic.csproj" />
+  </ItemGroup>
+
+</Project>

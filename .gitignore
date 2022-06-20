@@ -1,0 +1,4 @@
+_release/
+_release_*/
+_configs/**/*.config
+!_configs/fixed/*.config

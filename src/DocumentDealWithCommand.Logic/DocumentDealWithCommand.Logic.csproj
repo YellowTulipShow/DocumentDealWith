@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <RepositoryType>git</RepositoryType>
+        <NeutralLanguage>zh</NeutralLanguage>
+        <Company />
+        <PackageIconUrl />
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <xmlDoc>true</xmlDoc>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="YTS.Git" Version="0.1.1" />
+        <PackageReference Include="YTS.Log" Version="0.1.2" />
+    </ItemGroup>
+
+</Project>
