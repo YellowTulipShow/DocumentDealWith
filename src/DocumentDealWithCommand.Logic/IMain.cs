@@ -9,7 +9,7 @@ namespace DocumentDealWithCommand.Logic
     public interface IMain
     {
         /// <summary>
-        /// 执行 Git 检查
+        /// 执行逻辑
         /// </summary>
         /// <param name="configFilePath">配置文件路径</param>
         /// <param name="commandOptions">命令选项</param>

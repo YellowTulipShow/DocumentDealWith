@@ -6,7 +6,7 @@ namespace DocumentDealWithCommand.Logic.Models
     /// <summary>
     /// 配置项
     /// </summary>
-    public struct Configs
+    public class Configs
     {
     }
 }
