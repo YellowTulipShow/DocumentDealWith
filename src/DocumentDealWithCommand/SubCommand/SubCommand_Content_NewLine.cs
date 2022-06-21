@@ -26,7 +26,7 @@ namespace DocumentDealWithCommand.SubCommand
         public override Command GetCommand()
         {
             Option<ENewLineType> option_Type = GetOption_Type();
-            Command cmd = new Command("newline", "重新配置编码");
+            Command cmd = new Command("newline", "重新配置换行符");
             cmd.AddOption(option_Type);
             cmd.SetHandler((context) =>
             {
@@ -49,7 +49,6 @@ namespace DocumentDealWithCommand.SubCommand
         {
             var option = new Option<ENewLineType>(
                 aliases: new string[] { "-t", "--Type" },
-                getDefaultValue => ENewLineType.Unix,
                 description: "目标换行标识")
             {
                 Arity = ArgumentArity.ExactlyOne,

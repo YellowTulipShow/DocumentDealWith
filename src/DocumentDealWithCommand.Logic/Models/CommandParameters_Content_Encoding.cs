@@ -10,6 +10,6 @@ namespace DocumentDealWithCommand.Logic.Models
         /// <summary>
         /// 输出名称
         /// </summary>
-        public Encoding Encoding { get; set; }
+        public ECodeType Encoding { get; set; }
     }
 }

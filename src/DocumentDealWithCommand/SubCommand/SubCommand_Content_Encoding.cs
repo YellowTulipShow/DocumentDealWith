@@ -26,7 +26,7 @@ namespace DocumentDealWithCommand.SubCommand
         /// <inheritdoc/>
         public override Command GetCommand()
         {
-            Option<Encoding> option_Encoding = GetOption_Encoding();
+            Option<ECodeType> option_Encoding = GetOption_Encoding();
             Command cmd = new Command("encode", "重新配置编码");
             cmd.AddOption(option_Encoding);
             cmd.SetHandler((context) =>
@@ -46,11 +46,10 @@ namespace DocumentDealWithCommand.SubCommand
             });
             return cmd;
         }
-        private Option<Encoding> GetOption_Encoding()
+        private Option<ECodeType> GetOption_Encoding()
         {
-            var option = new Option<Encoding>(
+            var option = new Option<ECodeType>(
                 aliases: new string[] { "-t", "--Target" },
-                getDefaultValue => Encoding.UTF8,
                 description: "目标编码配置")
             {
                 Arity = ArgumentArity.ExactlyOne,

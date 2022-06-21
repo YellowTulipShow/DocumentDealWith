@@ -20,8 +20,8 @@ namespace DocumentDealWithCommand.SubCommand
             Command cmd = new Command("content", "内容操作");
             ISubCommand[] subCommands = new ISubCommand[]
             {
-                new SubCommand_Content(log, globalOptions),
-                new SubCommand_Rename(log, globalOptions),
+                new SubCommand_Content_Encoding(log, globalOptions),
+                new SubCommand_Content_NewLine(log, globalOptions),
             };
             foreach (var sub in subCommands)
             {
