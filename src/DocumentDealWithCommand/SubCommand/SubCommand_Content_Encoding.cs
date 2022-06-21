@@ -30,13 +30,14 @@ namespace DocumentDealWithCommand.SubCommand
             cmd.AddOption(option_Encoding);
             cmd.SetHandler((context) =>
             {
+                
                 var logArgs = log.CreateArgDictionary();
                 try
                 {
                     var commandOptions = globalOptions
                         .ToCommandParameters<CommandParameters_Content_Encoding>(log, context);
                     commandOptions.Encoding = context.ParseResult.GetValueForOption(option_Encoding);
-                    main.OnExecute(commandOptions);
+                    context.ExitCode = main.OnExecute(commandOptions);
                 }
                 catch (Exception ex)
                 {

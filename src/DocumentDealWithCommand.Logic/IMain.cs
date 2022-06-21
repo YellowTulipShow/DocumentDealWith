@@ -12,6 +12,7 @@ namespace DocumentDealWithCommand.Logic
         /// 执行逻辑
         /// </summary>
         /// <param name="commandParameters">命令参数</param>
-        void OnExecute(T commandParameters);
+        /// <returns>推出代码</returns>
+        int OnExecute(T commandParameters);
     }
 }

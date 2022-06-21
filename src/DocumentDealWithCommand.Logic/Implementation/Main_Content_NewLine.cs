@@ -25,9 +25,10 @@ namespace DocumentDealWithCommand.Logic.Implementation
         }
 
         /// <inheritdoc/>
-        public void OnExecute(CommandParameters_Content_NewLine commandParameters)
+        public int OnExecute(CommandParameters_Content_NewLine commandParameters)
         {
             log.Info($"转换换行符, 参数 - Type: {commandParameters.Type}");
+            return 0;
         }
     }
 }

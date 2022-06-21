@@ -36,7 +36,7 @@ namespace DocumentDealWithCommand.SubCommand
                     var commandOptions = globalOptions
                         .ToCommandParameters<CommandParameters_Content_NewLine>(log, context);
                     commandOptions.Type = context.ParseResult.GetValueForOption(option_Type);
-                    main.OnExecute(commandOptions);
+                    context.ExitCode = main.OnExecute(commandOptions);
                 }
                 catch (Exception ex)
                 {

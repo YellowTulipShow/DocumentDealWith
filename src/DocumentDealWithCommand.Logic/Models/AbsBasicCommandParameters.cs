@@ -13,6 +13,11 @@ namespace DocumentDealWithCommand.Logic.Models
         public Configs Config { get; set; }
 
         /// <summary>
+        /// 操作文件的根目录, 否则默认是执行目录
+        /// </summary>
+        public DirectoryInfo RootDire { get; set; }
+
+        /// <summary>
         /// 需操作文件
         /// </summary>
         public string[] Files { get; set; }

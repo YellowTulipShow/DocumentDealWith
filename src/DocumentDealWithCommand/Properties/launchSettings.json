@@ -2,7 +2,7 @@
   "profiles": {
     "DocumentDealWithCommand": {
       "commandName": "Project",
-      "commandLineArgs": "content encode -t UTF8"
+      "commandLineArgs": "content encode -t UTF8 -p ./"
     }
   }
 }

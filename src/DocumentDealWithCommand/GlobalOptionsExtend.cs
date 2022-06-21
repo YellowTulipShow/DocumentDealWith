@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using System.CommandLine.Invocation;
 
@@ -28,22 +29,37 @@ namespace DocumentDealWithCommand
             var logArgs = log.CreateArgDictionary();
             try
             {
+                string RootDire = context.ParseResult.GetValueForOption(globalOptions.RootDire);
+                logArgs["RootDire"] = RootDire;
+
                 ConfigHelper configHelper = new ConfigHelper(log, Encoding.UTF8);
                 string configPath = context.ParseResult.GetValueForOption(globalOptions.Config);
                 logArgs["configPath"] = configPath;
+                Configs config = configHelper.ReadConfigs(configPath);
+
+                string[] Files = context.ParseResult.GetValueForOption(globalOptions.Files);
+                logArgs["Files"] = Files;
+                string Path = context.ParseResult.GetValueForOption(globalOptions.Path);
+                logArgs["Path"] = Path;
+                bool PathIsRecurse = context.ParseResult.GetValueForOption(globalOptions.PathIsRecurse);
+                logArgs["PathIsRecurse"] = PathIsRecurse;
+                string FileText = context.ParseResult.GetValueForOption(globalOptions.FileText);
+                logArgs["FileText"] = FileText;
                 T m = new T
                 {
-                    Config = configHelper.ReadConfigs(configPath),
-                    Files = context.ParseResult.GetValueForOption(globalOptions.Files),
-                    Path = context.ParseResult.GetValueForOption(globalOptions.Path),
-                    PathIsRecurse = context.ParseResult.GetValueForOption(globalOptions.PathIsRecurse),
-                    FileText = context.ParseResult.GetValueForOption(globalOptions.FileText),
+                    Config = config,
+                    RootDire = RootDire,
+                    Files = Files,
+                    Path = Path,
+                    PathIsRecurse = PathIsRecurse,
+                    FileText = FileText,
                 };
                 return m;
             }
             catch (Exception ex)
             {
                 log.Error("转换命令参数", ex, logArgs);
+                throw ex;
             }
         }
     }

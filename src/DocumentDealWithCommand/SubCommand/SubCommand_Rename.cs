@@ -37,7 +37,7 @@ namespace DocumentDealWithCommand.SubCommand
                     var commandOptions = globalOptions
                         .ToCommandParameters<CommandParameters_Rename>(log, context);
                     commandOptions.OutputName = context.ParseResult.GetValueForOption(option_outname);
-                    main.OnExecute(commandOptions);
+                    context.ExitCode = main.OnExecute(commandOptions);
                 }
                 catch (Exception ex)
                 {

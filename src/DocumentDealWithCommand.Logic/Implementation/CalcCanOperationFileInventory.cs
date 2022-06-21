@@ -87,9 +87,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
         public void Append(FileInfo[] filePaths)
         {
             if (filePaths == null || filePaths.Length <= 0)
-            {
                 return;
-            }
             Append(filePaths.Select(b => b.FullName).ToArray());
         }
 
@@ -123,7 +121,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// <param name="fileText">存放文件路径文档地址</param>
         public void Append(FileInfo fileText)
         {
-            if (!fileText.Exists)
+            if (fileText == null || !fileText.Exists)
             {
                 return;
             }
@@ -136,7 +134,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// </summary>
         public FileInfo[] GetResults()
         {
-            return this.fileInventory.ToArray();
+            return fileInventory.ToArray();
         }
     }
 }

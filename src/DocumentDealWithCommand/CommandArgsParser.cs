@@ -20,7 +20,6 @@ namespace DocumentDealWithCommand
     public class CommandArgsParser
     {
         private readonly ILog log;
-        private readonly ConfigHelper configHelper;
 
         /// <summary>
         /// 实例化 - 命令参数解析器
@@ -29,7 +28,6 @@ namespace DocumentDealWithCommand
         public CommandArgsParser(ILog log)
         {
             this.log = log;
-            configHelper = new ConfigHelper(log, Encoding.UTF8);
         }
 
         /// <summary>
@@ -46,6 +44,7 @@ namespace DocumentDealWithCommand
                 GlobalOptions globalOptions = new GlobalOptions()
                 {
                     Config = GetOption_Config(),
+                    RootDire = GetOption_RootDire(),
                     Files = GetOption_Files(),
                     Path = GetOption_Path(),
                     PathIsRecurse = GetOption_Recurse(),
@@ -85,7 +84,7 @@ namespace DocumentDealWithCommand
                 {
                     // 当前用户配置地址
                     string dire = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                    string file = Path.Combine(dire, ".command_gitcheck_config.json");
+                    string file = Path.Combine(dire, ".command_document_dealwith_config.json");
                     return file;
                 })
             {
@@ -94,14 +93,28 @@ namespace DocumentDealWithCommand
             return option;
         }
 
+        private Option<string> GetOption_RootDire()
+        {
+            var option = new Option<string>(
+                aliases: new string[] { "-r", "--RootDire" },
+                description: "操作文件所属路径",
+                parseArgument: result =>
+                {
+                    return result.Tokens.Count <= 0 ?
+                        Environment.CurrentDirectory :
+                        result.Tokens.Single().Value;
+                })
+            {
+                Arity = ArgumentArity.ZeroOrOne,
+            };
+            return option;
+        }
+
         private Option<string[]> GetOption_Files()
         {
             var option = new Option<string[]>(
-                aliases: new string[] { "-f", "--Files" },
-                description: "操作文件路径",
-                parseArgument: result => result.Tokens
-                    .Select(b => b.Value)
-                    .ToArray())
+                aliases: new string[] { "--Files" },
+                description: "操作文件路径")
             {
                 Arity = ArgumentArity.ZeroOrMore,
                 AllowMultipleArgumentsPerToken = true,
@@ -109,12 +122,11 @@ namespace DocumentDealWithCommand
             return option;
         }
 
-        private Option<DirectoryInfo> GetOption_Path()
+        private Option<string> GetOption_Path()
         {
-            var option = new Option<DirectoryInfo>(
-                aliases: new string[] { "-p", "--Path" },
-                description: "操作文件所属路径",
-                parseArgument: result => new DirectoryInfo(result.Tokens.Single().Value))
+            var option = new Option<string>(
+                aliases: new string[] { "--Path" },
+                description: "操作文件所属路径")
             {
                 Arity = ArgumentArity.ZeroOrOne,
             };
@@ -124,8 +136,7 @@ namespace DocumentDealWithCommand
         private Option<bool> GetOption_Recurse()
         {
             var option = new Option<bool>(
-                aliases: new string[] { "-r", "--Recurse" },
-                getDefaultValue => false,
+                aliases: new string[] { "--Recurse" },
                 description: "是否递归查询用于与 --Path 参数配合查询")
             {
                 Arity = ArgumentArity.ZeroOrOne,
@@ -133,12 +144,11 @@ namespace DocumentDealWithCommand
             return option;
         }
 
-        private Option<FileInfo> GetOption_FileText()
+        private Option<string> GetOption_FileText()
         {
-            var option = new Option<FileInfo>(
+            var option = new Option<string>(
                 aliases: new string[] { "--FileText" },
-                description: "操作文件组合清单文件路径",
-                parseArgument: result => new FileInfo(result.Tokens.Single().Value))
+                description: "操作文件组合清单文件路径")
             {
                 Arity = ArgumentArity.ZeroOrOne,
             };

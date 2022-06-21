@@ -25,9 +25,10 @@ namespace DocumentDealWithCommand.Logic.Implementation
         }
 
         /// <inheritdoc/>
-        public void OnExecute(CommandParameters_Rename commandParameters)
+        public int OnExecute(CommandParameters_Rename commandParameters)
         {
             log.Info($"执行重命名逻辑内容, 参数 - OutputName: {commandParameters.OutputName}");
+            return 0;
         }
     }
 }
