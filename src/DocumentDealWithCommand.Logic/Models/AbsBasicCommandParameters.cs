@@ -15,7 +15,7 @@ namespace DocumentDealWithCommand.Logic.Models
         /// <summary>
         /// 需操作文件
         /// </summary>
-        public FileInfo[] Files { get; set; }
+        public string[] Files { get; set; }
 
         /// <summary>
         /// 需操作目录

@@ -76,52 +76,31 @@ namespace DocumentDealWithCommand
             }
         }
 
-        private Option<Configs> GetOption_Config()
+        private Option<string> GetOption_Config()
         {
-            Configs parseArgument(ArgumentResult result)
-            {
-                // 当前用户配置地址
-                string userDirePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                string defaultFilePath = Path.Combine(userDirePath, ".command_document_dealwith_config.json");
-                string filePath;
-                if (result.Tokens.Count == 0)
-                {
-                    filePath = defaultFilePath;
-                }
-                else
-                {
-                    filePath = result.Tokens.Single().Value;
-                    if (string.IsNullOrEmpty(filePath))
-                    {
-                        filePath = defaultFilePath;
-                    }
-                }
-                if (!Regex.IsMatch(filePath, @"\.json$",
-                    RegexOptions.ECMAScript | RegexOptions.IgnoreCase))
-                {
-                    result.ErrorMessage = $"配置文件扩展名异常: {filePath}";
-                    return null;
-                }
-                Configs configs = configHelper.ReadConfigs(filePath);
-                return configs;
-            }
-            var option = new Option<Configs>(
-                aliases: new string[] { "-c", "--config" },
+            var option = new Option<string>(
+                aliases: new string[] { "-c", "--Config" },
                 description: "配置文件读取路径",
-                parseArgument: parseArgument)
+                getDefaultValue: () =>
+                {
+                    // 当前用户配置地址
+                    string dire = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                    string file = Path.Combine(dire, ".command_gitcheck_config.json");
+                    return file;
+                })
             {
                 Arity = ArgumentArity.ExactlyOne,
             };
             return option;
         }
 
-        private Option<FileInfo[]> GetOption_Files()
+        private Option<string[]> GetOption_Files()
         {
-            var option = new Option<FileInfo[]>(
+            var option = new Option<string[]>(
                 aliases: new string[] { "-f", "--Files" },
                 description: "操作文件路径",
                 parseArgument: result => result.Tokens
-                    .Select(b => new FileInfo(b.Value))
+                    .Select(b => b.Value)
                     .ToArray())
             {
                 Arity = ArgumentArity.ZeroOrMore,

@@ -4,7 +4,7 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <Title>文档文件操作处理命令</Title>
         <PackageId>DocumentDealWithCommand</PackageId>
-        <Version>2.0.1</Version>
+        <Version>0.0.1</Version>
         <Authors>YellowTulipShow</Authors>
         <Description>批量文档文件操作处理命令</Description>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

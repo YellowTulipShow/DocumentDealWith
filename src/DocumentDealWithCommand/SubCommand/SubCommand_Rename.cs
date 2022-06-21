@@ -34,7 +34,8 @@ namespace DocumentDealWithCommand.SubCommand
                 var logArgs = log.CreateArgDictionary();
                 try
                 {
-                    CommandParameters_Rename commandOptions = globalOptions.ToCommandParameters<CommandParameters_Rename>(context);
+                    var commandOptions = globalOptions
+                        .ToCommandParameters<CommandParameters_Rename>(log, context);
                     commandOptions.OutputName = context.ParseResult.GetValueForOption(option_outname);
                     main.OnExecute(commandOptions);
                 }

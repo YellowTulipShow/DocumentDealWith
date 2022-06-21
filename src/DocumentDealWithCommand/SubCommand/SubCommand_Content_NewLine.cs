@@ -33,7 +33,8 @@ namespace DocumentDealWithCommand.SubCommand
                 var logArgs = log.CreateArgDictionary();
                 try
                 {
-                    CommandParameters_Content_NewLine commandOptions = globalOptions.ToCommandParameters<CommandParameters_Content_NewLine>(context);
+                    var commandOptions = globalOptions
+                        .ToCommandParameters<CommandParameters_Content_NewLine>(log, context);
                     commandOptions.Type = context.ParseResult.GetValueForOption(option_Type);
                     main.OnExecute(commandOptions);
                 }

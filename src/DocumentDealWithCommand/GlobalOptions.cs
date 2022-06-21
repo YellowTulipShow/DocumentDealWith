@@ -13,12 +13,12 @@ namespace DocumentDealWithCommand
         /// <summary>
         /// 配置信息
         /// </summary>
-        public Option<Configs> Config { get; set; }
+        public Option<string> Config { get; set; }
 
         /// <summary>
         /// 需操作文件
         /// </summary>
-        public Option<FileInfo[]> Files { get; set; }
+        public Option<string[]> Files { get; set; }
 
         /// <summary>
         /// 需操作目录

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.CommandLine;
 
 using DocumentDealWithCommand.Logic;
@@ -34,7 +33,8 @@ namespace DocumentDealWithCommand.SubCommand
                 var logArgs = log.CreateArgDictionary();
                 try
                 {
-                    CommandParameters_Content_Encoding commandOptions = globalOptions.ToCommandParameters<CommandParameters_Content_Encoding>(context);
+                    var commandOptions = globalOptions
+                        .ToCommandParameters<CommandParameters_Content_Encoding>(log, context);
                     commandOptions.Encoding = context.ParseResult.GetValueForOption(option_Encoding);
                     main.OnExecute(commandOptions);
                 }
