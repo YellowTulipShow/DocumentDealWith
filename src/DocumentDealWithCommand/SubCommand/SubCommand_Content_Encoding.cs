@@ -1,10 +1,10 @@
 ﻿using System;
-using System.CommandLine;
 using System.Text;
+using System.CommandLine;
 
 using DocumentDealWithCommand.Logic;
-using DocumentDealWithCommand.Logic.Implementation;
 using DocumentDealWithCommand.Logic.Models;
+using DocumentDealWithCommand.Logic.Implementation;
 
 using YTS.Log;
 

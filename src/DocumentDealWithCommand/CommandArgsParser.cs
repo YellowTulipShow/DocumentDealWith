@@ -1,15 +1,16 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 using System.CommandLine;
 using System.CommandLine.Parsing;
 
 using YTS.Log;
-using System.Linq;
-using DocumentDealWithCommand.Logic.Implementation;
-using System.Text;
+
 using DocumentDealWithCommand.Logic.Models;
+using DocumentDealWithCommand.Logic.Implementation;
 
 namespace DocumentDealWithCommand
 {

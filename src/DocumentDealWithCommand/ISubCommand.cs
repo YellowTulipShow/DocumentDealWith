@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.CommandLine;
+﻿using System.CommandLine;
 
 namespace DocumentDealWithCommand
 {

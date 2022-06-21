@@ -9,9 +9,9 @@ using YTS.Log;
 namespace DocumentDealWithCommand.Logic.Implementation
 {
     /// <summary>
-    /// 实现命令类: 重命名
+    /// 实现命令类: 内容操作 - 换行符类型更改
     /// </summary>
-    public class Main_Rename : IMain<CommandParameters_Rename>
+    public class Main_Content_NewLine : IMain<CommandParameters_Content_NewLine>
     {
         private readonly ILog log;
 
@@ -19,15 +19,15 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// 实例化实现命令类
         /// </summary>
         /// <param name="log">日志接口</param>
-        public Main_Rename(ILog log)
+        public Main_Content_NewLine(ILog log)
         {
             this.log = log;
         }
 
         /// <inheritdoc/>
-        public void OnExecute(CommandParameters_Rename commandParameters)
+        public void OnExecute(CommandParameters_Content_NewLine commandParameters)
         {
-            log.Info($"执行重命名逻辑内容, 参数 - OutputName: {commandParameters.OutputName}");
+            log.Info($"转换换行符, 参数 - Type: {commandParameters.Type}");
         }
     }
 }

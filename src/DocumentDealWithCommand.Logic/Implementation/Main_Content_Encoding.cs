@@ -27,6 +27,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// <inheritdoc/>
         public void OnExecute(CommandParameters_Content_Encoding commandParameters)
         {
+            log.Info($"转换编码, 参数 - Encoding: {commandParameters.Encoding}");
         }
     }
 }
