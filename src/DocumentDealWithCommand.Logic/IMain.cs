@@ -6,13 +6,12 @@ namespace DocumentDealWithCommand.Logic
     /// <summary>
     /// 接口: 主逻辑执行
     /// </summary>
-    public interface IMain
+    public interface IMain<T> where T : AbsBasicCommandParameters, new()
     {
         /// <summary>
         /// 执行逻辑
         /// </summary>
-        /// <param name="configFilePath">配置文件路径</param>
-        /// <param name="commandOptions">命令选项</param>
-        void OnExecute(string configFilePath, CommandOptions commandOptions);
+        /// <param name="commandParameters">命令参数</param>
+        void OnExecute(T commandParameters);
     }
 }

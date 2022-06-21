@@ -50,17 +50,17 @@ namespace DocumentDealWithCommand
                     PathIsRecurse = GetOption_Recurse(),
                     FileText = GetOption_FileText(),
                 };
-                ISubCommand[] subCommands = new ISubCommand[]
-                {
-                    new SubCommand.SubCommand_Content(log, globalOptions),
-                    new SubCommand.SubCommand_Rename(log, globalOptions),
-                };
                 RootCommand rootCMD = new RootCommand("文档文件相关操作命令");
                 rootCMD.AddGlobalOption(globalOptions.Config);
                 rootCMD.AddGlobalOption(globalOptions.Files);
                 rootCMD.AddGlobalOption(globalOptions.Path);
                 rootCMD.AddGlobalOption(globalOptions.PathIsRecurse);
                 rootCMD.AddGlobalOption(globalOptions.FileText);
+                ISubCommand[] subCommands = new ISubCommand[]
+                {
+                    new SubCommand.SubCommand_Content(log, globalOptions),
+                    new SubCommand.SubCommand_Rename(log, globalOptions),
+                };
                 foreach (var sub in subCommands)
                 {
                     Command subCMD = sub.GetCommand();
