@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Linq;
 using System.CommandLine.Invocation;
 
 using YTS.Log;
@@ -29,30 +30,51 @@ namespace DocumentDealWithCommand
             var logArgs = log.CreateArgDictionary();
             try
             {
-                string RootDire = context.ParseResult.GetValueForOption(globalOptions.RootDire);
-                logArgs["RootDire"] = RootDire;
+                string rootDire = context.ParseResult.GetValueForOption(globalOptions.RootDire);
+                logArgs["RootDire"] = rootDire;
+                if (!Directory.Exists(rootDire))
+                {
+                    throw new ArgumentNullException($"根目录不存在: {rootDire}");
+                }
+                log.Info("信息输出", logArgs);
 
                 ConfigHelper configHelper = new ConfigHelper(log, Encoding.UTF8);
                 string configPath = context.ParseResult.GetValueForOption(globalOptions.Config);
+                configPath = ToAbsPath(configPath, rootDire);
                 logArgs["configPath"] = configPath;
                 Configs config = configHelper.ReadConfigs(configPath);
+                if (config == null)
+                {
+                    throw new ArgumentNullException($"配置内容读取为空: {configPath}");
+                }
 
-                string[] Files = context.ParseResult.GetValueForOption(globalOptions.Files);
-                logArgs["Files"] = Files;
-                string Path = context.ParseResult.GetValueForOption(globalOptions.Path);
-                logArgs["Path"] = Path;
-                bool PathIsRecurse = context.ParseResult.GetValueForOption(globalOptions.PathIsRecurse);
-                logArgs["PathIsRecurse"] = PathIsRecurse;
-                string FileText = context.ParseResult.GetValueForOption(globalOptions.FileText);
-                logArgs["FileText"] = FileText;
+                string[] filePaths = context.ParseResult.GetValueForOption(globalOptions.Files);
+                for (int i = 0; i < filePaths.Length; i++)
+                {
+                    filePaths[i] = ToAbsPath(filePaths[i], rootDire);
+                }
+                filePaths = filePaths.Where(b => !string.IsNullOrEmpty(b)).ToArray();
+                logArgs["filePaths"] = filePaths;
+
+                string direPath = context.ParseResult.GetValueForOption(globalOptions.Path);
+                direPath = ToAbsPath(direPath, rootDire);
+                logArgs["direPath"] = direPath;
+
+                bool direPathIsRecurse = context.ParseResult.GetValueForOption(globalOptions.PathIsRecurse);
+                logArgs["direPathIsRecurse"] = direPathIsRecurse;
+
+                string textFilePath = context.ParseResult.GetValueForOption(globalOptions.FileText);
+                textFilePath = ToAbsPath(textFilePath, rootDire);
+                logArgs["textFilePath"] = textFilePath;
+
                 T m = new T
                 {
                     Config = config,
-                    RootDire = RootDire,
-                    Files = Files,
-                    Path = Path,
-                    PathIsRecurse = PathIsRecurse,
-                    FileText = FileText,
+                    RootDire = new DirectoryInfo(rootDire),
+                    Files = filePaths,
+                    Path = string.IsNullOrEmpty(direPath) ? null : new DirectoryInfo(direPath),
+                    PathIsRecurse = direPathIsRecurse,
+                    FileText = string.IsNullOrEmpty(textFilePath) ? null : new FileInfo(textFilePath),
                 };
                 return m;
             }
@@ -60,6 +82,25 @@ namespace DocumentDealWithCommand
             {
                 log.Error("转换命令参数", ex, logArgs);
                 throw ex;
+            }
+        }
+
+        private static string ToAbsPath(string path, string root)
+        {
+            path = path?.Trim();
+            root = root?.Trim();
+            if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(root))
+            {
+                return null;
+            }
+
+            if (Path.IsPathRooted(path))
+            {
+                return path;
+            }
+            else
+            {
+                return Path.Combine(root, path);
             }
         }
     }

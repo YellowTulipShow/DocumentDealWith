@@ -44,6 +44,10 @@ namespace DocumentDealWithCommand.Logic.Implementation
             calcFileInventory.Append(commandParameters.FileText);
             calcFileInventory.Append(commandParameters.Path, commandParameters.PathIsRecurse);
             FileInfo[] rinventory = calcFileInventory.GetResults();
+            if (rinventory == null || rinventory.Length <= 0)
+            {
+                throw new ArgumentNullException("rinventory", "可操作文件清单为空列表, 请检查传入参数!");
+            }
             return rinventory;
         }
     }

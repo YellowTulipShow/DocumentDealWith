@@ -2,7 +2,7 @@
   "profiles": {
     "DocumentDealWithCommand": {
       "commandName": "Project",
-      "commandLineArgs": "content encode -t UTF8 -p ./"
+      "commandLineArgs": "content encode -t UTF8 --Path ./ --Recurse"
     }
   }
 }

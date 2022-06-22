@@ -52,6 +52,7 @@ namespace DocumentDealWithCommand
                 };
                 RootCommand rootCMD = new RootCommand("文档文件相关操作命令");
                 rootCMD.AddGlobalOption(globalOptions.Config);
+                rootCMD.AddGlobalOption(globalOptions.RootDire);
                 rootCMD.AddGlobalOption(globalOptions.Files);
                 rootCMD.AddGlobalOption(globalOptions.Path);
                 rootCMD.AddGlobalOption(globalOptions.PathIsRecurse);
@@ -98,12 +99,7 @@ namespace DocumentDealWithCommand
             var option = new Option<string>(
                 aliases: new string[] { "-r", "--RootDire" },
                 description: "操作文件所属路径",
-                parseArgument: result =>
-                {
-                    return result.Tokens.Count <= 0 ?
-                        Environment.CurrentDirectory :
-                        result.Tokens.Single().Value;
-                })
+                getDefaultValue: () => Environment.CurrentDirectory)
             {
                 Arity = ArgumentArity.ZeroOrOne,
             };
