@@ -1,7 +1,6 @@
-﻿using System.IO;
-using System.CommandLine;
+﻿using System.CommandLine;
 
-using DocumentDealWithCommand.Logic.Models;
+using YTS.ConsolePrint;
 
 namespace DocumentDealWithCommand
 {
@@ -19,6 +18,11 @@ namespace DocumentDealWithCommand
         /// 操作文件的根目录, 否则默认是执行目录
         /// </summary>
         public Option<string> RootDire { get; set; }
+
+        /// <summary>
+        /// 输出打印配置, 控制台类型
+        /// </summary>
+        public Option<EConsoleType> ConsoleType { get; set; }
 
         /// <summary>
         /// 需操作文件

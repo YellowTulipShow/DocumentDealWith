@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DocumentDealWithCommand.Logic.Models
+﻿namespace DocumentDealWithCommand.Logic.Models
 {
     /// <summary>
     /// 枚举: 编码类型

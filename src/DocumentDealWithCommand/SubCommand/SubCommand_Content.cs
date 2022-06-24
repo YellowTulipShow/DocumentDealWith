@@ -1,4 +1,7 @@
-﻿using System.CommandLine;
+﻿using System.Linq;
+using System.CommandLine;
+
+using DocumentDealWithCommand.Logic.Models;
 
 using YTS.Log;
 
@@ -29,6 +32,13 @@ namespace DocumentDealWithCommand.SubCommand
                 cmd.AddCommand(subCMD);
             }
             return cmd;
+        }
+
+        /// <inheritdoc/>
+        protected override string[] GetConfigAllowExtensions(Configs config)
+        {
+            return (config.AllowExtension.Global ?? new string[] { }).Concat(
+                config.AllowExtension.ContentCommand ?? new string[] { }).ToArray();
         }
     }
 }

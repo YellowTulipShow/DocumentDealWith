@@ -8,22 +8,10 @@ namespace DocumentDealWithCommand.Logic.Models
     public class Configs
     {
         /// <summary>
-        /// 全局操作文件: 允许扩展名
+        /// 允许扩展名配置
         /// </summary>
         [JsonProperty(Order = 1)]
-        public string[] Global_AllowExtensions { get; set; }
-
-        /// <summary>
-        /// content 命令操作文件: 允许扩展名
-        /// </summary>
-        [JsonProperty(Order = 2)]
-        public string[] ContentCommand_AllowExtensions { get; set; }
-
-        /// <summary>
-        /// rename 命令操作文件: 允许扩展名
-        /// </summary>
-        [JsonProperty(Order = 3)]
-        public string[] RenameCommand_AllowExtensions { get; set; }
+        public Configs_AllowExtension AllowExtension { get; set; }
 
         /// <summary>
         /// 获取默认的配置
@@ -33,42 +21,69 @@ namespace DocumentDealWithCommand.Logic.Models
         {
             return new Configs()
             {
-                Global_AllowExtensions = new string[]
+                AllowExtension = new Configs_AllowExtension()
                 {
-                    // 文档
-                    ".txt",
-                    ".md",
-                    ".mardown",
-                    ".mardown",
-                    ".gitignore",
-                    ".drawio",
-                },
-                ContentCommand_AllowExtensions = new string[]
-                {
-                    // 语言
-                    ".json",
-                    ".cs",
-                    ".csproj",
-                    ".java",
-                    ".c",
-                    ".py",
+                    Global = new string[]
+                    {
+                        // 文档
+                        ".txt",
+                        ".md",
+                        ".mardown",
+                        ".mardown",
+                        ".gitignore",
+                        ".drawio",
+                    },
+                    ContentCommand = new string[]
+                    {
+                        // 语言
+                        ".json",
+                        ".cs",
+                        ".csproj",
+                        ".java",
+                        ".c",
+                        ".py",
 
-                    // 脚本
-                    ".ps1",
-                    ".sh",
-                    ".bat",
-                },
-                RenameCommand_AllowExtensions = new string[]
-                {
-                    // 图片
-                    ".jpg",
-                    ".jpeg",
-                    ".png",
-                    ".gif",
-                    ".bmp",
-                    ".svg",
+                        // 脚本
+                        ".ps1",
+                        ".sh",
+                        ".bat",
+                    },
+                    RenameCommand = new string[]
+                    {
+                        // 图片
+                        ".jpg",
+                        ".jpeg",
+                        ".png",
+                        ".gif",
+                        ".bmp",
+                        ".svg",
+                    },
                 },
             };
         }
+    }
+
+    /// <summary>
+    /// 配置项: 允许扩展名配置
+    /// </summary>
+    public struct Configs_AllowExtension
+    {
+        /// <summary>
+        /// 全局操作文件: 允许扩展名
+        /// </summary>
+        [JsonProperty(Order = 1)]
+        public string[] Global { get; set; }
+
+        /// <summary>
+        /// content 命令操作文件: 允许扩展名
+        /// </summary>
+        [JsonProperty(Order = 2)]
+        public string[] ContentCommand { get; set; }
+
+        /// <summary>
+        /// rename 命令操作文件: 允许扩展名
+        /// </summary>
+        [JsonProperty(Order = 3)]
+        public string[] RenameCommand { get; set; }
     }
 }

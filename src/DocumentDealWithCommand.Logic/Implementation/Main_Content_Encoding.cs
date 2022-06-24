@@ -7,6 +7,7 @@ using System.Text;
 using DocumentDealWithCommand.Logic.Models;
 
 using YTS.Log;
+using YTS.ConsolePrint;
 
 namespace DocumentDealWithCommand.Logic.Implementation
 {
@@ -16,14 +17,14 @@ namespace DocumentDealWithCommand.Logic.Implementation
     public class Main_Content_Encoding : AbsMain, IMain<CommandParameters_Content_Encoding>
     {
         /// <inheritdoc/>
-        public Main_Content_Encoding(ILog log) : base(log) { }
+        public Main_Content_Encoding(ILog log, IPrintColor print) : base(log, print) { }
 
         /// <inheritdoc/>
         public int OnExecute(CommandParameters_Content_Encoding commandParameters)
         {
             log.Info($"转换编码, 参数 - Encoding: {commandParameters.Encoding}");
-            FileInfo[] rinventory = GetOperFileInventory(commandParameters,
-                commandParameters.Config.ContentCommand_AllowExtensions);
+
+            var rinventory = commandParameters.NeedHandleFileInventory;
             if (rinventory == null || rinventory.Length <= 0)
             {
                 Console.WriteLine($"可操作文件清单为空!");

@@ -33,6 +33,19 @@ namespace DocumentDealWithCommand.Logic.Implementation
             this.log = log;
             this.rootDire = rootDire;
             this.allowExtensions = allowExtensions;
+            OInit();
+        }
+
+        private void OInit()
+        {
+            if (allowExtensions == null || allowExtensions.Length <= 0)
+            {
+                throw new ArgumentNullException(nameof(allowExtensions), "允许扩展名为空");
+            }
+            for (int i = 0; i < allowExtensions.Length; i++)
+            {
+                allowExtensions[i] = allowExtensions[i]?.Trim()?.ToLower() ?? string.Empty;
+            }
         }
 
         /// <summary>
@@ -49,7 +62,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
             {
                 var filePath = filePaths[i];
                 var file = ToFile(filePath);
-                if (file != null && allowExtensions.Contains(file.Extension))
+                if (file != null && allowExtensions.Contains(file.Extension.Trim().ToLower()))
                 {
                     fileInventory.Add(file);
                 }

@@ -12,14 +12,11 @@ namespace DocumentDealWithCommand.SubCommand
     /// <summary>
     /// 子命令: 内容 - 换行符
     /// </summary>
-    public class SubCommand_Content_NewLine : AbsSubCommand, ISubCommand
+    public class SubCommand_Content_NewLine : SubCommand_Content, ISubCommand
     {
-        private readonly IMain<CommandParameters_Content_NewLine> main;
-
         /// <inheritdoc/>
         public SubCommand_Content_NewLine(ILog log, GlobalOptions globalOptions) : base(log, globalOptions)
         {
-            main = new Main_Content_NewLine(log);
         }
 
         /// <inheritdoc/>
@@ -33,9 +30,9 @@ namespace DocumentDealWithCommand.SubCommand
                 var logArgs = log.CreateArgDictionary();
                 try
                 {
-                    var commandOptions = globalOptions
-                        .ToCommandParameters<CommandParameters_Content_NewLine>(log, context);
+                    var commandOptions = ToCommandParameters<CommandParameters_Content_NewLine>(context);
                     commandOptions.Type = context.ParseResult.GetValueForOption(option_Type);
+                    var main = new Main_Content_NewLine(log, commandOptions.Print);
                     context.ExitCode = main.OnExecute(commandOptions);
                 }
                 catch (Exception ex)
@@ -46,6 +43,7 @@ namespace DocumentDealWithCommand.SubCommand
             });
             return cmd;
         }
+
         private Option<ENewLineType> GetOption_Type()
         {
             var option = new Option<ENewLineType>(

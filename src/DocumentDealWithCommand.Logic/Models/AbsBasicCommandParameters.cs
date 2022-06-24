@@ -1,5 +1,7 @@
 ﻿using System.IO;
 
+using YTS.ConsolePrint;
+
 namespace DocumentDealWithCommand.Logic.Models
 {
     /// <summary>
@@ -13,28 +15,18 @@ namespace DocumentDealWithCommand.Logic.Models
         public Configs Config { get; set; }
 
         /// <summary>
-        /// 操作文件的根目录, 否则默认是执行目录
+        /// 需要处理的文件清单
         /// </summary>
-        public DirectoryInfo RootDire { get; set; }
+        public FileInfo[] NeedHandleFileInventory { get; set; }
 
         /// <summary>
-        /// 需操作文件
+        /// 输出打印配置, 控制台类型
         /// </summary>
-        public string[] Files { get; set; }
+        public EConsoleType ConsoleType { get; set; }
 
         /// <summary>
-        /// 需操作目录
+        /// 控制台输出打印接口
         /// </summary>
-        public DirectoryInfo Path { get; set; }
-
-        /// <summary>
-        /// 需操作目录, 是否查询递归
-        /// </summary>
-        public bool PathIsRecurse { get; set; }
-
-        /// <summary>
-        /// 需操作文件路径清单文件路径
-        /// </summary>
-        public FileInfo FileText { get; set; }
+        public IPrintColor Print { get; set; }
     }
 }

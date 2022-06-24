@@ -1,16 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 
 using System.CommandLine;
 using System.CommandLine.Parsing;
 
 using YTS.Log;
-
-using DocumentDealWithCommand.Logic.Models;
-using DocumentDealWithCommand.Logic.Implementation;
+using YTS.ConsolePrint;
 
 namespace DocumentDealWithCommand
 {
@@ -45,6 +40,7 @@ namespace DocumentDealWithCommand
                 {
                     Config = GetOption_Config(),
                     RootDire = GetOption_RootDire(),
+                    ConsoleType = GetOption_ConsoleType(),
                     Files = GetOption_Files(),
                     Path = GetOption_Path(),
                     PathIsRecurse = GetOption_Recurse(),
@@ -100,6 +96,18 @@ namespace DocumentDealWithCommand
                 aliases: new string[] { "-r", "--RootDire" },
                 description: "操作文件所属路径",
                 getDefaultValue: () => Environment.CurrentDirectory)
+            {
+                Arity = ArgumentArity.ZeroOrOne,
+            };
+            return option;
+        }
+
+        private Option<EConsoleType> GetOption_ConsoleType()
+        {
+            var option = new Option<EConsoleType>(
+                aliases: new string[] { "--Console" },
+                description: "输出打印配置, 控制台类型",
+                getDefaultValue: () => EConsoleTypeExtend.GetDefalutConsoleType())
             {
                 Arity = ArgumentArity.ZeroOrOne,
             };

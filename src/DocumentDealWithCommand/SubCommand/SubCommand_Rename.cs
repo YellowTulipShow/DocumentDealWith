@@ -1,6 +1,6 @@
 ﻿using System;
-using System.CommandLine;
 using System.Linq;
+using System.CommandLine;
 
 using DocumentDealWithCommand.Logic;
 using DocumentDealWithCommand.Logic.Models;
@@ -15,12 +15,9 @@ namespace DocumentDealWithCommand.SubCommand
     /// </summary>
     public class SubCommand_Rename : AbsSubCommand, ISubCommand
     {
-        private readonly IMain<CommandParameters_Rename> main;
-
         /// <inheritdoc/>
         public SubCommand_Rename(ILog log, GlobalOptions globalOptions) : base(log, globalOptions)
         {
-            main = new Main_Rename(log);
         }
 
         /// <inheritdoc/>
@@ -34,9 +31,9 @@ namespace DocumentDealWithCommand.SubCommand
                 var logArgs = log.CreateArgDictionary();
                 try
                 {
-                    var commandOptions = globalOptions
-                        .ToCommandParameters<CommandParameters_Rename>(log, context);
+                    var commandOptions = ToCommandParameters<CommandParameters_Rename>(context);
                     commandOptions.OutputName = context.ParseResult.GetValueForOption(option_outname);
+                    var main = new Main_Rename(log, commandOptions.Print);
                     context.ExitCode = main.OnExecute(commandOptions);
                 }
                 catch (Exception ex)
@@ -47,6 +44,7 @@ namespace DocumentDealWithCommand.SubCommand
             });
             return cmd;
         }
+
         private Option<string> GetOption_OutName()
         {
             var option = new Option<string>(
@@ -72,6 +70,13 @@ namespace DocumentDealWithCommand.SubCommand
                 IsRequired = true,
             };
             return option;
+        }
+
+        /// <inheritdoc/>
+        protected override string[] GetConfigAllowExtensions(Configs config)
+        {
+            return (config.AllowExtension.Global ?? new string[] { }).Concat(
+                config.AllowExtension.RenameCommand ?? new string[] { }).ToArray();
         }
     }
 }

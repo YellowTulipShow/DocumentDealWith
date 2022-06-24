@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using DocumentDealWithCommand.Logic.Models;
 
-using DocumentDealWithCommand.Logic.Models;
-
+using YTS.ConsolePrint;
 using YTS.Log;
 
 namespace DocumentDealWithCommand.Logic.Implementation
@@ -11,18 +8,10 @@ namespace DocumentDealWithCommand.Logic.Implementation
     /// <summary>
     /// 实现命令类: 内容操作 - 换行符类型更改
     /// </summary>
-    public class Main_Content_NewLine : IMain<CommandParameters_Content_NewLine>
+    public class Main_Content_NewLine : AbsMain, IMain<CommandParameters_Content_NewLine>
     {
-        private readonly ILog log;
-
-        /// <summary>
-        /// 实例化实现命令类
-        /// </summary>
-        /// <param name="log">日志接口</param>
-        public Main_Content_NewLine(ILog log)
-        {
-            this.log = log;
-        }
+        /// <inheritdoc/>
+        public Main_Content_NewLine(ILog log, IPrintColor print) : base(log, print) { }
 
         /// <inheritdoc/>
         public int OnExecute(CommandParameters_Content_NewLine commandParameters)

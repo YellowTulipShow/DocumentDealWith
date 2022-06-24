@@ -12,14 +12,11 @@ namespace DocumentDealWithCommand.SubCommand
     /// <summary>
     /// 子命令: 内容 - 编码修改
     /// </summary>
-    public class SubCommand_Content_Encoding : AbsSubCommand, ISubCommand
+    public class SubCommand_Content_Encoding : SubCommand_Content, ISubCommand
     {
-        private readonly IMain<CommandParameters_Content_Encoding> main;
-
         /// <inheritdoc/>
         public SubCommand_Content_Encoding(ILog log, GlobalOptions globalOptions) : base(log, globalOptions)
         {
-            main = new Main_Content_Encoding(log);
         }
 
         /// <inheritdoc/>
@@ -30,13 +27,12 @@ namespace DocumentDealWithCommand.SubCommand
             cmd.AddOption(option_Encoding);
             cmd.SetHandler((context) =>
             {
-                
                 var logArgs = log.CreateArgDictionary();
                 try
                 {
-                    var commandOptions = globalOptions
-                        .ToCommandParameters<CommandParameters_Content_Encoding>(log, context);
+                    var commandOptions = ToCommandParameters<CommandParameters_Content_Encoding>(context);
                     commandOptions.Encoding = context.ParseResult.GetValueForOption(option_Encoding);
+                    var main = new Main_Content_Encoding(log, commandOptions.Print);
                     context.ExitCode = main.OnExecute(commandOptions);
                 }
                 catch (Exception ex)
@@ -47,6 +43,7 @@ namespace DocumentDealWithCommand.SubCommand
             });
             return cmd;
         }
+
         private Option<ECodeType> GetOption_Encoding()
         {
             var option = new Option<ECodeType>(
