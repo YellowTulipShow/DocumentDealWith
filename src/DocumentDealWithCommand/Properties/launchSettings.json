@@ -2,7 +2,7 @@
   "profiles": {
     "DocumentDealWithCommand": {
       "commandName": "Project",
-      "commandLineArgs": "content encode -t UTF8 --Path ./ --Recurse"
+      "commandLineArgs": "content encode -t UTF8 --root \"D:\\\\Work\\\\YTS.ZRQ\\\\DocumentDealWith\" --files .\\_test\\code.txt"
     }
   }
 }

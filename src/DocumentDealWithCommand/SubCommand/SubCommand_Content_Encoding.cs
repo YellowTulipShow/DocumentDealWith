@@ -47,7 +47,7 @@ namespace DocumentDealWithCommand.SubCommand
         private Option<ECodeType> GetOption_Encoding()
         {
             var option = new Option<ECodeType>(
-                aliases: new string[] { "-t", "--Target" },
+                aliases: new string[] { "-t", "--target" },
                 description: "目标编码配置")
             {
                 Arity = ArgumentArity.ExactlyOne,

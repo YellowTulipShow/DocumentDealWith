@@ -49,10 +49,12 @@ namespace DocumentDealWithCommand
                 RootCommand rootCMD = new RootCommand("文档文件相关操作命令");
                 rootCMD.AddGlobalOption(globalOptions.Config);
                 rootCMD.AddGlobalOption(globalOptions.RootDire);
+                rootCMD.AddGlobalOption(globalOptions.ConsoleType);
                 rootCMD.AddGlobalOption(globalOptions.Files);
                 rootCMD.AddGlobalOption(globalOptions.Path);
                 rootCMD.AddGlobalOption(globalOptions.PathIsRecurse);
                 rootCMD.AddGlobalOption(globalOptions.FileText);
+
                 ISubCommand[] subCommands = new ISubCommand[]
                 {
                     new SubCommand.SubCommand_Content(log, globalOptions),
@@ -75,7 +77,7 @@ namespace DocumentDealWithCommand
         private Option<string> GetOption_Config()
         {
             var option = new Option<string>(
-                aliases: new string[] { "-c", "--Config" },
+                aliases: new string[] { "--config" },
                 description: "配置文件读取路径",
                 getDefaultValue: () =>
                 {
@@ -93,7 +95,7 @@ namespace DocumentDealWithCommand
         private Option<string> GetOption_RootDire()
         {
             var option = new Option<string>(
-                aliases: new string[] { "-r", "--RootDire" },
+                aliases: new string[] { "--root" },
                 description: "操作文件所属路径",
                 getDefaultValue: () => Environment.CurrentDirectory)
             {
@@ -105,7 +107,7 @@ namespace DocumentDealWithCommand
         private Option<EConsoleType> GetOption_ConsoleType()
         {
             var option = new Option<EConsoleType>(
-                aliases: new string[] { "--Console" },
+                aliases: new string[] { "--console" },
                 description: "输出打印配置, 控制台类型",
                 getDefaultValue: () => EConsoleTypeExtend.GetDefalutConsoleType())
             {
@@ -117,7 +119,7 @@ namespace DocumentDealWithCommand
         private Option<string[]> GetOption_Files()
         {
             var option = new Option<string[]>(
-                aliases: new string[] { "--Files" },
+                aliases: new string[] { "--files" },
                 description: "操作文件路径")
             {
                 Arity = ArgumentArity.ZeroOrMore,
@@ -129,7 +131,7 @@ namespace DocumentDealWithCommand
         private Option<string> GetOption_Path()
         {
             var option = new Option<string>(
-                aliases: new string[] { "--Path" },
+                aliases: new string[] { "--path" },
                 description: "操作文件所属路径")
             {
                 Arity = ArgumentArity.ZeroOrOne,
@@ -140,8 +142,8 @@ namespace DocumentDealWithCommand
         private Option<bool> GetOption_Recurse()
         {
             var option = new Option<bool>(
-                aliases: new string[] { "--Recurse" },
-                description: "是否递归查询用于与 --Path 参数配合查询")
+                aliases: new string[] { "--recurse" },
+                description: "是否递归查询, 用于与 --path 参数配合查询")
             {
                 Arity = ArgumentArity.ZeroOrOne,
             };
@@ -151,7 +153,7 @@ namespace DocumentDealWithCommand
         private Option<string> GetOption_FileText()
         {
             var option = new Option<string>(
-                aliases: new string[] { "--FileText" },
+                aliases: new string[] { "--txt" },
                 description: "操作文件组合清单文件路径")
             {
                 Arity = ArgumentArity.ZeroOrOne,

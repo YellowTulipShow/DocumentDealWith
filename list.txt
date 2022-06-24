@@ -1,4 +1,0 @@
-D:\Work\YTS.IMG\Bing\.gitignore
-D:\Work\YTS.IMG\Bing\_git.bat
-D:\Work\YTS.IMG\Bing\LICENSE
-D:\Work\YTS.IMG\Bing\README.md

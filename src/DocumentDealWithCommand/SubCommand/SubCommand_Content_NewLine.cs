@@ -47,7 +47,7 @@ namespace DocumentDealWithCommand.SubCommand
         private Option<ENewLineType> GetOption_Type()
         {
             var option = new Option<ENewLineType>(
-                aliases: new string[] { "-t", "--Type" },
+                aliases: new string[] { "-t", "--type" },
                 description: "目标换行标识")
             {
                 Arity = ArgumentArity.ExactlyOne,
