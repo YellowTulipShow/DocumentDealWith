@@ -17,7 +17,10 @@ namespace DocumentDealWithCommand.Logic.Implementation
     public class Main_Content_Encoding : AbsMain, IMain<CommandParameters_Content_Encoding>
     {
         /// <inheritdoc/>
-        public Main_Content_Encoding(ILog log, IPrintColor print) : base(log, print) { }
+        public Main_Content_Encoding(ILog log, IPrintColor print) : base(log, print)
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        }
 
         /// <inheritdoc/>
         public int OnExecute(CommandParameters_Content_Encoding commandParameters)
@@ -41,7 +44,77 @@ namespace DocumentDealWithCommand.Logic.Implementation
             //string content = File.ReadAllText(path, Encoding.ASCII);
             //print.WriteLine(content);
 
-            byte[] data = File.ReadAllBytes(path);
+            //byte[] data = File.ReadAllBytes(path);
+            //foreach (var item in data)
+            //{
+            //    print.WriteLine(BitConverter.ToString(item));
+            //}
+            // 注册编码
+
+            //foreach (EncodingInfo eInfo in Encoding.GetEncodings())
+            //{
+            //    Console.WriteLine("Encoding code page is {0}, encoding name is {1}", eInfo.CodePage, eInfo.Name);
+            //    Console.WriteLine("Encoding dispaly name is {0}", eInfo.DisplayName);
+            //}
+
+            //Encoding fileCodeFormat = GetFileEncodeType(path);
+            //print.WriteLine($"fileCodeFormat.BodyName: {fileCodeFormat.BodyName}");
+            //print.WriteLine($"fileCodeFormat.HeaderName: {fileCodeFormat.HeaderName}");
+            //print.WriteLine($"fileCodeFormat.WebName: {fileCodeFormat.WebName}");
+            //print.WriteLine($"fileCodeFormat.EncodingName: {fileCodeFormat.EncodingName}");
+
+            //Encoding gb2312 = Encoding.GetEncoding("GB2312");
+            //print.WriteLine($"gb2312.BodyName: {gb2312.BodyName}");
+            //print.WriteLine($"gb2312.HeaderName: {gb2312.HeaderName}");
+            //print.WriteLine($"gb2312.WebName: {gb2312.WebName}");
+            //print.WriteLine($"gb2312.EncodingName: {gb2312.EncodingName}");
+
+        }
+
+        public Encoding GetFileEncodeType(string filename)
+        {
+            using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            {
+                using BinaryReader br = new BinaryReader(fs);
+                byte[] buffer = br.ReadBytes(2);
+                if (buffer[0] >= 0xEF)
+                {
+                    if (buffer[0] == 0xEF && buffer[1] == 0xBB)
+                    {
+                        return System.Text.Encoding.UTF8;
+                    }
+                    else if (buffer[0] == 0xFE && buffer[1] == 0xFF)
+                    {
+                        return System.Text.Encoding.BigEndianUnicode;
+                    }
+                    else if (buffer[0] == 0xFF && buffer[1] == 0xFE)
+                    {
+                        return System.Text.Encoding.Unicode;
+                    }
+                    else
+                    {
+                        return System.Text.Encoding.Default;
+                    }
+                }
+                else
+                {
+                    return System.Text.Encoding.Default;
+                }
+            };
+        }
+    }
+
+
+    public class ANSI_Encoding : EncodingProvider
+    {
+        public override Encoding GetEncoding(int codepage)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Encoding GetEncoding(string name)
+        {
+            throw new NotImplementedException();
         }
     }
 }
