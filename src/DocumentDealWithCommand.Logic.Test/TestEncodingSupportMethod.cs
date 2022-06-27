@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 using YTS.Log;
@@ -13,7 +14,7 @@ namespace DocumentDealWithCommand.Logic.Test
     public class TestEncodingSupportMethod
     {
         private ILog log;
-        private const string fileContent = @"/// <summary>";
+        private const string fileContent = @"///撒旦<summary>";
         private string[] encodingNames;
 
         [TestInitialize]
@@ -26,9 +27,9 @@ namespace DocumentDealWithCommand.Logic.Test
             encodingNames = new string[] {
                 "utf-8",
                 "GBK",
-                "IBM01145",
-                "IBM285",
-                "iso-8859-2",
+                //"IBM01145",
+                //"IBM285",
+                //"iso-8859-2",
             };
         }
 
@@ -40,6 +41,11 @@ namespace DocumentDealWithCommand.Logic.Test
         [TestMethod]
         public void TestReadFileBytes()
         {
+            UTF8Encoding genc = new UTF8Encoding(false);
+
+            byte[] expectedDatas = genc.GetBytes(fileContent);
+            string expected = genc.GetString(expectedDatas).Trim();
+
             foreach (string name in encodingNames)
             {
                 StringBuilder str = new StringBuilder();
@@ -65,9 +71,15 @@ namespace DocumentDealWithCommand.Logic.Test
                 str.AppendLine(string.Empty);
                 log.Info(str.ToString());
 
-                byte[] rdatas = Encoding.Convert(encoding, Encoding.UTF8, datas);
-                string rstr = Encoding.UTF8.GetString(rdatas);
-                Assert.AreEqual(fileContent, rstr);
+                byte[] rdatas = Encoding.Convert(encoding, genc, datas);
+                if (name == "utf-8")
+                {
+                    rdatas = rdatas.Skip(3).ToArray();
+                }
+                string rstr = genc.GetString(rdatas).Trim();
+                Assert.AreEqual(expected.Length, rstr.Length);
+
+                var dd = Encoding.GetEncoding(datas);
             }
             Assert.IsTrue(true);
         }

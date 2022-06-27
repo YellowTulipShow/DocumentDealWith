@@ -1,0 +1,11 @@
+gbk,
+utf8(有BOM),
+utf8(无BOM)
+utf16(小端),
+utf16(大端)
+
+BA BA , 
+EF BB BF
+E6 B1 89 ,
+FF FE 49 6C ,
+FE FF 6C 49
