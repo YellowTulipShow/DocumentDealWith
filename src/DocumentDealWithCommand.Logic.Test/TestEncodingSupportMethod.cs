@@ -78,8 +78,6 @@ namespace DocumentDealWithCommand.Logic.Test
                 }
                 string rstr = genc.GetString(rdatas).Trim();
                 Assert.AreEqual(expected.Length, rstr.Length);
-
-                var dd = Encoding.GetEncoding(datas);
             }
             Assert.IsTrue(true);
         }
