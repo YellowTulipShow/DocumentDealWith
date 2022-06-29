@@ -11,20 +11,6 @@ namespace CodingSupportLibrary.Test
     [TestClass]
     public class TestFileInfoGetEncoding
     {
-        private const string Text_zh = @"
-///撒旦<summary>
-JSON在线 | JSON解析格式化—SO JSON在线工具
-打款给几^@个姐姐*#@(给几个i姐姐给个姐姐格局
-<>33,32,2.52.
-而立+*-+即给
-善良的看看/*-+
-";
-        private const string Text_en = @"
-/// sLiellekg <summary>
-/// lsdijfliajlsdjlfajg
-*d-f--23+f+ddfjiljsig*OUO8+
-u3li23k(&@L@)*!??SOF_W@_L@|>:OL~~!``;fdi12+d-3+lsieig
-";
 
         private ILog log;
         [TestInitialize]
@@ -33,6 +19,8 @@ u3li23k(&@L@)*!??SOF_W@_L@|>:OL~~!``;fdi12+d-3+lsieig
             var logEncoding = new UTF8Encoding(false);
             var logFile = ILogExtend.GetLogFilePath("TestISupport");
             log = new FilePrintLog(logFile, logEncoding);
+
+            // 测试开始前引用官方代码页引用, 增加支持中文GBK
             UseExtend.SupportCodePages();
         }
 
@@ -44,25 +32,50 @@ u3li23k(&@L@)*!??SOF_W@_L@|>:OL~~!``;fdi12+d-3+lsieig
         [TestMethod]
         public void Test_FindFileEncoding()
         {
+            // 中文
+            string[] text_zhs = new string[] {
+                @"///撒旦<summary>",
+                @"JSON在线 | JSON解析格式化—SO JSON在线工具",
+                @"打款给几^@个姐姐*#@(给几个i姐姐给个姐姐格局",
+                @"<>33,32,2.52.",
+                @"而立+*-+即给",
+                @"善良的看看/*-+",
+            };
             Encoding[] encodings_zh = new Encoding[] {
-                Encoding.GetEncoding("utf-16"),
-                Encoding.GetEncoding("unicodeFFFE"),
-                Encoding.GetEncoding("utf-32"),
-                Encoding.GetEncoding("utf-7"),
+                //Encoding.GetEncoding("utf-16"),
+                //Encoding.GetEncoding("unicodeFFFE"),
+                //Encoding.GetEncoding("utf-32"),
+                //Encoding.GetEncoding("utf-7"),
                 Encoding.GetEncoding("utf-8"),
                 Encoding.GetEncoding("GBK"),
+                new UTF8Encoding(true),
+                new UTF8Encoding(false),
             };
-            foreach (var item in encodings_zh)
-            {
-                Test_FindFileEncoding(Text_zh.Trim(), item);
-            }
+            Test_FindFileEncoding(text_zhs, encodings_zh);
+
+
+            // 英文
+            string[] text_ens = new string[] {
+                @"/// sLiellekg <summary>",
+                @"/// lsdijfliajlsdjlfajg",
+                @"* d -f--23+f+ddfjiljsig* OUO8+",
+                @"u3li23k(&@L@)*!??SOF_W@_L@|>:OL~~!``;fdi12+d-3+lsieig"
+            };
             Encoding[] encodings_en = new Encoding[] {
-                Encoding.GetEncoding("us-ascii"),
-                Encoding.GetEncoding("iso-8859-1"),
+                //Encoding.GetEncoding("us-ascii"),
+                //Encoding.GetEncoding("iso-8859-1"),
             };
-            foreach (var item in encodings_en)
+            Test_FindFileEncoding(text_ens, encodings_en);
+        }
+        private void Test_FindFileEncoding(string[] texts, Encoding[] encodings)
+        {
+            foreach (var encoding in encodings)
             {
-                Test_FindFileEncoding(Text_en.Trim(), item);
+                Test_FindFileEncoding(string.Join('\n', texts), encoding);
+                foreach (string text in texts)
+                {
+                    Test_FindFileEncoding(text, encoding);
+                }
             }
         }
         private void Test_FindFileEncoding(string text, Encoding encoding)
@@ -75,7 +88,10 @@ u3li23k(&@L@)*!??SOF_W@_L@|>:OL~~!``;fdi12+d-3+lsieig
                 codeFile.Directory.Create();
             }
             File.WriteAllText(codeFile.FullName, text, encoding);
-            
+
+            WriteLogFileContentBytes(codeFile);
+
+            return;
             // 开始判断内容编码逻辑
             Encoding fileEncoding = codeFile.GetEncoding();
             Assert.IsNotNull(fileEncoding);
@@ -85,6 +101,34 @@ u3li23k(&@L@)*!??SOF_W@_L@|>:OL~~!``;fdi12+d-3+lsieig
             Assert.AreEqual(encoding.EncodingName, fileEncoding.EncodingName);
             string fileContent = File.ReadAllText(codeFile.FullName, fileEncoding);
             Assert.AreEqual(text, fileContent);
+        }
+        private void WriteLogFileContentBytes(FileInfo codeFile)
+        {
+            StringBuilder str = new StringBuilder();
+            str.AppendLine($"文件: {codeFile.FullName}");
+            byte[] datas = File.ReadAllBytes(codeFile.FullName);
+
+            int count = 20;
+            int header_len = Math.Ceiling((datas.Length + 1M) / count).ToString().Length;
+            string get_line_header(int line) {
+                return $"  {line.ToString().PadLeft(header_len, ' ')}:  ";
+            };
+            str.Append($"{"".PadLeft(get_line_header(0).Length)}");
+            for (int i = 0; i < count; i++)
+            {
+                str.Append($"{i,2}  ");
+            }
+            for (int i = 0; i < datas.Length; i++)
+            {
+                if (i % count == 0)
+                {
+                    int line = (int)Math.Ceiling((decimal)(i / count)) + 1;
+                    str.Append($"\n{get_line_header(line)}");
+                }
+                str.Append($"{datas[i]:X2}  ");
+            }
+            str.AppendLine(string.Empty);
+            log.Info(str.ToString());
         }
     }
 }
