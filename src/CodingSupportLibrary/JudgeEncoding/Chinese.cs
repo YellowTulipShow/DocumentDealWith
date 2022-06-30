@@ -18,38 +18,39 @@ namespace CodingSupportLibrary.JudgeEncoding
         }
 
         /// <inheritdoc/>
-        public JudgeEncodingResponse GetEncoding(byte[] contentBytes)
+        public JudgeEncodingResponse GetEncoding(byte[] buffer)
         {
             JudgeEncodingResponse response = new JudgeEncodingResponse()
             {
-                Encoding = null,
-                ContentBytes = contentBytes,
+                Encoding = JudgeChineseGBK(buffer),
+                ContentBytes = buffer,
                 IsReadFileALLContent = true,
             };
+            return response;
+        }
 
+        private Encoding JudgeChineseGBK(byte[] buffer)
+        {
             int suspected_ASCII_byte_count = 0;
-            int suspected_chinese_byte_count = 0;
-
-            // 是否确定不是中文
-            bool is_confirm_not_chinese = false;
-            for (int i = 0; i < contentBytes.Length; i++)
+            int suspected_Chinese_byte_count = 0;
+            int bufferIndex = 0;
+            while (bufferIndex < buffer.Length)
             {
-                byte b = contentBytes[i];
-                // 判断是 ASCII 基础编码
-                if (b <= Unicode.ASCII_MAX)
+                byte b = buffer[bufferIndex];
+                // 属于 ASCII 单字节内容
+                if (b <= ASCII.MAX)
                 {
                     suspected_ASCII_byte_count++;
+                    bufferIndex++;
                     continue;
                 }
-                // 判断非 ASCII 编码 并且是最后一个没后续字节
-                if (i == contentBytes.Length - 1)
-                {
-                    is_confirm_not_chinese = true;
-                    break;
-                }
-                byte b2 = contentBytes[i + 1];
 
-                // GBK 亦采用双字节表示
+                // 判断非 ASCII 编码 并且是最后一个没后续字节
+                // 不符合规则: GBK 亦采用双字节表示
+                if (bufferIndex == buffer.Length - 1)
+                    return null;
+                byte b2 = buffer[bufferIndex + 1];
+
                 // 总体编码范围为 8140-FEFE
                 // 首字节在 81-FE 之间
                 // 尾字节在 40-FE 之间
@@ -58,34 +59,29 @@ namespace CodingSupportLibrary.JudgeEncoding
                 {
                     // 符合双字节, 单出现了 xx7F 一条线, 那就一定不是 GBK 编码
                     if (b2 == 0x7F)
-                    {
-                        is_confirm_not_chinese = true;
-                        break;
-                    }
+                        return null;
+
                     // 统计中文字符编码
-                    suspected_chinese_byte_count++;
+                    suspected_Chinese_byte_count += 2;
                     // 跳过 b2 位置的判断
-                    i += 1;
+                    bufferIndex += 2;
                     continue;
                 }
-                // 识别到无法识别的编码组合
-                is_confirm_not_chinese = true;
-                break;
+                // 否则监测到不符合规则的字节直接退出
+                return null;
             }
-
-            if (is_confirm_not_chinese)
+            // 全部字节 都是 ASCII 编码
+            if (buffer.Length == suspected_ASCII_byte_count)
             {
-                return response;
+                return Encoding.ASCII;
             }
-
             // 总字节数 == ASCII + 中文组合数据 即可判断是 GBK 编码格式
-            if (contentBytes.Length == suspected_ASCII_byte_count + (suspected_chinese_byte_count * 2))
+            if (buffer.Length == suspected_ASCII_byte_count + suspected_Chinese_byte_count)
             {
-                response.Encoding = Encoding.GetEncoding("GBK");
-                return response;
+                return Encoding.GetEncoding("GBK");
             }
-
-            return response;
+            // 表示无法识别为 GBK 中文编码
+            return null;
         }
     }
 }

@@ -20,8 +20,8 @@ namespace CodingSupportLibrary
         /// <summary>
         /// 根据字节内容判断文件编码内容
         /// </summary>
-        /// <param name="contentBytes">字节内容</param>
+        /// <param name="buffer">字节内容</param>
         /// <returns>编码响应结果</returns>
-        JudgeEncodingResponse GetEncoding(byte[] contentBytes);
+        JudgeEncodingResponse GetEncoding(byte[] buffer);
     }
 }

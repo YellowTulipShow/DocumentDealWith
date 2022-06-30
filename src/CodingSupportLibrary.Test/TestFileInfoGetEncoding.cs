@@ -39,11 +39,11 @@ namespace CodingSupportLibrary.Test
                 @"而立+*-+即给",
                 @"善良的看看/*-+",
 
-                //@"<>33,32,2.52.",
-                //@"/// sLiellekg <summary>",
-                //@"/// lsdijfliajlsdjlfajg",
-                //@"* d -f--23+f+ddfjiljsig* OUO8+",
-                //@"u3li23k(&@L@)*!??SOF_W@_L@|>:OL~~!``;fdi12+d-3+lsieig"
+                @"<>33,32,2.52.",
+                @"/// sLiellekg <summary>",
+                @"/// lsdijfliajlsdjlfajg",
+                @"* d -f--23+f+ddfjiljsig* OUO8+",
+                @"u3li23k(&@L@)*!??SOF_W@_L@|>:OL~~!``;fdi12+d-3+lsieig"
             };
             Encoding[] encodings_zh = new Encoding[] {
                 Encoding.UTF32,
@@ -51,7 +51,6 @@ namespace CodingSupportLibrary.Test
                 Encoding.BigEndianUnicode,
                 new UTF8Encoding(true),
                 new UTF8Encoding(false),
-
                 Encoding.GetEncoding("GBK"),
             };
             Test_FindFileEncoding(text_zhs, encodings_zh);
@@ -83,6 +82,10 @@ namespace CodingSupportLibrary.Test
             //return;
             // 开始判断内容编码逻辑
             Encoding fileEncoding = codeFile.GetEncoding();
+            if (fileEncoding.Equals(Encoding.ASCII))
+            {
+                fileEncoding = encoding;
+            }
             Assert.IsNotNull(fileEncoding);
             Assert.AreEqual(encoding.BodyName, fileEncoding.BodyName);
             Assert.AreEqual(encoding.HeaderName, fileEncoding.HeaderName);

@@ -6,91 +6,27 @@ using System.Text;
 namespace CodingSupportLibrary.JudgeEncoding
 {
     /// <summary>
-    /// 支持编码: Unicode 类型
+    /// 支持编码: UTF8 无BOM 编码
     /// </summary>
-    internal class Unicode : IJudgeEncoding
+    internal class UTF8NoBOM : IJudgeEncoding
     {
-        /// <summary>
-        /// ASCII 编码字节最大值
-        /// </summary>
-        public const byte ASCII_MAX = 127; // 0x7F;
-
         /// <inheritdoc/>
         public JudgeEncodingResponse GetEncoding(FileInfo file)
         {
-            var response = new JudgeEncodingResponse()
-            {
-                IsReadFileALLContent = false,
-                Encoding = null,
-                ContentBytes = null,
-            };
-            using (FileStream fs = file.Open(FileMode.Open, FileAccess.Read))
-            {
-                using BinaryReader br = new BinaryReader(fs);
-                byte[] buffer = br.ReadBytes(4);
-                response.Encoding = JudgeHeader(buffer);
-            }
-            if (response.Encoding == null)
-            {
-                response.IsReadFileALLContent = true;
-                response.ContentBytes = File.ReadAllBytes(file.FullName);
-                response.Encoding = JudgeUTF8NoBOM(response.ContentBytes);
-            }
-            return response;
+            byte[] buffer = File.ReadAllBytes(file.FullName);
+            return GetEncoding(buffer);
         }
 
         /// <inheritdoc/>
-        public JudgeEncodingResponse GetEncoding(byte[] contentBytes)
+        public JudgeEncodingResponse GetEncoding(byte[] buffer)
         {
             var response = new JudgeEncodingResponse()
             {
                 IsReadFileALLContent = true,
-                Encoding = JudgeHeader(contentBytes),
-                ContentBytes = contentBytes,
+                Encoding = JudgeUTF8NoBOM(buffer),
+                ContentBytes = buffer,
             };
-            if (response.Encoding == null)
-            {
-                response.Encoding = JudgeUTF8NoBOM(contentBytes);
-            }
             return response;
-        }
-
-        private Encoding JudgeHeader(byte[] buffer)
-        {
-            if (buffer == null || buffer.Length <= 0)
-            {
-                return null;
-            }
-            static IEnumerable<(byte[] bom, Func<Encoding> getFunc)> HeaderRule()
-            {
-                // UTF-32 格式
-                yield return (new byte[] { 0xFF, 0xFE, 0x00, 0x00 }, () => Encoding.UTF32);
-                // UTF-8 BOM 格式头部必带标识
-                yield return (new byte[] { 0xEF, 0xBB, 0xBF }, () => new UTF8Encoding(true));
-                // UTF-16 格式 标识
-                yield return (new byte[] { 0xFE, 0xFF }, () => Encoding.BigEndianUnicode);
-                yield return (new byte[] { 0xFF, 0xFE }, () => Encoding.Unicode);
-            };
-            // 判断头部字符
-            foreach (var (bom, getFunc) in HeaderRule())
-            {
-                if (buffer.Length < bom.Length)
-                    continue;
-                bool is_all_equal = true;
-                for (int i = 0; i < bom.Length; i++)
-                {
-                    if (buffer[i] != bom[i])
-                    {
-                        is_all_equal = false;
-                        break;
-                    }
-                }
-                if (is_all_equal)
-                {
-                    return getFunc();
-                }
-            }
-            return null;
         }
 
         private Encoding JudgeUTF8NoBOM(byte[] buffer)
@@ -128,7 +64,7 @@ namespace CodingSupportLibrary.JudgeEncoding
             {
                 byte b = buffer[bufferIndex];
                 // 属于 ASCII 单字节内容
-                if (b <= ASCII_MAX)
+                if (b <= ASCII.MAX)
                 {
                     suspected_ASCII_byte_count++;
                     bufferIndex++;
@@ -156,6 +92,11 @@ namespace CodingSupportLibrary.JudgeEncoding
                     return null;
                 }
                 bufferIndex++;
+            }
+            // 全部字节 都是 ASCII 编码
+            if (buffer.Length == suspected_ASCII_byte_count)
+            {
+                return Encoding.ASCII;
             }
             // 总字节数 == ASCII单字节数 + UTF8组合字节组数 即可判断是 UTF8 无BOM 编码格式
             if (buffer.Length == suspected_ASCII_byte_count + suspected_UTF8_byte_count)

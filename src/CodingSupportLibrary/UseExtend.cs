@@ -41,7 +41,9 @@ namespace CodingSupportLibrary
         }
         private static IEnumerable<IJudgeEncoding> GetJudgeEncodings()
         {
-            yield return new JudgeEncoding.Unicode();
+            yield return new JudgeEncoding.UnicodeHeader();
+            yield return new JudgeEncoding.ASCII();
+            yield return new JudgeEncoding.UTF8NoBOM();
             yield return new JudgeEncoding.Chinese();
         }
     }
