@@ -39,6 +39,7 @@ namespace CodingSupportLibrary
             }
             return null;
         }
+
         private static IEnumerable<IJudgeEncoding> GetJudgeEncodings()
         {
             yield return new JudgeEncoding.UnicodeHeader();

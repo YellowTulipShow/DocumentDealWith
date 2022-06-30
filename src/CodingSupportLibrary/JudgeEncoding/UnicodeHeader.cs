@@ -13,17 +13,15 @@ namespace CodingSupportLibrary.JudgeEncoding
         /// <inheritdoc/>
         public JudgeEncodingResponse GetEncoding(FileInfo file)
         {
-            using (FileStream fs = file.Open(FileMode.Open, FileAccess.Read))
+            using FileStream fs = file.Open(FileMode.Open, FileAccess.Read);
+            using BinaryReader br = new BinaryReader(fs);
+            byte[] buffer = br.ReadBytes(4);
+            return new JudgeEncodingResponse()
             {
-                using BinaryReader br = new BinaryReader(fs);
-                byte[] buffer = br.ReadBytes(4);
-                return new JudgeEncodingResponse()
-                {
-                    IsReadFileALLContent = false,
-                    Encoding = JudgeHeader(buffer),
-                    ContentBytes = null,
-                };
-            }
+                IsReadFileALLContent = false,
+                Encoding = JudgeHeader(buffer),
+                ContentBytes = null,
+            };
         }
 
         /// <inheritdoc/>
@@ -38,22 +36,23 @@ namespace CodingSupportLibrary.JudgeEncoding
             return response;
         }
 
+        private static IEnumerable<(byte[] bom, Func<Encoding> getFunc)> HeaderRule()
+        {
+            // UTF-32 格式
+            yield return (new byte[] { 0xFF, 0xFE, 0x00, 0x00 }, () => Encoding.UTF32);
+            // UTF-8 BOM 格式头部必带标识
+            yield return (new byte[] { 0xEF, 0xBB, 0xBF }, () => new UTF8Encoding(true));
+            // UTF-16 格式 标识
+            yield return (new byte[] { 0xFE, 0xFF }, () => Encoding.BigEndianUnicode);
+            yield return (new byte[] { 0xFF, 0xFE }, () => Encoding.Unicode);
+        }
+
         private Encoding JudgeHeader(byte[] buffer)
         {
             if (buffer == null || buffer.Length <= 0)
             {
                 return null;
             }
-            static IEnumerable<(byte[] bom, Func<Encoding> getFunc)> HeaderRule()
-            {
-                // UTF-32 格式
-                yield return (new byte[] { 0xFF, 0xFE, 0x00, 0x00 }, () => Encoding.UTF32);
-                // UTF-8 BOM 格式头部必带标识
-                yield return (new byte[] { 0xEF, 0xBB, 0xBF }, () => new UTF8Encoding(true));
-                // UTF-16 格式 标识
-                yield return (new byte[] { 0xFE, 0xFF }, () => Encoding.BigEndianUnicode);
-                yield return (new byte[] { 0xFF, 0xFE }, () => Encoding.Unicode);
-            };
             // 判断头部字符
             foreach (var (bom, getFunc) in HeaderRule())
             {
