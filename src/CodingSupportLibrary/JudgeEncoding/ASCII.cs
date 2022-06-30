@@ -10,8 +10,10 @@ namespace CodingSupportLibrary.JudgeEncoding
     /// </summary>
     internal class ASCII : IJudgeEncoding
     {
-        //public const byte MAX = 0x7F;
-        public const byte MAX = 127;
+        /// <summary>
+        /// 字节最大值
+        /// </summary>
+        public const byte MAX = 127; // 0x7F;
 
         /// <inheritdoc/>
         public JudgeEncodingResponse GetEncoding(FileInfo file)
@@ -32,7 +34,7 @@ namespace CodingSupportLibrary.JudgeEncoding
             {
                 byte b = contentBytes[i];
                 // 判断是 ASCII 基础编码
-                if (b > 127)
+                if (b > MAX)
                 {
                     return response;
                 }

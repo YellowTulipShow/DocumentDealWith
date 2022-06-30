@@ -11,7 +11,6 @@ namespace CodingSupportLibrary.Test
     [TestClass]
     public class TestFileInfoGetEncoding
     {
-
         private ILog log;
         [TestInitialize]
         public void Init()

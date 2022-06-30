@@ -31,7 +31,7 @@ namespace CodingSupportLibrary.JudgeEncoding
             var response = new JudgeEncodingResponse()
             {
                 IsReadFileALLContent = true,
-                Encoding = JudgeHeader(contentBytes),
+                Encoding = JudgeHeader(contentBytes) ?? JudgeUTF8(contentBytes),
                 ContentBytes = contentBytes,
             };
             return response;
@@ -43,6 +43,7 @@ namespace CodingSupportLibrary.JudgeEncoding
             {
                 return null;
             }
+            // 判断头部字符
             foreach (var (bom, getFunc) in HeaderRule())
             {
                 if (buffer.Length < bom.Length)
@@ -65,16 +66,18 @@ namespace CodingSupportLibrary.JudgeEncoding
         }
         private IEnumerable<(byte[] bom, Func<Encoding> getFunc)> HeaderRule()
         {
+            // UTF-8 BOM 格式头部必带标识
             yield return (new byte[] { 0xEF, 0xBB, 0xBF }, () => new UTF8Encoding(true));
-            // 可能不在头部中
-            yield return (new byte[] { 0x2B, 0x2F, 0x76 }, () => Encoding.UTF7);
-            yield return (new byte[] { 0xE6, 0xB1, 0x89 }, () => new UTF8Encoding(false));
-            // 混乱
-            // UTF-16 格式
+            // UTF-16 格式 标识
             yield return (new byte[] { 0xFE, 0xFF }, () => Encoding.BigEndianUnicode);
             yield return (new byte[] { 0xFF, 0xFE }, () => Encoding.Unicode);
             // UTF-32 格式
             yield return (new byte[] { 0, 0, 0xFE, 0xFF }, () => Encoding.UTF32);
+        }
+
+        private Encoding JudgeUTF8(byte[] buffer)
+        {
+            return new UTF8Encoding(false);
         }
     }
 }

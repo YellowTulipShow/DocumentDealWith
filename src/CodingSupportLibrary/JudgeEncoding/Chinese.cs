@@ -36,7 +36,7 @@ namespace CodingSupportLibrary.JudgeEncoding
             {
                 byte b = contentBytes[i];
                 // 判断是 ASCII 基础编码
-                if (b <= 127)
+                if (b <= ASCII.MAX)
                 {
                     suspected_ASCII_byte_count++;
                     continue;
