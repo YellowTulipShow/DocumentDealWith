@@ -70,8 +70,10 @@ namespace CodingSupportLibrary.JudgeEncoding
             yield return (new byte[] { 0x2B, 0x2F, 0x76 }, () => Encoding.UTF7);
             yield return (new byte[] { 0xE6, 0xB1, 0x89 }, () => new UTF8Encoding(false));
             // 混乱
-            yield return (new byte[] { 0xFF, 0xFE }, () => Encoding.Unicode);
+            // UTF-16 格式
             yield return (new byte[] { 0xFE, 0xFF }, () => Encoding.BigEndianUnicode);
+            yield return (new byte[] { 0xFF, 0xFE }, () => Encoding.Unicode);
+            // UTF-32 格式
             yield return (new byte[] { 0, 0, 0xFE, 0xFF }, () => Encoding.UTF32);
         }
     }

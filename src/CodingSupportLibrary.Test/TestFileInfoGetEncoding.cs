@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+ï»¿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System;
 using System.IO;
@@ -20,7 +20,7 @@ namespace CodingSupportLibrary.Test
             var logFile = ILogExtend.GetLogFilePath("TestISupport");
             log = new FilePrintLog(logFile, logEncoding);
 
-            // ²âÊÔ¿ªÊ¼Ç°ÒıÓÃ¹Ù·½´úÂëÒ³ÒıÓÃ, Ôö¼ÓÖ§³ÖÖĞÎÄGBK
+            // æµ‹è¯•å¼€å§‹å‰å¼•ç”¨å®˜æ–¹ä»£ç é¡µå¼•ç”¨, å¢åŠ æ”¯æŒä¸­æ–‡GBK
             UseExtend.SupportCodePages();
         }
 
@@ -32,17 +32,19 @@ namespace CodingSupportLibrary.Test
         [TestMethod]
         public void Test_FindFileEncoding()
         {
-            // ÖĞÎÄ
+            // ä¸­æ–‡
             string[] text_zhs = new string[] {
-                @"///Èöµ©<summary>",
-                @"JSONÔÚÏß | JSON½âÎö¸ñÊ½»¯¡ªSO JSONÔÚÏß¹¤¾ß",
-                @"´ò¿î¸ø¼¸^@¸ö½ã½ã*#@(¸ø¼¸¸öi½ã½ã¸ø¸ö½ã½ã¸ñ¾Ö",
+                @"///æ’’æ—¦<summary>",
+                @"JSONåœ¨çº¿ | JSONè§£ææ ¼å¼åŒ–â€”SO JSONåœ¨çº¿å·¥å…·",
+                @"æ‰“æ¬¾ç»™å‡ ^@ä¸ªå§å§*#@(ç»™å‡ ä¸ªiå§å§ç»™ä¸ªå§å§æ ¼å±€",
                 @"<>33,32,2.52.",
-                @"¶øÁ¢+*-+¼´¸ø",
-                @"ÉÆÁ¼µÄ¿´¿´/*-+",
+                @"è€Œç«‹+*-+å³ç»™",
+                @"å–„è‰¯çš„çœ‹çœ‹/*-+",
             };
             Encoding[] encodings_zh = new Encoding[] {
-                //Encoding.GetEncoding("utf-16"),
+                Encoding.UTF32,
+                Encoding.Unicode,
+                Encoding.BigEndianUnicode,
                 //Encoding.GetEncoding("unicodeFFFE"),
                 //Encoding.GetEncoding("utf-32"),
                 //Encoding.GetEncoding("utf-7"),
@@ -54,7 +56,7 @@ namespace CodingSupportLibrary.Test
             Test_FindFileEncoding(text_zhs, encodings_zh);
 
 
-            // Ó¢ÎÄ
+            // è‹±æ–‡
             string[] text_ens = new string[] {
                 @"/// sLiellekg <summary>",
                 @"/// lsdijfliajlsdjlfajg",
@@ -92,7 +94,7 @@ namespace CodingSupportLibrary.Test
             WriteLogFileContentBytes(codeFile);
 
             return;
-            // ¿ªÊ¼ÅĞ¶ÏÄÚÈİ±àÂëÂß¼­
+            // å¼€å§‹åˆ¤æ–­å†…å®¹ç¼–ç é€»è¾‘
             Encoding fileEncoding = codeFile.GetEncoding();
             Assert.IsNotNull(fileEncoding);
             Assert.AreEqual(encoding.BodyName, fileEncoding.BodyName);
@@ -105,30 +107,71 @@ namespace CodingSupportLibrary.Test
         private void WriteLogFileContentBytes(FileInfo codeFile)
         {
             StringBuilder str = new StringBuilder();
-            str.AppendLine($"ÎÄ¼ş: {codeFile.FullName}");
+            str.AppendLine($"æ–‡ä»¶: {codeFile.FullName}");
             byte[] datas = File.ReadAllBytes(codeFile.FullName);
+            str.AppendLine($"åç§°: {codeFile.Name}");
 
-            int count = 20;
-            int header_len = Math.Ceiling((datas.Length + 1M) / count).ToString().Length;
+            str.AppendLine($"HEX åå…­è¿›åˆ¶:");
+            str.Append(WriteLogFileContentBytes_HEX(datas));
+            str.AppendLine($"OCT åè¿›åˆ¶:");
+            str.Append(WriteLogFileContentBytes_OCT(datas));
+
+            log.Info(str.ToString());
+        }
+        private StringBuilder WriteLogFileContentBytes_HEX(byte[] datas)
+        {
+            StringBuilder str = new StringBuilder();
+            const char space = ' ';
+            const int region = 20;
+            int header_len = (datas.Length + region).ToString().Length;
             string get_line_header(int line) {
-                return $"  {line.ToString().PadLeft(header_len, ' ')}:  ";
+                return $"  {line.ToString().PadLeft(header_len, space)}:  ";
             };
             str.Append($"{"".PadLeft(get_line_header(0).Length)}");
-            for (int i = 0; i < count; i++)
+            string item_space = "".PadLeft(2, space);
+            for (int i = 0; i < region; i++)
             {
-                str.Append($"{i,2}  ");
+                str.Append($"{i,3}{item_space}");
             }
             for (int i = 0; i < datas.Length; i++)
             {
-                if (i % count == 0)
+                if (i % region == 0)
                 {
-                    int line = (int)Math.Ceiling((decimal)(i / count)) + 1;
+                    int line = (int)Math.Ceiling((decimal)(i / region)) * region;
                     str.Append($"\n{get_line_header(line)}");
                 }
-                str.Append($"{datas[i]:X2}  ");
+                str.Append($"{datas[i],3:X2}{item_space}");
             }
             str.AppendLine(string.Empty);
-            log.Info(str.ToString());
+            return str;
+        }
+        private StringBuilder WriteLogFileContentBytes_OCT(byte[] datas)
+        {
+            StringBuilder str = new StringBuilder();
+            const char space = ' ';
+            const int region = 20;
+            int header_len = (datas.Length + region).ToString().Length;
+            string get_line_header(int line)
+            {
+                return $"  {line.ToString().PadLeft(header_len, space)}:  ";
+            };
+            str.Append($"{"".PadLeft(get_line_header(0).Length)}");
+            string item_space = "".PadLeft(2, space);
+            for (int i = 0; i < region; i++)
+            {
+                str.Append($"{i,3}{item_space}");
+            }
+            for (int i = 0; i < datas.Length; i++)
+            {
+                if (i % region == 0)
+                {
+                    int line = (int)Math.Ceiling((decimal)(i / region)) * region;
+                    str.Append($"\n{get_line_header(line)}");
+                }
+                str.Append($"{datas[i],3}{item_space}");
+            }
+            str.AppendLine(string.Empty);
+            return str;
         }
     }
 }

@@ -10,6 +10,9 @@ namespace CodingSupportLibrary.JudgeEncoding
     /// </summary>
     internal class ASCII : IJudgeEncoding
     {
+        //public const byte MAX = 0x7F;
+        public const byte MAX = 127;
+
         /// <inheritdoc/>
         public JudgeEncodingResponse GetEncoding(FileInfo file)
         {
@@ -19,7 +22,23 @@ namespace CodingSupportLibrary.JudgeEncoding
         /// <inheritdoc/>
         public JudgeEncodingResponse GetEncoding(byte[] contentBytes)
         {
-            throw new NotImplementedException();
+            var response = new JudgeEncodingResponse()
+            {
+                Encoding = null,
+                ContentBytes = contentBytes,
+                IsReadFileALLContent = true,
+            };
+            for (int i = 0; i < contentBytes.Length; i++)
+            {
+                byte b = contentBytes[i];
+                // 判断是 ASCII 基础编码
+                if (b > 127)
+                {
+                    return response;
+                }
+            }
+            response.Encoding = Encoding.ASCII;
+            return response;
         }
     }
 }
