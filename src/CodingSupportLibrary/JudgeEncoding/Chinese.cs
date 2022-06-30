@@ -36,7 +36,7 @@ namespace CodingSupportLibrary.JudgeEncoding
             {
                 byte b = contentBytes[i];
                 // 判断是 ASCII 基础编码
-                if (b <= ASCII.MAX)
+                if (b <= Unicode.ASCII_MAX)
                 {
                     suspected_ASCII_byte_count++;
                     continue;
@@ -66,6 +66,7 @@ namespace CodingSupportLibrary.JudgeEncoding
                     suspected_chinese_byte_count++;
                     // 跳过 b2 位置的判断
                     i += 1;
+                    continue;
                 }
                 // 识别到无法识别的编码组合
                 is_confirm_not_chinese = true;

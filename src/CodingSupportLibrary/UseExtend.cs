@@ -43,7 +43,6 @@ namespace CodingSupportLibrary
         {
             yield return new JudgeEncoding.Unicode();
             yield return new JudgeEncoding.Chinese();
-            yield return new JudgeEncoding.ASCII();
         }
     }
 }

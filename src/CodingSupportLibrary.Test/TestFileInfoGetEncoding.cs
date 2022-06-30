@@ -36,37 +36,25 @@ namespace CodingSupportLibrary.Test
                 @"///撒旦<summary>",
                 @"JSON在线 | JSON解析格式化—SO JSON在线工具",
                 @"打款给几^@个姐姐*#@(给几个i姐姐给个姐姐格局",
-                @"<>33,32,2.52.",
                 @"而立+*-+即给",
                 @"善良的看看/*-+",
+
+                //@"<>33,32,2.52.",
+                //@"/// sLiellekg <summary>",
+                //@"/// lsdijfliajlsdjlfajg",
+                //@"* d -f--23+f+ddfjiljsig* OUO8+",
+                //@"u3li23k(&@L@)*!??SOF_W@_L@|>:OL~~!``;fdi12+d-3+lsieig"
             };
             Encoding[] encodings_zh = new Encoding[] {
                 Encoding.UTF32,
                 Encoding.Unicode,
                 Encoding.BigEndianUnicode,
-                //Encoding.GetEncoding("unicodeFFFE"),
-                //Encoding.GetEncoding("utf-32"),
-                //Encoding.GetEncoding("utf-7"),
-                Encoding.GetEncoding("utf-8"),
-                Encoding.GetEncoding("GBK"),
                 new UTF8Encoding(true),
                 new UTF8Encoding(false),
+
+                Encoding.GetEncoding("GBK"),
             };
             Test_FindFileEncoding(text_zhs, encodings_zh);
-
-
-            // 英文
-            string[] text_ens = new string[] {
-                @"/// sLiellekg <summary>",
-                @"/// lsdijfliajlsdjlfajg",
-                @"* d -f--23+f+ddfjiljsig* OUO8+",
-                @"u3li23k(&@L@)*!??SOF_W@_L@|>:OL~~!``;fdi12+d-3+lsieig"
-            };
-            Encoding[] encodings_en = new Encoding[] {
-                //Encoding.GetEncoding("us-ascii"),
-                //Encoding.GetEncoding("iso-8859-1"),
-            };
-            Test_FindFileEncoding(text_ens, encodings_en);
         }
         private void Test_FindFileEncoding(string[] texts, Encoding[] encodings)
         {
@@ -89,10 +77,10 @@ namespace CodingSupportLibrary.Test
                 codeFile.Directory.Create();
             }
             File.WriteAllText(codeFile.FullName, text, encoding);
-
+            
             WriteLogFileContentBytes(codeFile);
 
-            return;
+            //return;
             // 开始判断内容编码逻辑
             Encoding fileEncoding = codeFile.GetEncoding();
             Assert.IsNotNull(fileEncoding);
@@ -171,6 +159,33 @@ namespace CodingSupportLibrary.Test
             }
             str.AppendLine(string.Empty);
             return str;
+        }
+
+
+        [TestMethod]
+        public void Test_PrintBIN()
+        {
+            uint[] values = new uint[] {
+                0b_1000_0000,
+                0b_1100_0000,
+                0b_1110_0000,
+                0b_1111_0000,
+                0b_1111_1000,
+                0b_1111_1100,
+                0b_1111_1110,
+                0b_1111_1111,
+            };
+            StringBuilder str = new StringBuilder();
+            str.AppendLine();
+            for (int i = 0; i < values.Length; i++)
+            {
+                uint v = values[i];
+                string bin = Convert.ToString(v, 2).PadLeft(8, '0');
+                str.AppendLine($"  v: {v}  bin: {bin}");
+            }
+
+            log.Info(str.ToString());
+            Assert.IsTrue(true);
         }
     }
 }
