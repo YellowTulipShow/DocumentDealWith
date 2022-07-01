@@ -4,12 +4,13 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
 
 using YTS.Log;
 
 using CodingSupportLibrary;
+
 using DocumentDealWithCommand.Logic.Implementation;
-using System.Collections.Generic;
 
 namespace DocumentDealWithCommand.Logic.Test
 {

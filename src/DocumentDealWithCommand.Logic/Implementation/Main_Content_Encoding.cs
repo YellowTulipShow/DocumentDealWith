@@ -27,12 +27,9 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// <inheritdoc/>
         public int OnExecute(CommandParameters_Content_Encoding commandParameters)
         {
-            log.Info($"转换编码, 参数 - Encoding: {commandParameters.Target}");
-
             var rinventory = commandParameters.NeedHandleFileInventory;
             foreach (var item in rinventory)
             {
-                print.WriteLine($"文件路径: {item.FullName}");
                 ConvertFileEncoding(item, commandParameters.Target, log, print);
             }
             return 0;
@@ -82,7 +79,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 byte[] targetBytes = Encoding.Convert(fileEncoding, targetEncoding, fileBytes);
                 rlist.AddRange(targetBytes);
                 File.WriteAllBytes(file.FullName, rlist.ToArray());
-                print?.WriteLine($"文件编码转换成功: ");
+                print?.WriteLine($"文件编码转换成功! {file.FullName} | {response.Encoding} To {target}");
             }
             catch (Exception ex)
             {
