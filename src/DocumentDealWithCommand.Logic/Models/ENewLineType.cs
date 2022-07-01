@@ -8,14 +8,14 @@
         /// <summary>
         /// 换行: \n | 0x0A
         /// </summary>
-        LF,
+        LF = 0x0A,
         /// <summary>
         /// 回车: \r | 0x0D
         /// </summary>
-        CR,
+        CR = 0x0D,
         /// <summary>
         /// 回车+换行: \r\n | 0x0D 0x0A
         /// </summary>
-        CRLF,
+        CRLF = 0x0D + 0x0A,
     }
 }

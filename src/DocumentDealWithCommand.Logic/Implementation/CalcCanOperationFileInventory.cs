@@ -6,8 +6,6 @@ using System.Linq;
 
 using YTS.Log;
 
-using DocumentDealWithCommand.Logic;
-using DocumentDealWithCommand.Logic.Models;
 using CodingSupportLibrary;
 
 namespace DocumentDealWithCommand.Logic.Implementation

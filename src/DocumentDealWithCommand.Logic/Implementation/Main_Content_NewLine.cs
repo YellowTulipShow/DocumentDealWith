@@ -2,6 +2,9 @@
 using YTS.Log;
 
 using DocumentDealWithCommand.Logic.Models;
+using System.IO;
+using System;
+using System.Collections.Generic;
 
 namespace DocumentDealWithCommand.Logic.Implementation
 {
@@ -10,14 +13,98 @@ namespace DocumentDealWithCommand.Logic.Implementation
     /// </summary>
     public class Main_Content_NewLine : AbsMain, IMain<CommandParameters_Content_NewLine>
     {
+        private const byte LF = (byte)ENewLineType.LF;
+        private const byte CR = (byte)ENewLineType.CR;
+        private const int CRLF = (int)ENewLineType.CRLF;
+
         /// <inheritdoc/>
         public Main_Content_NewLine(ILog log, IPrintColor print) : base(log, print) { }
 
         /// <inheritdoc/>
         public int OnExecute(CommandParameters_Content_NewLine commandParameters)
         {
+            var rinventory = commandParameters.NeedHandleFileInventory;
+            foreach (var item in rinventory)
+            {
+                ConvertFileNewLineSymbol(item, commandParameters.Type, log, print);
+            }
+            return 0;
+
+
+            byte l = 0x0A;
+            byte r = 0x0D;
+            int d = l + r;
+            int crlf = (int)ENewLineType.CRLF;
+            if (d == crlf)
+            {
+
+            }
+
+
             print.WriteLine("未实现更改换行符逻辑~~~", EPrintColor.Red);
             return 2;
+        }
+
+        /// <summary>
+        /// 转换文件换行标识
+        /// </summary>
+        /// <param name="file">文件信息</param>
+        /// <param name="newLineSymbol">目标换行标识</param>
+        /// <param name="log">日志接口</param>
+        /// <param name="print">打印输出接口, 可为空</param>
+        /// <exception cref="Exception">执行过程中发生的异常</exception>
+        public static void ConvertFileNewLineSymbol(FileInfo file, ENewLineType newLineSymbol, ILog log, IPrintColor print = null)
+        {
+            var logArgs = log.CreateArgDictionary();
+            logArgs["file"] = file.FullName;
+            logArgs["newLineSymbol"] = newLineSymbol.ToString();
+            try
+            {
+                // 拿到内容
+                byte[] fileBytes = File.ReadAllBytes(file.FullName);
+                List<byte> rlist = new List<byte>(fileBytes);
+
+                // 拿到目标
+                byte[] targetBytes = ToTypeBytes(newLineSymbol);
+
+                int need_install_index = -1;
+                int index = 0;
+                while (index < rlist.Count)
+                {
+                    byte b = rlist[index];
+                    if (b != LF && b != CR)
+                    {
+                        if (need_install_index != -1)
+                        {
+                        }
+                        index++;
+                        continue;
+                    }
+                    // 判断是否记录的删除最开始的位置
+                    if (need_install_index == -1)
+                        need_install_index = index;
+                    // 删除这个字节
+                    rlist.RemoveAt(index);
+                }
+                File.WriteAllBytes(file.FullName, rlist.ToArray());
+                print?.WriteLine($"文件换行符转换成功! {file.FullName} => {newLineSymbol}");
+            }
+            catch (Exception ex)
+            {
+                log.Error("转换文件出错", ex, logArgs);
+                throw ex;
+            }
+        }
+
+        private static byte[] ToTypeBytes(ENewLineType newLineSymbol)
+        {
+            return newLineSymbol switch
+            {
+                ENewLineType.LF => new byte[] { LF },
+                ENewLineType.CR => new byte[] { CR },
+                ENewLineType.CRLF => new byte[] { CR, LF },
+                _ => throw new ArgumentOutOfRangeException(nameof(newLineSymbol), $"换行符, 无法解析: {newLineSymbol}"),
+            };
         }
     }
 }
