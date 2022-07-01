@@ -70,7 +70,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
                     File.ReadAllBytes(file.FullName);
                 byte[] targetBytes = Encoding.Convert(fileEncoding, targetEncoding, fileBytes);
                 File.WriteAllBytes(file.FullName, targetBytes);
-                print?.WriteLine($"文件编码转换成功: ")
+                print?.WriteLine($"文件编码转换成功: ");
             }
             catch (Exception ex)
             {

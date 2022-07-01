@@ -98,7 +98,7 @@ namespace CodingSupportLibrary
                 ESupportEncoding.UTF32_LittleEndian => Encoding.UTF32,
                 ESupportEncoding.UTF16_LittleEndian => Encoding.Unicode,
                 ESupportEncoding.UTF16_BigEndian => Encoding.BigEndianUnicode,
-                ESupportEncoding.UTF8 => Encoding.UTF8,
+                ESupportEncoding.UTF8 => new UTF8Encoding(true),
                 ESupportEncoding.UTF8_NoBOM => new UTF8Encoding(false),
                 ESupportEncoding.GBK => Encoding.GetEncoding("GBK"),
                 _ => throw new ArgumentOutOfRangeException(nameof(enum_support_encoding), $"受支持的编码配置, 无法解析: {enum_support_encoding}"),
