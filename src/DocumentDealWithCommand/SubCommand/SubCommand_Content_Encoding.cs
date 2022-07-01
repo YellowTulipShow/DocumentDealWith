@@ -1,11 +1,12 @@
 ﻿using System;
 using System.CommandLine;
 
-using DocumentDealWithCommand.Logic;
+using YTS.Log;
+
+using CodingSupportLibrary;
+
 using DocumentDealWithCommand.Logic.Models;
 using DocumentDealWithCommand.Logic.Implementation;
-
-using YTS.Log;
 
 namespace DocumentDealWithCommand.SubCommand
 {
@@ -22,16 +23,16 @@ namespace DocumentDealWithCommand.SubCommand
         /// <inheritdoc/>
         public override Command GetCommand()
         {
-            Option<ECodeType> option_Encoding = GetOption_Encoding();
+            Option<ESupportEncoding> option_TargetEncoding = GetOption_TargetEncoding();
             Command cmd = new Command("encode", "重新配置编码");
-            cmd.AddOption(option_Encoding);
+            cmd.AddOption(option_TargetEncoding);
             cmd.SetHandler((context) =>
             {
                 var logArgs = log.CreateArgDictionary();
                 try
                 {
                     var commandOptions = ToCommandParameters<CommandParameters_Content_Encoding>(context);
-                    commandOptions.Encoding = context.ParseResult.GetValueForOption(option_Encoding);
+                    commandOptions.Target = context.ParseResult.GetValueForOption(option_TargetEncoding);
                     var main = new Main_Content_Encoding(log, commandOptions.Print);
                     context.ExitCode = main.OnExecute(commandOptions);
                 }
@@ -44,9 +45,9 @@ namespace DocumentDealWithCommand.SubCommand
             return cmd;
         }
 
-        private Option<ECodeType> GetOption_Encoding()
+        private Option<ESupportEncoding> GetOption_TargetEncoding()
         {
-            var option = new Option<ECodeType>(
+            var option = new Option<ESupportEncoding>(
                 aliases: new string[] { "-t", "--target" },
                 description: "目标编码配置")
             {

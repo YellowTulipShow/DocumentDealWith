@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿using CodingSupportLibrary;
 
 namespace DocumentDealWithCommand.Logic.Models
 {
@@ -10,6 +10,6 @@ namespace DocumentDealWithCommand.Logic.Models
         /// <summary>
         /// 输出名称
         /// </summary>
-        public ECodeType Encoding { get; set; }
+        public ESupportEncoding Target { get; set; }
     }
 }

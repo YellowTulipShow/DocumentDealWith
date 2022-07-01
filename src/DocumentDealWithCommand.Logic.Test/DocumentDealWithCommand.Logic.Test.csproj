@@ -11,8 +11,10 @@
         <PackageReference Include="MSTest.TestAdapter" Version="2.2.7" />
         <PackageReference Include="MSTest.TestFramework" Version="2.2.7" />
         <PackageReference Include="coverlet.collector" Version="3.1.0" />
-        <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
-        <PackageReference Include="YTS.Log" Version="0.1.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\DocumentDealWithCommand.Logic\DocumentDealWithCommand.Logic.csproj" />
     </ItemGroup>
 
 </Project>
