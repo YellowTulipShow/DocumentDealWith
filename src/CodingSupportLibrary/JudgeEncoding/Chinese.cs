@@ -18,16 +18,14 @@ namespace CodingSupportLibrary.JudgeEncoding
         /// <inheritdoc/>
         public JudgeEncodingResponse GetEncoding(byte[] buffer)
         {
-            JudgeEncodingResponse response = new JudgeEncodingResponse()
-            {
-                Encoding = JudgeChineseGBK(buffer),
-                ContentBytes = buffer,
-                IsReadFileALLContent = true,
-            };
+            JudgeEncodingResponse response = UseExtend.GetDefaultResponse();
+            response.Encoding = JudgeChineseGBK(buffer);
+            response.ContentBytes = buffer;
+            response.IsReadFileALLContent = true;
             return response;
         }
 
-        private Encoding JudgeChineseGBK(byte[] buffer)
+        private ESupportEncoding? JudgeChineseGBK(byte[] buffer)
         {
             int suspected_ASCII_byte_count = 0;
             int suspected_Chinese_byte_count = 0;
@@ -71,12 +69,12 @@ namespace CodingSupportLibrary.JudgeEncoding
             // 全部字节 都是 ASCII 编码
             if (buffer.Length == suspected_ASCII_byte_count)
             {
-                return Encoding.ASCII;
+                return ESupportEncoding.ASCII;
             }
             // 总字节数 == ASCII + 中文组合数据 即可判断是 GBK 编码格式
             if (buffer.Length == suspected_ASCII_byte_count + suspected_Chinese_byte_count)
             {
-                return Encoding.GetEncoding("GBK");
+                return ESupportEncoding.GBK;
             }
             // 表示无法识别为 GBK 中文编码
             return null;

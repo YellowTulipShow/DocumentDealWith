@@ -31,6 +31,27 @@ namespace CodingSupportLibrary.Test
         [TestMethod]
         public void Test_FindFileEncoding()
         {
+            // 英文
+            string[] text_ens = new string[] {
+                @"<>33,32,2.52.",
+                @"/// sLiellekg <summary>",
+                @"/// lsdijfliajlsdjlfajg",
+                @"* d -f--23+f+ddfjiljsig* OUO8+",
+                @"u3li23k(&@L@)*!??SOF_W@_L@|>:OL~~!``;fdi12+d-3+lsieig"
+            };
+            Encoding[] encodings_en = new Encoding[] {
+                Encoding.UTF32,
+                Encoding.Unicode,
+                Encoding.BigEndianUnicode,
+                Encoding.UTF8,
+                new UTF8Encoding(true),
+                new UTF8Encoding(false),
+                Encoding.GetEncoding("GBK"),
+
+                Encoding.ASCII,
+            };
+            Test_FindFileEncoding(text_ens, encodings_en);
+
             // 中文
             string[] text_zhs = new string[] {
                 @"///撒旦<summary>",
@@ -49,6 +70,7 @@ namespace CodingSupportLibrary.Test
                 Encoding.UTF32,
                 Encoding.Unicode,
                 Encoding.BigEndianUnicode,
+                Encoding.UTF8,
                 new UTF8Encoding(true),
                 new UTF8Encoding(false),
                 Encoding.GetEncoding("GBK"),
@@ -82,11 +104,10 @@ namespace CodingSupportLibrary.Test
             //return;
             // 开始判断内容编码逻辑
             Encoding fileEncoding = codeFile.GetEncoding();
-            if (fileEncoding.Equals(Encoding.ASCII))
-            {
-                fileEncoding = encoding;
-            }
             Assert.IsNotNull(fileEncoding);
+            // 任何编码都支持最基本的ASCII编码, 如果判断文本内容都是单字节ASCII编码, 使用任何编码读取结果都是一样的
+            if (fileEncoding.Equals(Encoding.ASCII))
+                fileEncoding = encoding;
             Assert.AreEqual(encoding.BodyName, fileEncoding.BodyName);
             Assert.AreEqual(encoding.HeaderName, fileEncoding.HeaderName);
             Assert.AreEqual(encoding.WebName, fileEncoding.WebName);
@@ -164,7 +185,6 @@ namespace CodingSupportLibrary.Test
             return str;
         }
 
-
         [TestMethod]
         public void Test_PrintBIN()
         {
@@ -189,6 +209,15 @@ namespace CodingSupportLibrary.Test
 
             log.Info(str.ToString());
             Assert.IsTrue(true);
+        }
+
+        [TestMethod]
+        public void Test_UTF8_UTF8NoBOM_IsEqual()
+        {
+            Encoding utf8 = new UTF8Encoding(true);
+            Encoding utf8NoBOM = new UTF8Encoding(false);
+
+            Assert.AreNotEqual(utf8, utf8NoBOM);
         }
     }
 }

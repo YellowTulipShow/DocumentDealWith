@@ -23,16 +23,14 @@ namespace CodingSupportLibrary.JudgeEncoding
         /// <inheritdoc/>
         public JudgeEncodingResponse GetEncoding(byte[] buffer)
         {
-            JudgeEncodingResponse response = new JudgeEncodingResponse()
-            {
-                Encoding = JudgeASCII(buffer),
-                ContentBytes = buffer,
-                IsReadFileALLContent = true,
-            };
+            JudgeEncodingResponse response = UseExtend.GetDefaultResponse();
+            response.Encoding = JudgeASCII(buffer);
+            response.ContentBytes = buffer;
+            response.IsReadFileALLContent = true;
             return response;
         }
 
-        private Encoding JudgeASCII(byte[] buffer)
+        private ESupportEncoding? JudgeASCII(byte[] buffer)
         {
             int bufferIndex = 0;
             while (bufferIndex < buffer.Length)
@@ -45,7 +43,7 @@ namespace CodingSupportLibrary.JudgeEncoding
                 }
                 bufferIndex++;
             }
-            return Encoding.ASCII;
+            return ESupportEncoding.ASCII;
         }
     }
 }

@@ -18,16 +18,14 @@ namespace CodingSupportLibrary.JudgeEncoding
         /// <inheritdoc/>
         public JudgeEncodingResponse GetEncoding(byte[] buffer)
         {
-            var response = new JudgeEncodingResponse()
-            {
-                IsReadFileALLContent = true,
-                Encoding = JudgeUTF8NoBOM(buffer),
-                ContentBytes = buffer,
-            };
+            JudgeEncodingResponse response = UseExtend.GetDefaultResponse();
+            response.Encoding = JudgeUTF8NoBOM(buffer);
+            response.ContentBytes = buffer;
+            response.IsReadFileALLContent = true;
             return response;
         }
 
-        private Encoding JudgeUTF8NoBOM(byte[] buffer)
+        private ESupportEncoding? JudgeUTF8NoBOM(byte[] buffer)
         {
             const uint rank_item_left = 0b_1000_0000;
             const uint rank_item_right = 0b_1100_0000;
@@ -94,12 +92,12 @@ namespace CodingSupportLibrary.JudgeEncoding
             // 全部字节 都是 ASCII 编码
             if (buffer.Length == suspected_ASCII_byte_count)
             {
-                return Encoding.ASCII;
+                return ESupportEncoding.ASCII;
             }
             // 总字节数 == ASCII单字节数 + UTF8组合字节组数 即可判断是 UTF8 无BOM 编码格式
             if (buffer.Length == suspected_ASCII_byte_count + suspected_UTF8_byte_count)
             {
-                return new UTF8Encoding(false);
+                return ESupportEncoding.UTF8_NoBOM;
             }
             // 表示无法识别为 UTF8 无BOM 编码
             return null;

@@ -5,12 +5,12 @@ namespace CodingSupportLibrary
     /// <summary>
     /// 判断编码响应结果
     /// </summary>
-    internal struct JudgeEncodingResponse
+    public struct JudgeEncodingResponse
     {
         /// <summary>
         /// 判断的文件编码内容
         /// </summary>
-        public Encoding Encoding { get; set; }
+        public ESupportEncoding? Encoding { get; set; }
         /// <summary>
         /// 是否已经读取文件全部字节
         /// </summary>
