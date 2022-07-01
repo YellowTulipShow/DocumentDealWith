@@ -61,15 +61,27 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 }
                 logArgs["response.Encoding"] = response.Encoding.ToString();
                 logArgs["response.IsReadFileALLContent"] = response.IsReadFileALLContent;
+
+                // 拿到文件相关数据
                 Encoding fileEncoding = response.Encoding.ToEncoding();
                 logArgs["fileEncoding"] = fileEncoding.EncodingName;
-                Encoding targetEncoding = target.ToEncoding();
-                logArgs["targetEncoding"] = targetEncoding.EncodingName;
+                // 拿到内容
                 byte[] fileBytes = response.IsReadFileALLContent ?
                     response.ContentBytes :
                     File.ReadAllBytes(file.FullName);
+                // 如果文件内容带有头部信息则删掉
+                if (fileEncoding.Preamble.Length > 0)
+                    fileBytes = fileBytes.Skip(fileEncoding.Preamble.Length).ToArray();
+                // 准备转换目标信息
+                Encoding targetEncoding = target.ToEncoding();
+                logArgs["targetEncoding"] = targetEncoding.EncodingName;
+                // 转换完成写入到文件中
+                List<byte> rlist = new List<byte>();
+                if (targetEncoding.Preamble.Length > 0)
+                    rlist.AddRange(targetEncoding.Preamble.ToArray());
                 byte[] targetBytes = Encoding.Convert(fileEncoding, targetEncoding, fileBytes);
-                File.WriteAllBytes(file.FullName, targetBytes);
+                rlist.AddRange(targetBytes);
+                File.WriteAllBytes(file.FullName, rlist.ToArray());
                 print?.WriteLine($"文件编码转换成功: ");
             }
             catch (Exception ex)

@@ -32,7 +32,7 @@ namespace CodingSupportLibrary.Test
         public void Test_FindFileEncoding()
         {
             // 英文
-            string[] text_ens = new string[] {
+            string[] text_en = new string[] {
                 @"<>33,32,2.52.",
                 @"/// sLiellekg <summary>",
                 @"/// lsdijfliajlsdjlfajg",
@@ -50,10 +50,10 @@ namespace CodingSupportLibrary.Test
 
                 Encoding.ASCII,
             };
-            Test_FindFileEncoding(text_ens, encodings_en);
+            Test_FindFileEncoding(text_en, encodings_en);
 
             // 中文
-            string[] text_zhs = new string[] {
+            string[] text_zh = new string[] {
                 @"///撒旦<summary>",
                 @"JSON在线 | JSON解析格式化—SO JSON在线工具",
                 @"打款给几^@个姐姐*#@(给几个i姐姐给个姐姐格局",
@@ -75,7 +75,7 @@ namespace CodingSupportLibrary.Test
                 new UTF8Encoding(false),
                 Encoding.GetEncoding("GBK"),
             };
-            Test_FindFileEncoding(text_zhs, encodings_zh);
+            Test_FindFileEncoding(text_zh, encodings_zh);
         }
         private void Test_FindFileEncoding(string[] texts, Encoding[] encodings)
         {
