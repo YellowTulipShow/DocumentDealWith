@@ -1,7 +1,7 @@
-﻿using DocumentDealWithCommand.Logic.Models;
-
-using YTS.ConsolePrint;
+﻿using YTS.ConsolePrint;
 using YTS.Log;
+
+using DocumentDealWithCommand.Logic.Models;
 
 namespace DocumentDealWithCommand.Logic.Implementation
 {
@@ -16,8 +16,8 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// <inheritdoc/>
         public int OnExecute(CommandParameters_Rename commandParameters)
         {
-            log.Info($"执行重命名逻辑内容, 参数 - OutputName: {commandParameters.OutputName}");
-            return 0;
+            print.WriteLine("未实现重命名逻辑~~~", EPrintColor.Red);
+            return 2;
         }
     }
 }

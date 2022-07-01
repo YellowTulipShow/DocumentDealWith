@@ -1,7 +1,7 @@
-﻿using DocumentDealWithCommand.Logic.Models;
-
-using YTS.ConsolePrint;
+﻿using YTS.ConsolePrint;
 using YTS.Log;
+
+using DocumentDealWithCommand.Logic.Models;
 
 namespace DocumentDealWithCommand.Logic.Implementation
 {
@@ -16,8 +16,8 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// <inheritdoc/>
         public int OnExecute(CommandParameters_Content_NewLine commandParameters)
         {
-            log.Info($"转换换行符, 参数 - Type: {commandParameters.Type}");
-            return 0;
+            print.WriteLine("未实现更改换行符逻辑~~~", EPrintColor.Red);
+            return 2;
         }
     }
 }

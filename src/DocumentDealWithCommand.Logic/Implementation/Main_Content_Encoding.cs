@@ -7,9 +7,9 @@ using System.Text;
 using YTS.Log;
 using YTS.ConsolePrint;
 
-using DocumentDealWithCommand.Logic.Models;
-
 using CodingSupportLibrary;
+
+using DocumentDealWithCommand.Logic.Models;
 
 namespace DocumentDealWithCommand.Logic.Implementation
 {

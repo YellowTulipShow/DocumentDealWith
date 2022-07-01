@@ -6,13 +6,16 @@
     public enum ENewLineType
     {
         /// <summary>
-        /// Window 默认类型 \r\n
+        /// 换行: \n | 0x0A
         /// </summary>
-        WindowRN,
-
+        LF,
         /// <summary>
-        /// Unix 类型 \n
+        /// 回车: \r | 0x0D
         /// </summary>
-        Unix,
+        CR,
+        /// <summary>
+        /// 回车+换行: \r\n | 0x0D 0x0A
+        /// </summary>
+        CRLF,
     }
 }

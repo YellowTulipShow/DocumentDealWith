@@ -20,7 +20,7 @@
 
         <OutputType>Exe</OutputType>
         <PackAsTool>true</PackAsTool>
-        <ToolCommandName>gits</ToolCommandName>
+        <ToolCommandName>docdw</ToolCommandName>
     </PropertyGroup>
 
   <ItemGroup>

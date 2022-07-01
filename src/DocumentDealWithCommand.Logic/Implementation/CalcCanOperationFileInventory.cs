@@ -8,6 +8,7 @@ using YTS.Log;
 
 using DocumentDealWithCommand.Logic;
 using DocumentDealWithCommand.Logic.Models;
+using CodingSupportLibrary;
 
 namespace DocumentDealWithCommand.Logic.Implementation
 {
@@ -138,7 +139,11 @@ namespace DocumentDealWithCommand.Logic.Implementation
             {
                 return;
             }
-            string[] liens = File.ReadAllLines(fileText.FullName, Encoding.UTF8);
+            Encoding fileEncoding = fileText.GetEncoding();
+            if (fileEncoding == null)
+                throw new FileLoadException("无法识别清单文件的编码类型");
+            string[] liens = File.ReadAllLines(fileText.FullName, fileEncoding);
+            liens = liens.Where(b => !string.IsNullOrEmpty(b)).ToArray();
             Append(liens);
         }
 
