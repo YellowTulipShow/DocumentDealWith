@@ -15,7 +15,7 @@ using DocumentDealWithCommand.Logic.Implementation;
 namespace DocumentDealWithCommand.Logic.Test
 {
     [TestClass]
-    public class TestFileEncodingConvert
+    public class TestMain_Content_Encoding
     {
         private ILog log;
         [TestInitialize]
@@ -119,7 +119,7 @@ namespace DocumentDealWithCommand.Logic.Test
                     logArgs["fileArg.WriteEncoding"] = fileArg.WriteEncoding.ToString();
                     logArgs["fileArg.TargetEncoding"] = fileArg.TargetEncoding.ToString();
                     FileInfo file = new FileInfo(Path.Combine(Environment.CurrentDirectory,
-                        $"./codefiles/TestFileEncodingConvert_{fileArg.WriteEncoding}_TO_{fileArg.TargetEncoding}_{i}.txt"));
+                        $"./codefiles/TestFileEncodingConvert/{fileArg.WriteEncoding}_TO_{fileArg.TargetEncoding}_{i}.txt"));
                     if (!file.Directory.Exists)
                         file.Directory.Create();
                     logArgs["filePath"] = file.FullName;

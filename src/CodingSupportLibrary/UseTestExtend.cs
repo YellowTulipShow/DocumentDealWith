@@ -53,5 +53,24 @@ namespace CodingSupportLibrary
             str.AppendLine(string.Empty);
             return str;
         }
+
+        public static string ReadFileBytesToX2FormatString(this FileInfo file)
+        {
+            byte[] buffer = File.ReadAllBytes(file.FullName);
+            return buffer.ToX2FormatString();
+        }
+        public static string ToX2FormatString(this byte[] buffer)
+        {
+            StringBuilder str = new StringBuilder();
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                byte b = buffer[i];
+                string sign = ".";
+                if (i == buffer.Length - 1)
+                    sign = "";
+                str.Append($"{b:X2}{sign}");
+            }
+            return str.ToString();
+        }
     }
 }

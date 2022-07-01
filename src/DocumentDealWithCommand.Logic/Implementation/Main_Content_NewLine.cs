@@ -29,20 +29,6 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 ConvertFileNewLineSymbol(item, commandParameters.Type, log, print);
             }
             return 0;
-
-
-            byte l = 0x0A;
-            byte r = 0x0D;
-            int d = l + r;
-            int crlf = (int)ENewLineType.CRLF;
-            if (d == crlf)
-            {
-
-            }
-
-
-            print.WriteLine("未实现更改换行符逻辑~~~", EPrintColor.Red);
-            return 2;
         }
 
         /// <summary>
@@ -76,6 +62,13 @@ namespace DocumentDealWithCommand.Logic.Implementation
                     {
                         if (need_install_index != -1)
                         {
+                            for (int targetBytesIndex = targetBytes.Length - 1; targetBytesIndex >= 0; targetBytesIndex--)
+                            {
+                                rlist.Insert(need_install_index, targetBytes[targetBytesIndex]);
+                            }
+                            need_install_index = -1;
+                            index += targetBytes.Length + 1;
+                            continue;
                         }
                         index++;
                         continue;
