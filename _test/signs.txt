@@ -1,4 +1,4 @@
-gbk,
+﻿gbk,
 utf8(有BOM),
 utf8(无BOM)
 utf16(小端),
