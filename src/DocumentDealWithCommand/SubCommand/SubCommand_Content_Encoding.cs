@@ -1,7 +1,5 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.CommandLine;
-using System.CommandLine.Invocation;
 
 using YTS.Log;
 
@@ -35,6 +33,12 @@ namespace DocumentDealWithCommand.SubCommand
         }
 
         /// <inheritdoc/>
+        protected override string[] GetConfigAllowExtensions(Configs config)
+        {
+            return SubCommand_Content.CalcAllowExtensions(config);
+        }
+
+        /// <inheritdoc/>
         public override IEnumerable<IOptionRegistration<CommandParameters_Content_Encoding>> SetOptions()
         {
             yield return new OptionRegistration<ESupportEncoding, CommandParameters_Content_Encoding>
@@ -50,12 +54,6 @@ namespace DocumentDealWithCommand.SubCommand
                 IsRequired = true,
             };
             return option;
-        }
-
-        /// <inheritdoc/>
-        protected override string[] GetConfigAllowExtensions(Configs config)
-        {
-            return SubCommand_Content.CalcAllowExtensions(config);
         }
     }
 }

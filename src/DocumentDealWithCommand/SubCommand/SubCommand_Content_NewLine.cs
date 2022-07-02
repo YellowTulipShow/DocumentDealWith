@@ -1,12 +1,11 @@
-﻿using System;
-using System.CommandLine;
+﻿using System.CommandLine;
 using System.Collections.Generic;
+
+using YTS.Log;
 
 using DocumentDealWithCommand.Logic;
 using DocumentDealWithCommand.Logic.Models;
 using DocumentDealWithCommand.Logic.Implementation;
-
-using YTS.Log;
 
 namespace DocumentDealWithCommand.SubCommand
 {

@@ -2,13 +2,11 @@
 using System.Linq;
 using System.CommandLine;
 
+using YTS.Log;
+
 using DocumentDealWithCommand.Logic;
 using DocumentDealWithCommand.Logic.Models;
 using DocumentDealWithCommand.Logic.Implementation;
-
-using YTS.Log;
-using System.Collections.Generic;
-using System.CommandLine.Invocation;
 
 namespace DocumentDealWithCommand.SubCommand
 {
@@ -18,43 +16,34 @@ namespace DocumentDealWithCommand.SubCommand
     public class SubCommand_Rename : AbsSubCommandImplementationVersion<CommandParameters_Rename>, ISubCommand
     {
         /// <inheritdoc/>
-        public SubCommand_Rename(ILog log, GlobalOptions globalOptions) : base(log, globalOptions)
-        {
-        }
+        public SubCommand_Rename(ILog log, GlobalOptions globalOptions)
+            : base(log, globalOptions) { }
 
         /// <inheritdoc/>
-        public override string CommandNameSign() => "content";
+        public override string CommandNameSign() => "rename";
 
         /// <inheritdoc/>
         public override string CommandDescription() => "内容操作";
 
         /// <inheritdoc/>
-        public override IMain<CommandParameters_Rename> HandlerLogic() => 
-            new Main_Rename(log);
+        public override IMain<CommandParameters_Rename> HandlerLogic()
+        {
+            return new Main_Rename(log);
+        }
 
         /// <inheritdoc/>
-        public override Command GetCommand()
+        protected override string[] GetConfigAllowExtensions(Configs config)
         {
-            Option<string> option_outname = GetOption_OutName();
-            Command cmd = new Command("rename", "重命名文件");
-            cmd.AddOption(option_outname);
-            cmd.SetHandler((context) =>
-            {
-                var logArgs = log.CreateArgDictionary();
-                try
-                {
-                    var commandOptions = ToCommandParameters<CommandParameters_Rename>(context);
-                    commandOptions.NamingRules = context.ParseResult.GetValueForOption(option_outname);
-                    var main = new Main_Rename(log);
-                    context.ExitCode = main.OnExecute(commandOptions);
-                }
-                catch (Exception ex)
-                {
-                    log.Error("重命名文件 - 执行出错", ex, logArgs);
-                    context.ExitCode = 1;
-                }
-            });
-            return cmd;
+            return (config.AllowExtension.Global ?? new string[] { }).Concat(
+                config.AllowExtension.RenameCommand ?? new string[] { }).ToArray();
+        }
+        /// <summary>
+        /// 取公共配置+重命名配置
+        /// </summary>
+        public static string[] CalcAllowExtensions(Configs config)
+        {
+            return (config.AllowExtension.Global ?? new string[] { }).Concat(
+                config.AllowExtension.RenameCommand ?? new string[] { }).ToArray();
         }
 
         private Option<string> GetOption_OutName()
@@ -82,13 +71,6 @@ namespace DocumentDealWithCommand.SubCommand
                 IsRequired = true,
             };
             return option;
-        }
-
-        /// <inheritdoc/>
-        protected override string[] GetConfigAllowExtensions(Configs config)
-        {
-            return (config.AllowExtension.Global ?? new string[] { }).Concat(
-                config.AllowExtension.RenameCommand ?? new string[] { }).ToArray();
         }
     }
 }

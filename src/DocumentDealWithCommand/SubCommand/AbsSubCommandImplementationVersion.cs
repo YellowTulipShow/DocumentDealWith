@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.CommandLine;
 using System.Collections.Generic;
 
@@ -6,8 +7,6 @@ using YTS.Log;
 
 using DocumentDealWithCommand.Logic;
 using DocumentDealWithCommand.Logic.Models;
-using System.CommandLine.Invocation;
-using System.Linq;
 
 namespace DocumentDealWithCommand.SubCommand
 {
