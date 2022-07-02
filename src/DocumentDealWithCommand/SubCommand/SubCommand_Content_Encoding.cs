@@ -1,10 +1,13 @@
-﻿using System;
+﻿using System.Linq;
+using System.Collections.Generic;
 using System.CommandLine;
+using System.CommandLine.Invocation;
 
 using YTS.Log;
 
 using CodingSupportLibrary;
 
+using DocumentDealWithCommand.Logic;
 using DocumentDealWithCommand.Logic.Models;
 using DocumentDealWithCommand.Logic.Implementation;
 
@@ -13,36 +16,14 @@ namespace DocumentDealWithCommand.SubCommand
     /// <summary>
     /// 子命令: 内容 - 编码修改
     /// </summary>
-    public class SubCommand_Content_Encoding : SubCommand_Content, ISubCommand
+    public class SubCommand_Content_Encoding : AbsSubCommandImplementationVersion<CommandParameters_Content_Encoding>, ISubCommand
     {
+        private readonly Option<ESupportEncoding> Option_TargetEncoding;
+
         /// <inheritdoc/>
         public SubCommand_Content_Encoding(ILog log, GlobalOptions globalOptions) : base(log, globalOptions)
         {
-        }
-
-        /// <inheritdoc/>
-        public override Command GetCommand()
-        {
-            Option<ESupportEncoding> option_TargetEncoding = GetOption_TargetEncoding();
-            Command cmd = new Command("encode", "重新配置编码");
-            cmd.AddOption(option_TargetEncoding);
-            cmd.SetHandler((context) =>
-            {
-                var logArgs = log.CreateArgDictionary();
-                try
-                {
-                    var commandOptions = ToCommandParameters<CommandParameters_Content_Encoding>(context);
-                    commandOptions.Target = context.ParseResult.GetValueForOption(option_TargetEncoding);
-                    var main = new Main_Content_Encoding(log, commandOptions.Print);
-                    context.ExitCode = main.OnExecute(commandOptions);
-                }
-                catch (Exception ex)
-                {
-                    log.Error("重新配置编码 - 执行出错", ex, logArgs);
-                    context.ExitCode = 1;
-                }
-            });
-            return cmd;
+            Option_TargetEncoding = GetOption_TargetEncoding();
         }
 
         private Option<ESupportEncoding> GetOption_TargetEncoding()
@@ -55,6 +36,41 @@ namespace DocumentDealWithCommand.SubCommand
                 IsRequired = true,
             };
             return option;
+        }
+
+        /// <inheritdoc/>
+        public override string CommandNameSign() => "encode";
+
+        /// <inheritdoc/>
+        public override string CommandDescription() => "重新配置编码";
+
+        /// <inheritdoc/>
+        public override IEnumerable<ISubCommand> SetSubCommands() => null;
+
+        /// <inheritdoc/>
+        public override IMain<CommandParameters_Content_Encoding> HandlerLogic()
+        {
+            return new Main_Content_Encoding(log);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<Option> SetOptions()
+        {
+            yield return Option_TargetEncoding;
+        }
+
+        /// <inheritdoc/>
+        public override CommandParameters_Content_Encoding FillParam(InvocationContext context, CommandParameters_Content_Encoding param)
+        {
+            param.Target = context.ParseResult.GetValueForOption(Option_TargetEncoding);
+            return param;
+        }
+
+        /// <inheritdoc/>
+        protected override string[] GetConfigAllowExtensions(Configs config)
+        {
+            return (config.AllowExtension.Global ?? new string[] { }).Concat(
+                config.AllowExtension.ContentCommand ?? new string[] { }).ToArray();
         }
     }
 }

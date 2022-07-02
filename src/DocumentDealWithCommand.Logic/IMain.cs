@@ -6,7 +6,7 @@ namespace DocumentDealWithCommand.Logic
     /// <summary>
     /// 接口: 主逻辑执行
     /// </summary>
-    public interface IMain<T> where T : AbsBasicCommandParameters, new()
+    public interface IMain<T> where T : ICommandParameters, new()
     {
         /// <summary>
         /// 执行逻辑

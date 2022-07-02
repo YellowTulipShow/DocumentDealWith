@@ -1,11 +1,13 @@
-﻿using CodingSupportLibrary;
+﻿using System.Collections.Generic;
+
+using CodingSupportLibrary;
 
 namespace DocumentDealWithCommand.Logic.Models
 {
     /// <summary>
     /// 命令参数: 内容操作 - 更改编码
     /// </summary>
-    public class CommandParameters_Content_Encoding : AbsBasicCommandParameters
+    public class CommandParameters_Content_Encoding : BasicCommandParameters
     {
         /// <summary>
         /// 输出名称

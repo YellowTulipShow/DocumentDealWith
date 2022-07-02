@@ -1,4 +1,6 @@
-﻿using YTS.ConsolePrint;
+﻿using System.Text.RegularExpressions;
+
+using YTS.ConsolePrint;
 using YTS.Log;
 
 using DocumentDealWithCommand.Logic.Models;
@@ -11,12 +13,12 @@ namespace DocumentDealWithCommand.Logic.Implementation
     public class Main_Rename : AbsMain, IMain<CommandParameters_Rename>
     {
         /// <inheritdoc/>
-        public Main_Rename(ILog log, IPrintColor print) : base(log, print) { }
+        public Main_Rename(ILog log) : base(log) { }
 
         /// <inheritdoc/>
         public int OnExecute(CommandParameters_Rename commandParameters)
         {
-            print.WriteLine("未实现重命名逻辑~~~", EPrintColor.Red);
+            commandParameters.Print.WriteLine("未实现重命名逻辑~~~", EPrintColor.Red);
             return 2;
         }
     }

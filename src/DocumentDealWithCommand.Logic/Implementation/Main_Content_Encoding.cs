@@ -19,7 +19,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
     public class Main_Content_Encoding : AbsMain, IMain<CommandParameters_Content_Encoding>
     {
         /// <inheritdoc/>
-        public Main_Content_Encoding(ILog log, IPrintColor print) : base(log, print)
+        public Main_Content_Encoding(ILog log) : base(log)
         {
             UseExtend.SupportCodePages();
         }
@@ -30,7 +30,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
             var rinventory = commandParameters.NeedHandleFileInventory;
             foreach (var item in rinventory)
             {
-                ConvertFileEncoding(item, commandParameters.Target, log, print);
+                ConvertFileEncoding(item, commandParameters.Target, log, commandParameters.Print);
             }
             return 0;
         }

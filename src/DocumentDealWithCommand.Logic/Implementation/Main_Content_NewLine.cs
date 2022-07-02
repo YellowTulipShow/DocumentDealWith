@@ -15,10 +15,9 @@ namespace DocumentDealWithCommand.Logic.Implementation
     {
         private const byte LF = (byte)ENewLineType.LF;
         private const byte CR = (byte)ENewLineType.CR;
-        private const int CRLF = (int)ENewLineType.CRLF;
 
         /// <inheritdoc/>
-        public Main_Content_NewLine(ILog log, IPrintColor print) : base(log, print) { }
+        public Main_Content_NewLine(ILog log) : base(log) { }
 
         /// <inheritdoc/>
         public int OnExecute(CommandParameters_Content_NewLine commandParameters)
@@ -26,7 +25,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
             var rinventory = commandParameters.NeedHandleFileInventory;
             foreach (var item in rinventory)
             {
-                ConvertFileNewLineSymbol(item, commandParameters.Type, log, print);
+                ConvertFileNewLineSymbol(item, commandParameters.Type, log);
             }
             return 0;
         }

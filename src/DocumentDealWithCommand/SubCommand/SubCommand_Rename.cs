@@ -7,18 +7,43 @@ using DocumentDealWithCommand.Logic.Models;
 using DocumentDealWithCommand.Logic.Implementation;
 
 using YTS.Log;
+using System.Collections.Generic;
+using System.CommandLine.Invocation;
 
 namespace DocumentDealWithCommand.SubCommand
 {
     /// <summary>
     /// 子命令: 重命名
     /// </summary>
-    public class SubCommand_Rename : AbsSubCommand, ISubCommand
+    public class SubCommand_Rename : AbsSubCommandImplementationVersion<CommandParameters_Rename>, ISubCommand
     {
         /// <inheritdoc/>
         public SubCommand_Rename(ILog log, GlobalOptions globalOptions) : base(log, globalOptions)
         {
         }
+
+        /// <inheritdoc/>
+        public override string CommandNameSign() => "content";
+
+        /// <inheritdoc/>
+        public override string CommandDescription() => "内容操作";
+
+        /// <inheritdoc/>
+        public override IEnumerable<ISubCommand> SetSubCommands()
+        {
+            yield return new SubCommand_Content_Encoding(log, globalOptions);
+            yield return new SubCommand_Content_NewLine(log, globalOptions);
+        }
+
+        /// <inheritdoc/>
+        public override IMain<CommandParameters_Rename> HandlerLogic() => 
+            new Main_Rename(log);
+
+        /// <inheritdoc/>
+        public override IEnumerable<Option> SetOptions() => null;
+
+        /// <inheritdoc/>
+        public override CommandParameters_Rename FillParam(InvocationContext context, CommandParameters_Rename param) => param;
 
         /// <inheritdoc/>
         public override Command GetCommand()
@@ -32,8 +57,8 @@ namespace DocumentDealWithCommand.SubCommand
                 try
                 {
                     var commandOptions = ToCommandParameters<CommandParameters_Rename>(context);
-                    commandOptions.OutputName = context.ParseResult.GetValueForOption(option_outname);
-                    var main = new Main_Rename(log, commandOptions.Print);
+                    commandOptions.NamingRules = context.ParseResult.GetValueForOption(option_outname);
+                    var main = new Main_Rename(log);
                     context.ExitCode = main.OnExecute(commandOptions);
                 }
                 catch (Exception ex)

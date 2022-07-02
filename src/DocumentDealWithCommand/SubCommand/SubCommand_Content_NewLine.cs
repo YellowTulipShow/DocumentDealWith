@@ -6,42 +6,21 @@ using DocumentDealWithCommand.Logic.Models;
 using DocumentDealWithCommand.Logic.Implementation;
 
 using YTS.Log;
+using System.CommandLine.Invocation;
+using System.Collections.Generic;
 
 namespace DocumentDealWithCommand.SubCommand
 {
     /// <summary>
     /// 子命令: 内容 - 换行符
     /// </summary>
-    public class SubCommand_Content_NewLine : SubCommand_Content, ISubCommand
+    public class SubCommand_Content_NewLine : AbsSubCommandImplementationVersion<CommandParameters_Content_NewLine>, ISubCommand
     {
+        private readonly Option<ENewLineType> Option_Type;
         /// <inheritdoc/>
         public SubCommand_Content_NewLine(ILog log, GlobalOptions globalOptions) : base(log, globalOptions)
         {
-        }
-
-        /// <inheritdoc/>
-        public override Command GetCommand()
-        {
-            Option<ENewLineType> option_Type = GetOption_Type();
-            Command cmd = new Command("newline", "重新配置换行符");
-            cmd.AddOption(option_Type);
-            cmd.SetHandler((context) =>
-            {
-                var logArgs = log.CreateArgDictionary();
-                try
-                {
-                    var commandOptions = ToCommandParameters<CommandParameters_Content_NewLine>(context);
-                    commandOptions.Type = context.ParseResult.GetValueForOption(option_Type);
-                    var main = new Main_Content_NewLine(log, commandOptions.Print);
-                    context.ExitCode = main.OnExecute(commandOptions);
-                }
-                catch (Exception ex)
-                {
-                    log.Error("重新配置编码 - 执行出错", ex, logArgs);
-                    context.ExitCode = 1;
-                }
-            });
-            return cmd;
+            Option_Type = GetOption_Type();
         }
 
         private Option<ENewLineType> GetOption_Type()
@@ -54,6 +33,40 @@ namespace DocumentDealWithCommand.SubCommand
                 IsRequired = true,
             };
             return option;
+        }
+
+        /// <inheritdoc/>
+        public override string CommandNameSign() => "newline";
+
+        /// <inheritdoc/>
+        public override string CommandDescription() => "重新配置换行符";
+
+        /// <inheritdoc/>
+        public override IEnumerable<ISubCommand> SetSubCommands() => null;
+
+        /// <inheritdoc/>
+        public override IMain<CommandParameters_Content_NewLine> HandlerLogic()
+        {
+            return new Main_Content_NewLine(log);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<Option> SetOptions()
+        {
+            yield return Option_Type;
+        }
+
+        /// <inheritdoc/>
+        protected override string[] GetConfigAllowExtensions(Configs config)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        public override CommandParameters_Content_NewLine FillParam(InvocationContext context, CommandParameters_Content_NewLine param)
+        {
+            param.Type = context.ParseResult.GetValueForOption(Option_Type);
+            return param;
         }
     }
 }

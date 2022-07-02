@@ -48,7 +48,7 @@ namespace DocumentDealWithCommand.SubCommand
         /// <typeparam name="T">命令配置, 基于全局配置</typeparam>
         /// <param name="context">解析上下文</param>
         /// <returns>命令配置</returns>
-        public virtual T ToCommandParameters<T>(InvocationContext context) where T : AbsBasicCommandParameters, new()
+        public virtual T ToCommandParameters<T>(InvocationContext context) where T : BasicCommandParameters, new()
         {
             var logArgs = log.CreateArgDictionary();
             try

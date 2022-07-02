@@ -18,20 +18,14 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// 日志接口
         /// </summary>
         protected readonly ILog log;
-        /// <summary>
-        /// 打印输出接口
-        /// </summary>
-        protected readonly IPrintColor print;
 
         /// <summary>
         /// 初始化实例执行逻辑
         /// </summary>
         /// <param name="log">日志接口</param>
-        /// <param name="print">打印输出接口</param>
-        public AbsMain(ILog log, IPrintColor print)
+        public AbsMain(ILog log)
         {
             this.log = log;
-            this.print = print;
         }
     }
 }
