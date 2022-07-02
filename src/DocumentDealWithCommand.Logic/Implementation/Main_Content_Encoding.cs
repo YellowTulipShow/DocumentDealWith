@@ -59,9 +59,20 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 logArgs["response.Encoding"] = response.Encoding.ToString();
                 logArgs["response.IsReadFileALLContent"] = response.IsReadFileALLContent;
 
+                // 判断是否无需操作
+                if (response.Encoding.Equals(target))
+                {
+                    print?.WriteLine($"文件编码与目标编码一致! {file.FullName} | [{response.Encoding}] To [{target}]");
+                    return;
+                }
+
                 // 拿到文件相关数据
                 Encoding fileEncoding = response.Encoding.ToEncoding();
                 logArgs["fileEncoding"] = fileEncoding.EncodingName;
+                // 准备转换目标信息
+                Encoding targetEncoding = target.ToEncoding();
+                logArgs["targetEncoding"] = targetEncoding.EncodingName;
+
                 // 拿到内容
                 byte[] fileBytes = response.IsReadFileALLContent ?
                     response.ContentBytes :
@@ -69,9 +80,6 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 // 如果文件内容带有头部信息则删掉
                 if (fileEncoding.Preamble.Length > 0)
                     fileBytes = fileBytes.Skip(fileEncoding.Preamble.Length).ToArray();
-                // 准备转换目标信息
-                Encoding targetEncoding = target.ToEncoding();
-                logArgs["targetEncoding"] = targetEncoding.EncodingName;
                 // 转换完成写入到文件中
                 List<byte> rlist = new List<byte>();
                 if (targetEncoding.Preamble.Length > 0)
@@ -79,7 +87,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 byte[] targetBytes = Encoding.Convert(fileEncoding, targetEncoding, fileBytes);
                 rlist.AddRange(targetBytes);
                 File.WriteAllBytes(file.FullName, rlist.ToArray());
-                print?.WriteLine($"文件编码转换成功! {file.FullName} | {response.Encoding} To {target}");
+                print?.WriteLine($"文件编码转换成功! {file.FullName} | [{response.Encoding}] To [{target}]");
             }
             catch (Exception ex)
             {
