@@ -27,9 +27,6 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// <inheritdoc/>
         public int OnExecute(CommandParameters_Content_Encoding commandParameters)
         {
-            log.Info($"目标编码: {commandParameters.Target}");
-            return 0;
-
             var rinventory = commandParameters.NeedHandleFileInventory;
             foreach (var item in rinventory)
             {
