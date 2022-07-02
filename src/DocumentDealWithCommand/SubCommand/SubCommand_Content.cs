@@ -1,12 +1,9 @@
 ﻿using System.Linq;
-using System.CommandLine;
-
-using DocumentDealWithCommand.Logic.Models;
+using System.Collections.Generic;
 
 using YTS.Log;
-using DocumentDealWithCommand.Logic;
-using System.Collections.Generic;
-using System.CommandLine.Invocation;
+
+using DocumentDealWithCommand.Logic.Models;
 
 namespace DocumentDealWithCommand.SubCommand
 {
@@ -16,9 +13,8 @@ namespace DocumentDealWithCommand.SubCommand
     public class SubCommand_Content : AbsSubCommandImplementationVersion<BasicCommandParameters>, ISubCommand
     {
         /// <inheritdoc/>
-        public SubCommand_Content(ILog log, GlobalOptions globalOptions) : base(log, globalOptions)
-        {
-        }
+        public SubCommand_Content(ILog log, GlobalOptions globalOptions)
+            : base(log, globalOptions) { }
 
         /// <inheritdoc/>
         public override string CommandNameSign() => "content";
@@ -34,19 +30,18 @@ namespace DocumentDealWithCommand.SubCommand
         }
 
         /// <inheritdoc/>
-        public override IMain<BasicCommandParameters> HandlerLogic() => null;
-
-        /// <inheritdoc/>
-        public override IEnumerable<Option> SetOptions() => null;
-
-        /// <inheritdoc/>
         protected override string[] GetConfigAllowExtensions(Configs config)
+        {
+            return CalcAllowExtensions(config);
+        }
+
+        /// <summary>
+        /// 取公共配置+内容配置
+        /// </summary>
+        public static string[] CalcAllowExtensions(Configs config)
         {
             return (config.AllowExtension.Global ?? new string[] { }).Concat(
                 config.AllowExtension.ContentCommand ?? new string[] { }).ToArray();
         }
-
-        /// <inheritdoc/>
-        public override BasicCommandParameters FillParam(InvocationContext context, BasicCommandParameters param) => param;
     }
 }

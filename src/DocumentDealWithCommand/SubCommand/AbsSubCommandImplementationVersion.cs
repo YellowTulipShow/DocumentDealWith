@@ -36,25 +36,17 @@ namespace DocumentDealWithCommand.SubCommand
         /// <summary>
         /// 子命令配置
         /// </summary>
-        public abstract IEnumerable<ISubCommand> SetSubCommands();
+        public virtual IEnumerable<ISubCommand> SetSubCommands() => null;
 
         /// <summary>
         /// 实现命令主函数方法
         /// </summary>
-        public abstract IMain<TParam> HandlerLogic();
+        public virtual IMain<TParam> HandlerLogic() => null;
 
         /// <summary>
         /// 命令各选项配置注册项
         /// </summary>
-        public abstract IEnumerable<Option> SetOptions();
-
-        /// <summary>
-        /// 写入参数内容
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="param">参数主题</param>
-        /// <returns>返回参数</returns>
-        public abstract TParam FillParam(InvocationContext context, TParam param);
+        public virtual IEnumerable<IOptionRegistration<TParam>> SetOptions() => null;
 
         /// <inheritdoc/>
         public override Command GetCommand()
@@ -70,24 +62,36 @@ namespace DocumentDealWithCommand.SubCommand
                     cmd.AddCommand(item.GetCommand());
                 }
             }
-            IEnumerable<Option> options = SetOptions();
-            if (options != null)
-            {
-                foreach (var item in options)
-                {
-                    cmd.AddOption(item);
-                }
-            }
             IMain<TParam> main = HandlerLogic();
             if (main != null)
             {
+                IEnumerable<IOptionRegistration<TParam>> options = SetOptions();
+                if (options != null)
+                {
+                    foreach (var item in options)
+                    {
+                        var option = item.GetOption();
+                        if (item.IsGlobalOption())
+                        {
+                            cmd.AddGlobalOption(option);
+                            continue;
+                        }
+                        cmd.AddOption(item.GetOption());
+                    }
+                }
                 cmd.SetHandler((context) =>
                 {
                     var logArgs = log.CreateArgDictionary();
                     try
                     {
                         var param = base.ToCommandParameters<TParam>(context);
-                        param = FillParam(context, param);
+                        if (options != null)
+                        {
+                            foreach (var item in options)
+                            {
+                                item.FillParam(context, param);
+                            }
+                        }
                         param.WriteLogArgs(logArgs);
                         context.ExitCode = main.OnExecute(param);
                     }

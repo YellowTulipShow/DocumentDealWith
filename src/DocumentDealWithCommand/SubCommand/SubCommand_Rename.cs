@@ -29,21 +29,8 @@ namespace DocumentDealWithCommand.SubCommand
         public override string CommandDescription() => "内容操作";
 
         /// <inheritdoc/>
-        public override IEnumerable<ISubCommand> SetSubCommands()
-        {
-            yield return new SubCommand_Content_Encoding(log, globalOptions);
-            yield return new SubCommand_Content_NewLine(log, globalOptions);
-        }
-
-        /// <inheritdoc/>
         public override IMain<CommandParameters_Rename> HandlerLogic() => 
             new Main_Rename(log);
-
-        /// <inheritdoc/>
-        public override IEnumerable<Option> SetOptions() => null;
-
-        /// <inheritdoc/>
-        public override CommandParameters_Rename FillParam(InvocationContext context, CommandParameters_Rename param) => param;
 
         /// <inheritdoc/>
         public override Command GetCommand()
