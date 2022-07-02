@@ -26,9 +26,6 @@ namespace DocumentDealWithCommand.SubCommand
         public override string CommandDescription() => "重新配置换行符";
 
         /// <inheritdoc/>
-        public override IEnumerable<ISubCommand> SetSubCommands() => null;
-
-        /// <inheritdoc/>
         public override IMain<CommandParameters_Content_NewLine> HandlerLogic()
         {
             return new Main_Content_NewLine(log);

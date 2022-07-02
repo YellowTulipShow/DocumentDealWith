@@ -29,9 +29,6 @@ namespace DocumentDealWithCommand.SubCommand
         public override string CommandDescription() => "重新配置编码";
 
         /// <inheritdoc/>
-        public override IEnumerable<ISubCommand> SetSubCommands() => null;
-
-        /// <inheritdoc/>
         public override IMain<CommandParameters_Content_Encoding> HandlerLogic()
         {
             return new Main_Content_Encoding(log);

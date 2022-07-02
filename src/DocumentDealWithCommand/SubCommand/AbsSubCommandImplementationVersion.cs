@@ -7,6 +7,7 @@ using YTS.Log;
 using DocumentDealWithCommand.Logic;
 using DocumentDealWithCommand.Logic.Models;
 using System.CommandLine.Invocation;
+using System.Linq;
 
 namespace DocumentDealWithCommand.SubCommand
 {
@@ -54,7 +55,7 @@ namespace DocumentDealWithCommand.SubCommand
             string name = CommandNameSign();
             string desc = CommandDescription();
             Command cmd = new Command(name, desc);
-            IEnumerable<ISubCommand> subCommands = SetSubCommands();
+            IEnumerable<ISubCommand> subCommands = SetSubCommands()?.ToArray();
             if (subCommands != null)
             {
                 foreach (var item in subCommands)
@@ -65,7 +66,7 @@ namespace DocumentDealWithCommand.SubCommand
             IMain<TParam> main = HandlerLogic();
             if (main != null)
             {
-                IEnumerable<IOptionRegistration<TParam>> options = SetOptions();
+                IEnumerable<IOptionRegistration<TParam>> options = SetOptions()?.ToArray();
                 if (options != null)
                 {
                     foreach (var item in options)
