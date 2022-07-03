@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.CommandLine;
 
 using YTS.Log;
@@ -7,7 +8,6 @@ using YTS.Log;
 using DocumentDealWithCommand.Logic;
 using DocumentDealWithCommand.Logic.Models;
 using DocumentDealWithCommand.Logic.Implementation;
-using System.Collections.Generic;
 
 namespace DocumentDealWithCommand.SubCommand
 {
@@ -55,6 +55,12 @@ namespace DocumentDealWithCommand.SubCommand
 
             yield return new OptionRegistration<string, CommandParameters_Rename>
                 (GetOption_NamingRules(), (param, value) => param.NamingRules = value);
+            yield return new OptionRegistration<uint, CommandParameters_Rename>
+                (GetOption_StartedOnIndex(), (param, value) => param.StartedOnIndex = value);
+            yield return new OptionRegistration<uint, CommandParameters_Rename>
+                (GetOption_Increment(), (param, value) => param.Increment = value);
+            yield return new OptionRegistration<uint, CommandParameters_Rename>
+                (GetOption_Digit(), (param, value) => param.Digit = value);
             yield return new OptionRegistration<bool, CommandParameters_Rename>
                 (GetOption_IsInsufficientSupplementBit(), (param, value) => param.IsInsufficientSupplementBit = value);
             yield return new OptionRegistration<bool, CommandParameters_Rename>
@@ -91,14 +97,51 @@ namespace DocumentDealWithCommand.SubCommand
             };
             return option;
         }
+        private Option<uint> GetOption_StartedOnIndex()
+        {
+            var option = new Option<uint>(
+                aliases: new string[] { "--StartedOnIndex" },
+                description: "开始于",
+                getDefaultValue: () => 1)
+            {
+                Arity = ArgumentArity.ExactlyOne,
+                IsRequired = true,
+            };
+            return option;
+        }
+        private Option<uint> GetOption_Increment()
+        {
+            var option = new Option<uint>(
+                aliases: new string[] { "--Increment" },
+                description: "增量",
+                getDefaultValue: () => 1)
+            {
+                Arity = ArgumentArity.ExactlyOne,
+                IsRequired = true,
+            };
+            return option;
+        }
+        private Option<uint> GetOption_Digit()
+        {
+            var option = new Option<uint>(
+                aliases: new string[] { "--Digit" },
+                description: "位数",
+                getDefaultValue: () => 1)
+            {
+                Arity = ArgumentArity.ExactlyOne,
+                IsRequired = true,
+            };
+            return option;
+        }
         private Option<bool> GetOption_IsInsufficientSupplementBit()
         {
             var option = new Option<bool>(
                 aliases: new string[] { "--IsInsufficientSupplementBit" },
-                description: "是否不足位补齐")
+                description: "是否不足位补齐",
+                getDefaultValue: () => true)
             {
                 Arity = ArgumentArity.ExactlyOne,
-                IsRequired = true,
+                IsRequired = false,
             };
             return option;
         }
@@ -106,10 +149,11 @@ namespace DocumentDealWithCommand.SubCommand
         {
             var option = new Option<bool>(
                 aliases: new string[] { "--IsUseLetter" },
-                description: "是否使用字母")
+                description: "是否使用字母",
+                getDefaultValue: () => false)
             {
                 Arity = ArgumentArity.ExactlyOne,
-                IsRequired = true,
+                IsRequired = false,
             };
             return option;
         }
@@ -117,10 +161,11 @@ namespace DocumentDealWithCommand.SubCommand
         {
             var option = new Option<ERenameLetterFormat>(
                 aliases: new string[] { "--UseLetterFormat" },
-                description: "使用字母格式")
+                description: "使用字母格式",
+                getDefaultValue: () => ERenameLetterFormat.Lower)
             {
                 Arity = ArgumentArity.ExactlyOne,
-                IsRequired = true,
+                IsRequired = false,
             };
             return option;
         }
@@ -128,10 +173,11 @@ namespace DocumentDealWithCommand.SubCommand
         {
             var option = new Option<bool>(
                 aliases: new string[] { "--IsChangeExtension" },
-                description: "是否更改扩展名")
+                description: "是否更改扩展名",
+                getDefaultValue: () => false)
             {
                 Arity = ArgumentArity.ExactlyOne,
-                IsRequired = true,
+                IsRequired = false,
             };
             return option;
         }
@@ -142,7 +188,7 @@ namespace DocumentDealWithCommand.SubCommand
                 description: "更改扩展名内容")
             {
                 Arity = ArgumentArity.ExactlyOne,
-                IsRequired = true,
+                IsRequired = false,
             };
             return option;
         }
@@ -150,10 +196,11 @@ namespace DocumentDealWithCommand.SubCommand
         {
             var option = new Option<bool>(
                 aliases: new string[] { "--IsAutomaticallyResolveRenameConflicts" },
-                description: "是否自动解决重命名冲突")
+                description: "是否自动解决重命名冲突",
+                getDefaultValue: () => false)
             {
                 Arity = ArgumentArity.ExactlyOne,
-                IsRequired = true,
+                IsRequired = false,
             };
             return option;
         }

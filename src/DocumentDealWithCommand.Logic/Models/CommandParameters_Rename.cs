@@ -20,6 +20,18 @@
         /// 命名规则
         /// </summary>
         public string NamingRules { get; set; }
+        /// <summary>
+        /// 开始于
+        /// </summary>
+        public uint StartedOnIndex { get; set; }
+        /// <summary>
+        ///增量
+        /// </summary>
+        public uint Increment { get; set; }
+        /// <summary>
+        /// 位数
+        /// </summary>
+        public uint Digit { get; set; }
 
         /// <summary>
         /// 是否不足位补齐
