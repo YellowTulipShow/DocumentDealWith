@@ -62,46 +62,54 @@ namespace DocumentDealWithCommand.SubCommand
                     cmd.AddCommand(item.GetCommand());
                 }
             }
-            IMain<TParam> main = HandlerLogic();
-            if (main != null)
+            IEnumerable<IOptionRegistration<TParam>> options = SetOptions()?.ToArray();
+            if (options != null)
             {
-                IEnumerable<IOptionRegistration<TParam>> options = SetOptions()?.ToArray();
-                if (options != null)
+                foreach (var item in options)
                 {
-                    foreach (var item in options)
+                    var option = item.GetOption();
+                    if (item.IsGlobalOption())
                     {
-                        var option = item.GetOption();
-                        if (item.IsGlobalOption())
-                        {
-                            cmd.AddGlobalOption(option);
-                            continue;
-                        }
+                        cmd.AddGlobalOption(option);
+                    }
+                }
+            }
+            IMain<TParam> main = HandlerLogic();
+            if (main == null)
+                return cmd;
+            if (options != null)
+            {
+                foreach (var item in options)
+                {
+                    var option = item.GetOption();
+                    if (!item.IsGlobalOption())
+                    {
                         cmd.AddOption(item.GetOption());
                     }
                 }
-                cmd.SetHandler((context) =>
-                {
-                    var logArgs = log.CreateArgDictionary();
-                    try
-                    {
-                        var param = base.ToCommandParameters<TParam>(context);
-                        if (options != null)
-                        {
-                            foreach (var item in options)
-                            {
-                                item.FillParam(context, param);
-                            }
-                        }
-                        param.WriteLogArgs(logArgs);
-                        context.ExitCode = main.OnExecute(param);
-                    }
-                    catch (Exception ex)
-                    {
-                        log.Error($"{desc} - 执行出错", ex, logArgs);
-                        context.ExitCode = 1;
-                    }
-                });
             }
+            cmd.SetHandler((context) =>
+            {
+                var logArgs = log.CreateArgDictionary();
+                try
+                {
+                    var param = base.ToCommandParameters<TParam>(context);
+                    if (options != null)
+                    {
+                        foreach (var item in options)
+                        {
+                            item.FillParam(context, param);
+                        }
+                    }
+                    param.WriteLogArgs(logArgs);
+                    context.ExitCode = main.OnExecute(param);
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"{desc} - 执行出错", ex, logArgs);
+                    context.ExitCode = 1;
+                }
+            });
             return cmd;
         }
     }

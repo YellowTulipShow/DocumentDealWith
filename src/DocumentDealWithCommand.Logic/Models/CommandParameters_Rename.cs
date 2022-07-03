@@ -71,7 +71,7 @@
     /// <summary>
     /// 命令参数: 重命名 - 添加/删除
     /// </summary>
-    public class CommandParameters_AddOrDelete : AbsCommandParameters_Rename
+    public class CommandParameters_Rename_AddOrDelete : AbsCommandParameters_Rename
     {
         /// <summary>
         /// 文件名前添加
