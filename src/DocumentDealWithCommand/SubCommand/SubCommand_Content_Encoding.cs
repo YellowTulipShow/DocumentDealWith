@@ -41,19 +41,15 @@ namespace DocumentDealWithCommand.SubCommand
         /// <inheritdoc/>
         public override IEnumerable<IOptionRegistration<CommandParameters_Content_Encoding>> SetOptions()
         {
-            yield return new OptionRegistration<ESupportEncoding, CommandParameters_Content_Encoding>
-                (GetOption_TargetEncoding(), (param, value) => param.Target = value);
-        }
-        private Option<ESupportEncoding> GetOption_TargetEncoding()
-        {
-            var option = new Option<ESupportEncoding>(
+            yield return new OptionRegistration<ESupportEncoding, CommandParameters_Content_Encoding>(
+                new Option<ESupportEncoding>(
                 aliases: new string[] { "-t", "--target" },
                 description: "目标编码配置")
-            {
-                Arity = ArgumentArity.ExactlyOne,
-                IsRequired = true,
-            };
-            return option;
+                {
+                    Arity = ArgumentArity.ExactlyOne,
+                    IsRequired = true,
+                },
+                (param, value) => param.Target = value);
         }
     }
 }

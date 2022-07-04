@@ -3,7 +3,7 @@
     /// <summary>
     /// 命令参数: 重命名 - 通用项
     /// </summary>
-    public abstract class AbsCommandParameters_Rename : BasicCommandParameters
+    public abstract class AbsParamRename : BasicCommandParameters
     {
         /// <summary>
         /// 是否预览
@@ -14,7 +14,7 @@
     /// <summary>
     /// 命令参数: 重命名 - 整体
     /// </summary>
-    public class CommandParameters_Rename : AbsCommandParameters_Rename
+    public class ParamRenameWhole : AbsParamRename
     {
         /// <summary>
         /// 命名规则
@@ -44,7 +44,7 @@
         public bool IsUseLetter { get; set; }
 
         /// <summary>
-        /// 使用字母格式
+        /// 使用字母类型格式
         /// </summary>
         public ERenameLetterFormat UseLetterFormat { get; set; }
 
@@ -67,7 +67,7 @@
     /// <summary>
     /// 命令参数: 重命名 - 替换
     /// </summary>
-    public class CommandParameters_Rename_Replace : AbsCommandParameters_Rename
+    public class ParamRenameReplace : AbsParamRename
     {
         /// <summary>
         /// 匹配项, 支持正则表达式
@@ -83,7 +83,7 @@
     /// <summary>
     /// 命令参数: 重命名 - 添加/删除
     /// </summary>
-    public class CommandParameters_Rename_AddOrDelete : AbsCommandParameters_Rename
+    public class ParamRenameAddOrDelete : AbsParamRename
     {
         /// <summary>
         /// 文件名前添加
@@ -98,7 +98,7 @@
         /// <summary>
         /// 是否使用扩展添加
         /// </summary>
-        public string IsUseExtendAdd { get; set; }
+        public bool IsUseExtendAdd { get; set; }
 
         /// <summary>
         /// 从文件名第 `N` 个字符之后开始添加
@@ -118,7 +118,7 @@
         /// <summary>
         /// 是否使用扩展删除
         /// </summary>
-        public string IsUseExtendDelete { get; set; }
+        public bool IsUseExtendDelete { get; set; }
 
         /// <summary>
         /// 从文件名第 `N` 个字符开始删除

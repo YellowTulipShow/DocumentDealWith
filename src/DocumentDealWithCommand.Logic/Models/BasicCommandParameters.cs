@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 
 using YTS.ConsolePrint;
+using System;
+using System.Reflection;
 
 namespace DocumentDealWithCommand.Logic.Models
 {
@@ -40,10 +42,32 @@ namespace DocumentDealWithCommand.Logic.Models
         /// <inheritdoc/>
         public virtual void WriteLogArgs(IDictionary<string, object> logArgs)
         {
-            logArgs["Config"] = JsonConvert.SerializeObject(Config);
-            logArgs["NeedHandleFileInventory.Length"] = NeedHandleFileInventory.Length;
-            logArgs["ConsoleType"] = ConsoleType.ToString();
-            logArgs["Print.GetType().FullName"] = Print.GetType().FullName;
+            //logArgs["Config"] = JsonConvert.SerializeObject(Config);
+            //logArgs["NeedHandleFileInventory.Length"] = NeedHandleFileInventory.Length;
+            //logArgs["ConsoleType"] = ConsoleType.ToString();
+            //logArgs["Print.GetType().FullName"] = Print.GetType().FullName;
+            Type modelType = GetType();
+            foreach (PropertyInfo property in modelType.GetProperties())
+            {
+                string name = property.Name;
+                object value = property.GetValue(this);
+                if (value == null)
+                {
+                    logArgs[$"{name}"] = "<NULL Value>";
+                    continue;
+                }
+                if (property.PropertyType.IsEnum)
+                {
+                    logArgs[$"{name}"] = value.ToString();
+                    continue;
+                }
+                if (property.PropertyType.IsArray)
+                {
+                    logArgs[$"{name}"] = "<IsArray>";
+                    continue;
+                }
+                logArgs[$"{name}.GetType().FullName"] = value.GetType().FullName;
+            }
         }
     }
 }

@@ -58,7 +58,7 @@ namespace DocumentDealWithCommand
                 ISubCommand[] subCommands = new ISubCommand[]
                 {
                     new SubCommand.SubCommand_Content(log, globalOptions),
-                    new SubCommand.SubCommand_Rename(log, globalOptions),
+                    new SubCommand.SubCommand_Rename_Whole(log, globalOptions),
                 };
                 foreach (var sub in subCommands)
                 {

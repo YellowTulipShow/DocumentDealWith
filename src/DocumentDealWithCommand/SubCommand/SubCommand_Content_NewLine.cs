@@ -39,20 +39,15 @@ namespace DocumentDealWithCommand.SubCommand
         /// <inheritdoc/>
         public override IEnumerable<IOptionRegistration<CommandParameters_Content_NewLine>> SetOptions()
         {
-            yield return new OptionRegistration<ENewLineType, CommandParameters_Content_NewLine>
-                (GetOption_Type(), (param, value) => param.Type = value);
-        }
-
-        private Option<ENewLineType> GetOption_Type()
-        {
-            var option = new Option<ENewLineType>(
+            yield return new OptionRegistration<ENewLineType, CommandParameters_Content_NewLine>(
+                new Option<ENewLineType>(
                 aliases: new string[] { "-t", "--type" },
                 description: "目标换行标识")
-            {
-                Arity = ArgumentArity.ExactlyOne,
-                IsRequired = true,
-            };
-            return option;
+                {
+                    Arity = ArgumentArity.ExactlyOne,
+                    IsRequired = true,
+                },
+                (param, value) => param.Type = value);
         }
     }
 }
