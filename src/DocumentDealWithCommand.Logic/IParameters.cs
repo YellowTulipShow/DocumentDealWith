@@ -5,7 +5,7 @@ namespace DocumentDealWithCommand.Logic
     /// <summary>
     /// 接口: 命令参数
     /// </summary>
-    public interface ICommandParameters
+    public interface IParameters
     {
         /// <summary>
         /// 写入日志参数

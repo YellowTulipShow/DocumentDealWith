@@ -10,7 +10,7 @@ namespace DocumentDealWithCommand
     /// <summary>
     /// 接口: 选项注册
     /// </summary>
-    public interface IOptionRegistration<TParam> where TParam : ICommandParameters, new()
+    public interface IOptionRegistration<TParam> where TParam : IParameters, new()
     {
         /// <summary>
         /// 获取选项
@@ -33,7 +33,7 @@ namespace DocumentDealWithCommand
     /// </summary>
     /// <typeparam name="TOptionValue">配置项值类型</typeparam>
     /// <typeparam name="TParam">参数对象</typeparam>
-    public struct OptionRegistration<TOptionValue, TParam> : IOptionRegistration<TParam> where TParam : ICommandParameters, new()
+    public struct OptionRegistration<TOptionValue, TParam> : IOptionRegistration<TParam> where TParam : IParameters, new()
     {
         private readonly Option<TOptionValue> option;
         private readonly bool isGlobal;

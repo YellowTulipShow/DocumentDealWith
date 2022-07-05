@@ -12,7 +12,7 @@ namespace DocumentDealWithCommand.Logic.Models
     /// <summary>
     /// 抽象类: 基础名称传入参数
     /// </summary>
-    public class BasicCommandParameters : ICommandParameters
+    public class BasicCommandParameters : IParameters
     {
         /// <summary>
         /// 实例化参数
@@ -59,6 +59,16 @@ namespace DocumentDealWithCommand.Logic.Models
                 if (property.PropertyType.IsEnum)
                 {
                     logArgs[$"{name}"] = value.ToString();
+                    continue;
+                }
+                if (property.PropertyType.IsValueType)
+                {
+                    logArgs[$"{name}"] = value.ToString();
+                    continue;
+                }
+                if (value is string str)
+                {
+                    logArgs[$"{name}"] = str;
                     continue;
                 }
                 if (property.PropertyType.IsArray)

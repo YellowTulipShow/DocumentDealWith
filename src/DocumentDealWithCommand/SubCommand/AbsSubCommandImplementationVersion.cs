@@ -102,6 +102,7 @@ namespace DocumentDealWithCommand.SubCommand
                         }
                     }
                     param.WriteLogArgs(logArgs);
+                    //log.Info("获取参数", logArgs);
                     context.ExitCode = main.OnExecute(param);
                 }
                 catch (Exception ex)
