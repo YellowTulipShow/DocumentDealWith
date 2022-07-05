@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.CommandLine;
-
-using YTS.Log;
+﻿using System.CommandLine;
 
 namespace CommandParamUse
 {
@@ -10,7 +6,7 @@ namespace CommandParamUse
     /// 接口: 命令
     /// </summary>
     /// <typeparam name="TCmd">命令类型</typeparam>
-    public interface ICommmand<TCmd>
+    public interface ICommand<TCmd>
         where TCmd : Command
     {
         /// <summary>
@@ -29,10 +25,10 @@ namespace CommandParamUse
     /// <summary>
     /// 根命令
     /// </summary>
-    public interface IRootCommand : ICommmand<RootCommand> { }
+    public interface IRootCommand : ICommand<RootCommand> { }
 
     /// <summary>
     /// 子命令
     /// </summary>
-    public interface ISubCommand : ICommmand<Command> { }
+    public interface ISubCommand : ICommand<Command> { }
 }

@@ -2,6 +2,9 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <xmlDoc>true</xmlDoc>
     </PropertyGroup>
 
     <ItemGroup>

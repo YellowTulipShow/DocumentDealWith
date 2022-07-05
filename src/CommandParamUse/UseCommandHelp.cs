@@ -2,16 +2,22 @@
 using System.Collections.Generic;
 using System.CommandLine;
 using System.Linq;
-using System.Text;
 
 using YTS.Log;
 
 namespace CommandParamUse
 {
+    /// <summary>
+    /// 调用命令解析程序实现帮助类
+    /// </summary>
     public class UseCommandHelp
     {
         private readonly ILog log;
 
+        /// <summary>
+        /// 实例化调用命令解析程序实现帮助类
+        /// </summary>
+        /// <param name="log">日志接口</param>
         public UseCommandHelp(ILog log)
         {
             this.log = log;
@@ -23,7 +29,7 @@ namespace CommandParamUse
         /// <param name="args">用户传入的命令行参数</param>
         /// <param name="root">根命令配置项</param>
         /// <returns>执行返回编码</returns>
-        public int OnParser(ILog log, string[] args, IRootCommand root)
+        public int OnParser(string[] args, IRootCommand root)
         {
             var logArgs = log.CreateArgDictionary();
             logArgs["UserInputArgs"] = args;
@@ -71,7 +77,7 @@ namespace CommandParamUse
                 }
                 IExecute exe = content.GetExecute();
                 logArgs["IExecute(exe).Type"] = exe.GetType().Name;
-                IEnumerable<IOption> gOptions = exe.GetGlobalOptions()?.ToArray();
+                IEnumerable<ICommandInput> gOptions = exe.GetGlobalInputs()?.ToArray();
                 if (gOptions != null)
                 {
                     foreach (var item in gOptions)
@@ -80,7 +86,7 @@ namespace CommandParamUse
                         cmd.AddGlobalOption(option);
                     }
                 }
-                IEnumerable<IOption> options = exe.GetOptions()?.ToArray();
+                IEnumerable<ICommandInput> options = exe.GetInputs()?.ToArray();
                 if (options != null)
                 {
                     foreach (var item in options)
