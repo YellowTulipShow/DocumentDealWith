@@ -7,7 +7,7 @@ namespace CommandParamUse
     /// <summary>
     /// 接口: 命令输入
     /// </summary>
-    public interface ICommandInput
+    public interface IInput
     {
         /// <summary>
         /// 获取选项
@@ -19,7 +19,7 @@ namespace CommandParamUse
     /// 接口: 指定参数类型的命令输入
     /// </summary>
     /// <typeparam name="TParam"></typeparam>
-    public interface ICommandInput<TParam> : ICommandInput where TParam : IParameters
+    public interface IInput<TParam> : IInput where TParam : IParameters
     {
         /// <summary>
         /// 是否全局
@@ -37,7 +37,7 @@ namespace CommandParamUse
     /// </summary>
     /// <typeparam name="TOptionValue">配置项值类型</typeparam>
     /// <typeparam name="TParam">参数对象</typeparam>
-    public struct CommandInput<TOptionValue, TParam> : ICommandInput<TParam> where TParam : IParameters
+    public struct Input<TOptionValue, TParam> : IInput<TParam> where TParam : IParameters
     {
         private readonly Option<TOptionValue> option;
         private readonly bool isGlobal;
@@ -49,7 +49,7 @@ namespace CommandParamUse
         /// <param name="option">配置项</param>
         /// <param name="fillParamMethod">填充参数方法</param>
         /// <param name="isGlobal">是否全局</param>
-        public CommandInput(Option<TOptionValue> option, Action<TParam, TOptionValue> fillParamMethod, bool isGlobal = false)
+        public Input(Option<TOptionValue> option, Action<TParam, TOptionValue> fillParamMethod, bool isGlobal = false)
         {
             this.option = option;
             this.fillParamMethod = fillParamMethod;

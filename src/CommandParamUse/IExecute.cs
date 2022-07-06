@@ -11,12 +11,12 @@ namespace CommandParamUse
         /// <summary>
         /// 获取需全局配置的命令行输入项
         /// </summary>
-        IEnumerable<ICommandInput> GetGlobalInputs();
+        IEnumerable<IInput> GetGlobalInputs();
 
         /// <summary>
         /// 获取命令行输入项
         /// </summary>
-        IEnumerable<ICommandInput> GetInputs();
+        IEnumerable<IInput> GetInputs();
 
         /// <summary>
         /// 是否需要执行逻辑
@@ -40,7 +40,7 @@ namespace CommandParamUse
         /// <summary>
         /// 获取命令行输入项
         /// </summary>
-        new IEnumerable<ICommandInput<TParam>> GetInputs();
+        new IEnumerable<IInput<TParam>> GetInputs();
 
         /// <summary>
         /// 获取基础参数

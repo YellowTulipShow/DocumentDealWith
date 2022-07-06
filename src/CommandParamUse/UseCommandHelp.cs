@@ -39,7 +39,7 @@ namespace CommandParamUse
                 RootCommand cmd = root.GetCommand();
                 logArgs["RootCommand.Name"] = cmd.Name;
                 logArgs["RootCommand.Description"] = cmd.Description;
-                ICommandContent content = root.GetContent();
+                IContent content = root.GetContent();
                 logArgs["ICommandContent.Type"] = content.GetType().Name;
                 cmd = ConfigContent(cmd, content);
                 return cmd.Invoke(args);
@@ -51,7 +51,7 @@ namespace CommandParamUse
             }
         }
 
-        private TC ConfigContent<TC>(TC cmd, ICommandContent content) where TC : Command
+        private TC ConfigContent<TC>(TC cmd, IContent content) where TC : Command
         {
             var logArgs = log.CreateArgDictionary();
             logArgs["Command.Name"] = cmd.Name;
@@ -69,7 +69,7 @@ namespace CommandParamUse
                         Command subCmd = sub.GetCommand();
                         logArgs["SubCommand.Name"] = subCmd.Name;
                         logArgs["SubCommand.Description"] = subCmd.Description;
-                        ICommandContent subContent = sub.GetContent();
+                        IContent subContent = sub.GetContent();
                         logArgs["ICommandContent(subContent).Type"] = content.GetType().Name;
                         subCmd = ConfigContent(subCmd, subContent);
                         cmd.AddCommand(subCmd);
@@ -77,7 +77,7 @@ namespace CommandParamUse
                 }
                 IExecute exe = content.GetExecute();
                 logArgs["IExecute(exe).Type"] = exe.GetType().Name;
-                IEnumerable<ICommandInput> gOptions = exe.GetGlobalInputs()?.ToArray();
+                IEnumerable<IInput> gOptions = exe.GetGlobalInputs()?.ToArray();
                 if (gOptions != null)
                 {
                     foreach (var item in gOptions)
@@ -86,7 +86,7 @@ namespace CommandParamUse
                         cmd.AddGlobalOption(option);
                     }
                 }
-                IEnumerable<ICommandInput> options = exe.GetInputs()?.ToArray();
+                IEnumerable<IInput> options = exe.GetInputs()?.ToArray();
                 if (options != null)
                 {
                     foreach (var item in options)

@@ -5,7 +5,7 @@ namespace CommandParamUse
     /// <summary>
     /// 接口: 命令内容
     /// </summary>
-    public interface ICommandContent
+    public interface IContent
     {
         /// <summary>
         /// 获取子命令项

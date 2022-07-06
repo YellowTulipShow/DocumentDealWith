@@ -26,15 +26,15 @@ namespace CommandParamUse
             this.log = log;
         }
 
-        IEnumerable<ICommandInput> IExecute.GetGlobalInputs()
+        IEnumerable<IInput> IExecute.GetGlobalInputs()
         {
-            foreach (var item in GetInputs() ?? new ICommandInput<TParam>[] { })
+            foreach (var item in GetInputs() ?? new IInput<TParam>[] { })
                 if (item.IsGlobal())
                     yield return item;
         }
-        IEnumerable<ICommandInput> IExecute.GetInputs()
+        IEnumerable<IInput> IExecute.GetInputs()
         {
-            foreach (var item in GetInputs() ?? new ICommandInput<TParam>[] { })
+            foreach (var item in GetInputs() ?? new IInput<TParam>[] { })
                 if (!item.IsGlobal())
                     yield return item;
         }
@@ -46,7 +46,7 @@ namespace CommandParamUse
             try
             {
                 TParam param = GetParam();
-                foreach (var item in GetInputs() ?? new ICommandInput<TParam>[] { })
+                foreach (var item in GetInputs() ?? new IInput<TParam>[] { })
                 {
                     item.FillParam(context, param);
                 }
@@ -64,9 +64,12 @@ namespace CommandParamUse
         /// 获取泛型命令输出参数各项
         /// </summary>
         /// <returns></returns>
-        public abstract IEnumerable<ICommandInput<TParam>> GetInputs();
+        public abstract IEnumerable<IInput<TParam>> GetInputs();
+        /// <inheritdoc/>
         public abstract bool IsExecute();
+        /// <inheritdoc/>
         public abstract TParam GetParam();
+        /// <inheritdoc/>
         public abstract int OnExecute(InvocationContext context, TParam param);
     }
 }
