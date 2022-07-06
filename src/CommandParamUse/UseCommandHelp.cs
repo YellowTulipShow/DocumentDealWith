@@ -61,7 +61,7 @@ namespace CommandParamUse
 
                 IExecute exe = root.GetExecute();
                 logArgs["IExecute(exe).Type"] = exe.GetType().Name;
-                IInput[] options_global = exe.GetGlobalInputs()?.ToArray() ?? new IInput[] { };
+                IInputOption[] options_global = exe.GetGlobalInputs()?.ToArray() ?? new IInputOption[] { };
                 foreach (var item in options_global)
                 {
                     Option option = item.GetOption();
@@ -70,7 +70,7 @@ namespace CommandParamUse
 
                 if (exe.IsExecute())
                 {
-                    IInput[] options = exe.GetInputs()?.ToArray() ?? new IInput[] { };
+                    IInputOption[] options = exe.GetInputs()?.ToArray() ?? new IInputOption[] { };
                     foreach (var item in options)
                     {
                         Option option = item.GetOption();

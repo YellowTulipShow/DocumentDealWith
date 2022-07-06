@@ -11,12 +11,12 @@ namespace CommandParamUse
         /// <summary>
         /// 获取需全局配置的命令行输入项
         /// </summary>
-        IEnumerable<IInput> GetGlobalInputs();
+        IEnumerable<IInputOption> GetGlobalInputs();
 
         /// <summary>
         /// 获取命令行输入项
         /// </summary>
-        IEnumerable<IInput> GetInputs();
+        IEnumerable<IInputOption> GetInputs();
 
         /// <summary>
         /// 是否需要执行逻辑
@@ -40,7 +40,19 @@ namespace CommandParamUse
         /// <summary>
         /// 获取命令行输入项
         /// </summary>
-        new IEnumerable<IInput<TParam>> GetInputs();
+        new IEnumerable<IInputOption<TParam>> GetInputs();
+        IEnumerable<IInputOption> IExecute.GetGlobalInputs()
+        {
+            foreach (var item in GetInputs() ?? new IInputOption<TParam>[] { })
+                if (item.IsGlobal())
+                    yield return item;
+        }
+        IEnumerable<IInputOption> IExecute.GetInputs()
+        {
+            foreach (var item in GetInputs() ?? new IInputOption<TParam>[] { })
+                if (!item.IsGlobal())
+                    yield return item;
+        }
 
         /// <summary>
         /// 获取基础参数
@@ -55,5 +67,14 @@ namespace CommandParamUse
         /// <param name="param">泛型参数</param>
         /// <returns>执行命令返回结果数字标识</returns>
         int OnExecute(InvocationContext context, TParam param);
+        int IExecute.OnExecute(InvocationContext context)
+        {
+            TParam param = GetParam();
+            foreach (var item in GetInputs() ?? new IInputOption<TParam>[] { })
+            {
+                item.FillParam(context, param);
+            }
+            return OnExecute(context, param);
+        }
     }
 }
