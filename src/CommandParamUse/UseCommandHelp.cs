@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.CommandLine;
 using System.Linq;
+using System.CommandLine;
 
 using YTS.Log;
 
@@ -36,12 +35,7 @@ namespace CommandParamUse
             logArgs["IRootCommand.Type"] = root.GetType().Name;
             try
             {
-                RootCommand cmd = root.GetCommand();
-                logArgs["RootCommand.Name"] = cmd.Name;
-                logArgs["RootCommand.Description"] = cmd.Description;
-                IContent content = root.GetContent();
-                logArgs["ICommandContent.Type"] = content.GetType().Name;
-                cmd = ConfigContent(cmd, content);
+                RootCommand cmd = ConfigContent(root);
                 return cmd.Invoke(args);
             }
             catch (Exception ex)
@@ -51,52 +45,37 @@ namespace CommandParamUse
             }
         }
 
-        private TC ConfigContent<TC>(TC cmd, IContent content) where TC : Command
+        private TC ConfigContent<TC>(ICommand<TC> root) where TC : Command
         {
             var logArgs = log.CreateArgDictionary();
-            logArgs["Command.Name"] = cmd.Name;
-            logArgs["Command.Description"] = cmd.Description;
-            logArgs["ICommandContent(content).Type"] = content.GetType().Name;
             try
             {
-                IEnumerable<ISubCommand> subCommands = content.GetSubCommands()?.ToArray();
-                if (subCommands != null)
+                TC cmd = root.GetCommand();
+                // 创建子命令对象
+                ISubCommand[] subCommands = root.GetSubCommands()?.ToArray() ?? new ISubCommand[] { };
+                foreach (ISubCommand sub in subCommands)
                 {
-                    // 创建子命令对象
-                    foreach (ISubCommand sub in subCommands)
-                    {
-                        logArgs["ISubCommand.Type"] = sub.GetType().Name;
-                        Command subCmd = sub.GetCommand();
-                        logArgs["SubCommand.Name"] = subCmd.Name;
-                        logArgs["SubCommand.Description"] = subCmd.Description;
-                        IContent subContent = sub.GetContent();
-                        logArgs["ICommandContent(subContent).Type"] = content.GetType().Name;
-                        subCmd = ConfigContent(subCmd, subContent);
-                        cmd.AddCommand(subCmd);
-                    }
+                    Command subCmd = ConfigContent(sub);
+                    cmd.AddCommand(subCmd);
                 }
-                IExecute exe = content.GetExecute();
+
+                IExecute exe = root.GetExecute();
                 logArgs["IExecute(exe).Type"] = exe.GetType().Name;
-                IEnumerable<IInput> gOptions = exe.GetGlobalInputs()?.ToArray();
-                if (gOptions != null)
+                IInput[] options_global = exe.GetGlobalInputs()?.ToArray() ?? new IInput[] { };
+                foreach (var item in options_global)
                 {
-                    foreach (var item in gOptions)
-                    {
-                        var option = item.GetOption();
-                        cmd.AddGlobalOption(option);
-                    }
+                    Option option = item.GetOption();
+                    cmd.AddGlobalOption(option);
                 }
-                IEnumerable<IInput> options = exe.GetInputs()?.ToArray();
-                if (options != null)
-                {
-                    foreach (var item in options)
-                    {
-                        var option = item.GetOption();
-                        cmd.AddOption(item.GetOption());
-                    }
-                }
+
                 if (exe.IsExecute())
                 {
+                    IInput[] options = exe.GetInputs()?.ToArray() ?? new IInput[] { };
+                    foreach (var item in options)
+                    {
+                        Option option = item.GetOption();
+                        cmd.AddGlobalOption(option);
+                    }
                     cmd.SetHandler((context) =>
                     {
                         try

@@ -1,4 +1,5 @@
-﻿using System.CommandLine;
+﻿using System.Collections.Generic;
+using System.CommandLine;
 
 namespace CommandParamUse
 {
@@ -8,10 +9,15 @@ namespace CommandParamUse
     public interface ICommand
     {
         /// <summary>
-        /// 获取命令内容
+        /// 获取执行方法
         /// </summary>
-        /// <returns></returns>
-        IContent GetContent();
+        /// <returns>执行对象</returns>
+        IExecute GetExecute();
+
+        /// <summary>
+        /// 获取子命令项
+        /// </summary>
+        IEnumerable<ISubCommand> GetSubCommands();
     }
 
     /// <summary>
