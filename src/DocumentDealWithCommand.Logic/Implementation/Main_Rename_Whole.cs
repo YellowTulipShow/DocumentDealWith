@@ -73,12 +73,16 @@ namespace DocumentDealWithCommand.Logic.Implementation
             // 判断更改扩展名
             if (param.IsChangeExtension)
                 extension = param.ChangeExtensionValue;
-            // 从0开始序号, 进行加一处理从1开始
-            index += 1;
-            // 乘以增量
-            index *= param.Increment;
-            // 增加起始数量
-            index += param.StartedOnIndex;
+
+            //// 从0开始序号, 进行加一处理从1开始
+            //index += 1;
+            //// 乘以增量
+            //index *= param.Increment;
+            //// 增加起始数量
+            //index += param.StartedOnIndex - 1;
+
+            index = index + param.StartedOnIndex - 1;
+            index = index * param.Increment + 1;
 
             string rule = param.NamingRules;
             // 复制原名
@@ -156,12 +160,70 @@ namespace DocumentDealWithCommand.Logic.Implementation
 
         private int MoveFilePosition(ParamRenameWhole param, IList<Result> rlist)
         {
-            param.Print.WriteLine($"\n请输入表达式, 指定您要移动的项与位置:");
-            param.Print.WriteLine($"[0]: 开始重命名, 无需做额外操作");
+            do
+            {
+                param.Print.WriteLine($"\n请输入表达式, 指定您要移动的项与位置:");
+                param.Print.WriteLine($"说明: 如输入 'quit' 则直接跳过移动操作");
+                param.Print.WriteLine($"示例文件队列如: 1,2,3,4,5,6,7,8,10");
+                param.Print.WriteLine($"表达式: '7>2' 表示将第7位的文件项移动到第2位, 结果如下: 1,7,2,3,4,5,6,8,9,10");
+                param.Print.WriteLine($"表达式: '7..9>2' 移动第7位到第9位文件项到第2位, 结果如下: 1,7,8,9,2,3,4,5,6,10");
+                param.Print.WriteLine($"表达式: '5,7,9>2' , 移动第5,7,9项到第2项, 结果如下: 1,5,7,9,2,3,4,6,8,10");
+                param.Print.Write($"请输入: ");
+                string expression = Console.ReadLine();
+                expression = Regex.Replace(expression, @"([^0-9\.>,]+)", "");
+                Regex targetRegex = new Regex(@"([0-9\.>,]+)>([0-9]+)");
+                Match targetMatch = targetRegex.Match(expression);
+                if (!targetMatch.Success)
+                {
+                    param.Print.WriteLine($"您输入的表达式无法识别: {expression}, 正则: {targetRegex}");
+                    continue;
+                }
+                // 获取目标位置
+                string targetStrValue = targetMatch.Groups[2].Value;
+                if (!uint.TryParse(targetStrValue, out uint targetIndex))
+                {
+                    param.Print.WriteLine($"无法识别目标项标识: {targetStrValue}");
+                    continue;
+                }
+                targetIndex -= 1;
+                string[] itemValues = targetMatch.Groups[1].Value.Split(new char[] { ',' },
+                    StringSplitOptions.RemoveEmptyEntries);
+                HashSet<uint> itemIndexs = new HashSet<uint>();
+                Regex itemValueRegex = new Regex(@"^([0-9]+)\.\.([0-9]+)$");
+                for (int i = 0; i < itemValues.Length; i++)
+                {
+                    string itemValue = itemValues[i];
+                    Match itemValueMatch = itemValueRegex.Match(itemValue);
+                    if (!itemValueMatch.Success)
+                        continue;
+                    if (!uint.TryParse(itemValueMatch.Groups[1].Value, out uint startIndex))
+                        continue;
+                    if (!uint.TryParse(itemValueMatch.Groups[2].Value, out uint endIndex))
+                        continue;
+                    uint min = Math.Min(startIndex, endIndex);
+                    uint max = Math.Max(startIndex, endIndex);
+                    for (uint j = min; j <= max; j++)
+                        itemIndexs.Add(j - 1);
+                }
+                if (itemIndexs.Count() <= 0)
+                {
+                    param.Print.WriteLine($"无法识别来源项标识, 计算结果为空: {targetMatch.Groups[1].Value}");
+                    continue;
+                }
+                param.NeedHandleFileInventory = MoveArray(param.NeedHandleFileInventory, targetIndex, itemIndexs.ToArray());
+                return OnExecute(param);
+            } while (true);
+        }
+
+        private T[] MoveArray<T>(T[] list, uint target_index, uint[] source_index)
+        {
+            return list;
         }
 
         private int DeleteFile(ParamRenameWhole param, IList<Result> rlist)
         {
+            param.Print.WriteLine("未实现操作文件清单删除项操作", EPrintColor.Red);
+            return 2;
         }
     }
 }
