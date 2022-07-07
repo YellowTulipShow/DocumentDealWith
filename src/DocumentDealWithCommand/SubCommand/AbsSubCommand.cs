@@ -71,6 +71,7 @@ namespace DocumentDealWithCommand.SubCommand
                 }
                 m.Print.Write($"当前目录: ");
                 m.Print.WriteLine(rootDire, EPrintColor.Green);
+                m.RootDire = new DirectoryInfo(rootDire);
 
                 string configPath = context.ParseResult.GetValueForOption(globalOptions.Config);
                 configPath = ToAbsPath(configPath, rootDire);

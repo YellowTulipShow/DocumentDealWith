@@ -25,6 +25,11 @@ namespace DocumentDealWithCommand.Logic.Models
         public Configs Config { get; set; }
 
         /// <summary>
+        /// 根目录
+        /// </summary>
+        public DirectoryInfo RootDire { get; set; }
+
+        /// <summary>
         /// 需要处理的文件清单
         /// </summary>
         public FileInfo[] NeedHandleFileInventory { get; set; }

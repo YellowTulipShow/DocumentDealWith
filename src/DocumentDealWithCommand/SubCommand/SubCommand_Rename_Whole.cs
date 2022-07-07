@@ -29,7 +29,7 @@ namespace DocumentDealWithCommand.SubCommand
         /// <inheritdoc/>
         public override IMain<ParamRenameWhole> HandlerLogic()
         {
-            return new Main_Rename(log);
+            return new Main_Rename_Whole(log);
         }
 
         /// <inheritdoc/>

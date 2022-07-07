@@ -21,6 +21,7 @@
         <OutputType>Exe</OutputType>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>docdw</ToolCommandName>
+        <StartupObject>DocumentDealWithCommand.Program</StartupObject>
     </PropertyGroup>
 
   <ItemGroup>
