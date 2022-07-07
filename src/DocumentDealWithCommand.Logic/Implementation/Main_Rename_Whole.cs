@@ -74,20 +74,13 @@ namespace DocumentDealWithCommand.Logic.Implementation
             if (param.IsChangeExtension)
                 extension = param.ChangeExtensionValue;
 
-            //// 从0开始序号, 进行加一处理从1开始
-            //index += 1;
-            //// 乘以增量
-            //index *= param.Increment;
-            //// 增加起始数量
-            //index += param.StartedOnIndex - 1;
-
-            index = index + param.StartedOnIndex - 1;
-            index = index * param.Increment + 1;
+            int number = (int)index;
+            number = number * param.Increment + param.StartedOnIndex;
 
             string rule = param.NamingRules;
             // 复制原名
             rule = rule.Replace("*", fileName);
-            string code = index.ToString();
+            string code = number.ToString();
             // 判断补位
             if (param.IsInsufficientSupplementBit)
             {

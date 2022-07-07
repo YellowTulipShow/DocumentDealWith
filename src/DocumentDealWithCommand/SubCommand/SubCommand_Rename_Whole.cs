@@ -60,8 +60,8 @@ namespace DocumentDealWithCommand.SubCommand
                     IsRequired = true,
                 },
                 (param, value) => param.NamingRules = value);
-            yield return new OptionRegistration<uint, ParamRenameWhole>(
-                new Option<uint>(
+            yield return new OptionRegistration<int, ParamRenameWhole>(
+                new Option<int>(
                 aliases: new string[] { "--start" },
                 description: "开始于",
                 getDefaultValue: () => 1)
@@ -70,8 +70,8 @@ namespace DocumentDealWithCommand.SubCommand
                     IsRequired = false,
                 },
                 (param, value) => param.StartedOnIndex = value);
-            yield return new OptionRegistration<uint, ParamRenameWhole>(
-                new Option<uint>(
+            yield return new OptionRegistration<int, ParamRenameWhole>(
+                new Option<int>(
                 aliases: new string[] { "--increment" },
                 description: "增量",
                 getDefaultValue: () => 1)
