@@ -33,6 +33,11 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 param.Print.WriteLine("命名规则不能为空!", EPrintColor.Red);
                 return 2;
             }
+            if (param.Increment <= 0)
+            {
+                param.Print.WriteLine("增量必须大于0!", EPrintColor.Red);
+                return 2;
+            }
 
             IList<Result> rlist = new List<Result>();
             param.Print.WriteLine($"预览:");
@@ -75,12 +80,15 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 extension = param.ChangeExtensionValue;
 
             int number = (int)index;
-            number = number * param.Increment + param.StartedOnIndex;
+            number = number * (int)param.Increment + (int)param.StartedOnIndex;
 
             string rule = param.NamingRules;
             // 复制原名
             rule = rule.Replace("*", fileName);
+            //
             string code = number.ToString();
+            if (param.IsUseLetter)
+                code = CalcLetterCode(number, param.UseLetterFormat);
             // 判断补位
             if (param.IsInsufficientSupplementBit)
             {
@@ -90,6 +98,36 @@ namespace DocumentDealWithCommand.Logic.Implementation
             rule = rule.Replace("#", code);
             return $"{rule}{extension}";
         }
+        /// <summary>
+        /// 计算字母组合编码结果
+        /// </summary>
+        /// <param name="number">从1开始</param>
+        /// <param name="UseLetterFormat">使用字母编码格式</param>
+        /// <returns>结果</returns>
+        public string CalcLetterCode(int number, ERenameLetterFormat UseLetterFormat)
+        {
+            if (number <= 0)
+                return string.Empty;
+            char[] letters = UseLetterFormat.ToChars();
+            int len = letters.Length;
+            // 倍数
+            int multiple = number / len;
+            // 整数
+            int remainder = number % len;
+            if (remainder == 0)
+            {
+                remainder = len;
+                if (multiple > 0)
+                    multiple--;
+            }
+            remainder--;
+            char letter = letters[remainder];
+            if (multiple == 0)
+                return letter.ToString();
+            string prefix = CalcLetterCode(multiple, UseLetterFormat);
+            return $"{prefix}{letter}";
+        }
+
 
         private string ToShowFileName(FileInfo info, DirectoryInfo rootDire)
         {

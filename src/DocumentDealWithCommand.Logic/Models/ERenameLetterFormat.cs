@@ -5,7 +5,7 @@ using System.Text;
 namespace DocumentDealWithCommand.Logic.Models
 {
     /// <summary>
-    /// 重命名使用组合组合配置
+    /// 枚举: 重命名使用字母组合配置
     /// </summary>
     public enum ERenameLetterFormat
     {

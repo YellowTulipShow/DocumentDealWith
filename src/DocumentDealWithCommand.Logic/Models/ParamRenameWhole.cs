@@ -23,11 +23,11 @@
         /// <summary>
         /// 开始于
         /// </summary>
-        public int StartedOnIndex { get; set; }
+        public uint StartedOnIndex { get; set; }
         /// <summary>
         ///增量
         /// </summary>
-        public int Increment { get; set; }
+        public uint Increment { get; set; }
         /// <summary>
         /// 位数
         /// </summary>
