@@ -279,5 +279,43 @@ namespace DocumentDealWithCommand.Logic.Test
             Assert.AreEqual("test_2png", main.ToNewName("test.jpg", param, 1));
             Assert.AreEqual("test_3png", main.ToNewName("test.jpg", param, 2));
         }
+
+        [TestMethod]
+        public void TestToNewName_AnalysisMoveArrayExpression()
+        {
+            var main = new Main_Rename_Whole(log);
+            Main_Rename_Whole.AnalysisMoveArrayExpressionResult result;
+            void Test(string expression, uint start, params uint[] position)
+            {
+                result = main.AnalysisMoveArrayExpression(expression);
+                Assert.IsTrue(result.IsSuccess);
+                Assert.AreEqual(start, result.TargetIndex);
+                Check(position, result.NeedOperationItemPositionIndex);
+            }
+            Test("7>2", 1, 6);
+            Test("7..9>2", 1, 6, 7, 8);
+            Test("5,7,9>2", 1, 4, 6, 8);
+        }
+        [TestMethod]
+        public void TestToNewName_MoveArray()
+        {
+            var main = new Main_Rename_Whole(log);
+            void Test(string expected, string actual, uint start, params uint[] position)
+            {
+                Check(expected.ToCharArray(), main.MoveArray(actual.ToCharArray(), start, position));
+            }
+            const string str = "123456789";
+            Test("172345689", str, 1, 6);
+            Test("178923456", str, 1, 6, 7, 8);
+            Test("157923468", str, 1, 4, 6, 8);
+        }
+        private void Check<T>(T[] expected, T[] actual)
+        {
+            Assert.AreEqual(expected.Length, actual.Length);
+            for (int i = 0; i < expected.Length; i++)
+            {
+                Assert.AreEqual(expected[i], actual[i]);
+            }
+        }
     }
 }

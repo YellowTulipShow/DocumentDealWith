@@ -200,53 +200,118 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 param.Print.WriteLine($"表达式: '7..9>2' 移动第7位到第9位文件项到第2位, 结果如下: 1,7,8,9,2,3,4,5,6,10");
                 param.Print.WriteLine($"表达式: '5,7,9>2' , 移动第5,7,9项到第2项, 结果如下: 1,5,7,9,2,3,4,6,8,10");
                 param.Print.Write($"请输入: ");
-                string expression = Console.ReadLine();
-                expression = Regex.Replace(expression, @"([^0-9\.>,]+)", "");
-                Regex targetRegex = new Regex(@"([0-9\.>,]+)>([0-9]+)");
-                Match targetMatch = targetRegex.Match(expression);
-                if (!targetMatch.Success)
+                string expression = Console.ReadLine()?.Trim()?.ToLower();
+                if (string.IsNullOrEmpty(expression))
                 {
-                    param.Print.WriteLine($"您输入的表达式无法识别: {expression}, 正则: {targetRegex}");
+                    param.Print.WriteLine("请您输入有效的表达式", EPrintColor.Red);
                     continue;
                 }
-                // 获取目标位置
-                string targetStrValue = targetMatch.Groups[2].Value;
-                if (!uint.TryParse(targetStrValue, out uint targetIndex))
+                if (expression == "quit")
+                    return OnExecute(param);
+                var analysisResult = AnalysisMoveArrayExpression(expression);
+                if (!analysisResult.IsSuccess)
                 {
-                    param.Print.WriteLine($"无法识别目标项标识: {targetStrValue}");
+                    param.Print.WriteLine(analysisResult.ErrorMsg, EPrintColor.Red);
                     continue;
                 }
-                targetIndex -= 1;
-                string[] itemValues = targetMatch.Groups[1].Value.Split(new char[] { ',' },
-                    StringSplitOptions.RemoveEmptyEntries);
-                HashSet<uint> itemIndexs = new HashSet<uint>();
-                Regex itemValueRegex = new Regex(@"^([0-9]+)\.\.([0-9]+)$");
-                for (int i = 0; i < itemValues.Length; i++)
-                {
-                    string itemValue = itemValues[i];
-                    Match itemValueMatch = itemValueRegex.Match(itemValue);
-                    if (!itemValueMatch.Success)
-                        continue;
-                    if (!uint.TryParse(itemValueMatch.Groups[1].Value, out uint startIndex))
-                        continue;
-                    if (!uint.TryParse(itemValueMatch.Groups[2].Value, out uint endIndex))
-                        continue;
-                    uint min = Math.Min(startIndex, endIndex);
-                    uint max = Math.Max(startIndex, endIndex);
-                    for (uint j = min; j <= max; j++)
-                        itemIndexs.Add(j - 1);
-                }
-                if (itemIndexs.Count() <= 0)
-                {
-                    param.Print.WriteLine($"无法识别来源项标识, 计算结果为空: {targetMatch.Groups[1].Value}");
-                    continue;
-                }
-                param.NeedHandleFileInventory = MoveArray(param.NeedHandleFileInventory, targetIndex, itemIndexs.ToArray());
+                param.NeedHandleFileInventory = MoveArray(param.NeedHandleFileInventory, analysisResult.TargetIndex, analysisResult.NeedOperationItemPositionIndex);
                 return OnExecute(param);
             } while (true);
         }
 
-        private T[] MoveArray<T>(T[] list, uint target_index, uint[] source_index)
+        /// <summary>
+        /// 解析移动数组项表达式结果
+        /// </summary>
+        public struct AnalysisMoveArrayExpressionResult
+        {
+            /// <summary>
+            /// 是否成功
+            /// </summary>
+            public bool IsSuccess { get; set; }
+            /// <summary>
+            /// 错误消息
+            /// </summary>
+            public string ErrorMsg { get; set; }
+            /// <summary>
+            /// 移动目标位置, 从0开始
+            /// </summary>
+            public uint TargetIndex { get; set; }
+            /// <summary>
+            /// 操作项位置标识, 从0开始
+            /// </summary>
+            public uint[] NeedOperationItemPositionIndex { get; set; }
+        }
+
+        /// <summary>
+        /// 解析移动数组项表达式, 表达式中数字从1开始
+        /// </summary>
+        /// <param name="expression">表达式</param>
+        /// <returns>解析结果</returns>
+        public AnalysisMoveArrayExpressionResult AnalysisMoveArrayExpression(string expression)
+        {
+            var result = new AnalysisMoveArrayExpressionResult() { IsSuccess = false };
+            expression = Regex.Replace(expression, @"([^0-9\.>,]+)", "");
+            Regex targetRegex = new Regex(@"([0-9\.>,]+)>([0-9]+)");
+            Match targetMatch = targetRegex.Match(expression);
+            if (!targetMatch.Success)
+            {
+                result.ErrorMsg = $"您输入的表达式无法识别: {expression}, 正则: {targetRegex}";
+                return result;
+            }
+            // 获取目标位置
+            string targetStrValue = targetMatch.Groups[2].Value;
+            if (!uint.TryParse(targetStrValue, out uint targetIndex))
+            {
+                result.ErrorMsg = $"无法识别目标项标识: {targetStrValue}";
+                return result;
+            }
+            targetIndex -= 1;
+            string[] itemValues = targetMatch.Groups[1].Value.Split(new char[] { ',' },
+                StringSplitOptions.RemoveEmptyEntries);
+            HashSet<uint> itemIndexs = new HashSet<uint>();
+            Regex itemValueRegex = new Regex(@"^([0-9]+)\.\.([0-9]+)$");
+            for (int i = 0; i < itemValues.Length; i++)
+            {
+                string itemValue = itemValues[i];
+                Match itemValueMatch = itemValueRegex.Match(itemValue);
+                if (!itemValueMatch.Success)
+                {
+                    if (uint.TryParse(itemValue, out uint indexvalue))
+                    {
+                        itemIndexs.Add(indexvalue - 1);
+                    }
+                    continue;
+                }
+
+                if (!uint.TryParse(itemValueMatch.Groups[1].Value, out uint startIndex))
+                    continue;
+                if (!uint.TryParse(itemValueMatch.Groups[2].Value, out uint endIndex))
+                    continue;
+                uint min = Math.Min(startIndex, endIndex);
+                uint max = Math.Max(startIndex, endIndex);
+                for (uint j = min; j <= max; j++)
+                    itemIndexs.Add(j - 1);
+            }
+            if (itemIndexs.Count() <= 0)
+            {
+                result.ErrorMsg = $"无法识别来源项标识, 计算结果为空: {targetMatch.Groups[1].Value}";
+                return result;
+            }
+            result.IsSuccess = true;
+            result.TargetIndex = targetIndex;
+            result.NeedOperationItemPositionIndex = itemIndexs.ToArray();
+            return result;
+        }
+
+        /// <summary>
+        /// 移动数组各项的位置
+        /// </summary>
+        /// <typeparam name="T">数组数据类型</typeparam>
+        /// <param name="list">数组队列</param>
+        /// <param name="target_index">移动到的目标位置</param>
+        /// <param name="source_indexs">需要移动的项位置标识</param>
+        /// <returns></returns>
+        public T[] MoveArray<T>(T[] list, uint target_index, uint[] source_indexs)
         {
             return list;
         }
