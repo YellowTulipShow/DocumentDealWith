@@ -60,7 +60,6 @@ namespace DocumentDealWithCommand.Logic.Test
         {
             var main = new Main_Rename_Whole(log);
             ParamRenameWhole param = GetDefalutParam();
-
             param.NamingRules = "*";
 
             Assert.AreEqual("test.jpg", main.ToNewName("test.jpg", param, 0));
@@ -260,6 +259,25 @@ namespace DocumentDealWithCommand.Logic.Test
             Assert.AreEqual("test_0bf.jpg", main.ToNewName("test.jpg", param, 57));
             Assert.AreEqual("test_0bg.jpg", main.ToNewName("test.jpg", param, 58));
             Assert.AreEqual("test_0bh.jpg", main.ToNewName("test.jpg", param, 59));
+        }
+
+        [TestMethod]
+        public void TestToNewName_ChangeExtension()
+        {
+            var main = new Main_Rename_Whole(log);
+            ParamRenameWhole param = GetDefalutParam();
+            param.NamingRules = "*_#";
+
+            param.IsChangeExtension = true;
+            param.ChangeExtensionValue = ".png";
+            Assert.AreEqual("test_1.png", main.ToNewName("test.jpg", param, 0));
+            Assert.AreEqual("test_2.png", main.ToNewName("test.jpg", param, 1));
+            Assert.AreEqual("test_3.png", main.ToNewName("test.jpg", param, 2));
+
+            param.ChangeExtensionValue = "png";
+            Assert.AreEqual("test_1png", main.ToNewName("test.jpg", param, 0));
+            Assert.AreEqual("test_2png", main.ToNewName("test.jpg", param, 1));
+            Assert.AreEqual("test_3png", main.ToNewName("test.jpg", param, 2));
         }
     }
 }
