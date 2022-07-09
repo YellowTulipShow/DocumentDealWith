@@ -295,19 +295,26 @@ namespace DocumentDealWithCommand.Logic.Test
             Test("7>2", 1, 6);
             Test("7..9>2", 1, 6, 7, 8);
             Test("5,7,9>2", 1, 4, 6, 8);
+            Test("2,6>4", 3, 1, 5);
         }
         [TestMethod]
         public void TestToNewName_MoveArray()
         {
             var main = new Main_Rename_Whole(log);
-            void Test(string expected, string actual, uint start, params uint[] position)
+            void Test(string source, string result, string expression)
             {
-                Check(expected.ToCharArray(), main.MoveArray(actual.ToCharArray(), start, position));
+                var analysisResult = main.AnalysisMoveArrayExpression(expression);
+                Assert.IsTrue(analysisResult.IsSuccess);
+                char[] rlist = main.MoveArray(source.ToCharArray(), analysisResult.TargetIndex, analysisResult.NeedOperationItemPositionIndex);
+                Check(result.ToCharArray(), rlist);
             }
             const string str = "123456789";
-            Test("172345689", str, 1, 6);
-            Test("178923456", str, 1, 6, 7, 8);
-            Test("157923468", str, 1, 4, 6, 8);
+            Test(str, "123456789", "1..9>1");
+            Test(str, "172345689", "7>2");
+            Test(str, "178923456", "7..9>2");
+            Test(str, "157923468", "5,7,9>2");
+            Test(str, "134265789", "2,6>4");
+            Test(str, "135246789", "2,4,6>4");
         }
         private void Check<T>(T[] expected, T[] actual)
         {

@@ -166,11 +166,11 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 }
                 else if ('1' == input)
                 {
-                    return MoveFilePosition(param, rlist);
+                    return MoveFilePosition(param);
                 }
                 else if ('2' == input)
                 {
-                    return MoveFilePosition(param, rlist);
+                    return DeleteFile(param);
                 }
                 else if ('q' == input)
                 {
@@ -185,20 +185,90 @@ namespace DocumentDealWithCommand.Logic.Implementation
 
         private int ChangeFileName(ParamRenameWhole param, IList<Result> rlist)
         {
-            param.Print.WriteLine("未实现更改文件名称逻辑", EPrintColor.Red);
-            return 2;
+            var logArgs = log.CreateArgDictionary();
+            IDictionary<string, Result> temporaryNameDict = new Dictionary<string, Result>();
+            logArgs["执行部分"] = "非临时文件名称替代执行";
+            for (int i = 0; i < rlist.Count; i++)
+            {
+                try
+                {
+                    var m = rlist[i];
+                    logArgs["m.Source.FullName"] = m.Source.FullName;
+                    logArgs["m.NewName"] = m.NewName;
+                    DirectoryInfo dire = m.Source.Directory;
+                    string newFilePath = Path.Combine(dire.FullName, m.NewName);
+                    FileInfo newFile = new FileInfo(newFilePath);
+                    if (newFile.Exists)
+                    {
+                        string temporaryNamePath = CalcTemporaryName(m.Source, i);
+                        temporaryNameDict[temporaryNamePath] = m;
+                        m.Source.MoveTo(temporaryNamePath);
+                        continue;
+                    }
+                    m.Source.MoveTo(newFile.FullName);
+                    param.Print.WriteLine($"重命名: {ToShowFileName(m.Source, param.RootDire)} => {m.NewName}");
+                }
+                catch (Exception ex)
+                {
+                    log.Error("非临时文件名称替代执行", ex, logArgs);
+                    continue;
+                }
+            }
+            logArgs["执行部分"] = "临时文件相关重命名";
+            foreach (string temporaryNamePath in temporaryNameDict.Keys)
+            {
+                try
+                {
+                    var m = temporaryNameDict[temporaryNamePath];
+                    logArgs["m.Source.FullName"] = m.Source.FullName;
+                    logArgs["m.NewName"] = m.NewName;
+                    DirectoryInfo dire = m.Source.Directory;
+                    string newFilePath;
+                    do
+                    {
+                        newFilePath = Path.Combine(dire.FullName, m.NewName);
+                        if (!File.Exists(newFilePath))
+                            break;
+                        m.NewName = Regex.Replace(m.NewName, @"^(.*)\.([a-z0-9])$", @"$1_Repeat.$2");
+                        logArgs["m.NewName"] = m.NewName;
+                    } while (true);
+                    FileInfo newFile = new FileInfo(newFilePath);
+                    File.Move(temporaryNamePath, newFile.FullName);
+                    param.Print.WriteLine($"重命名: {ToShowFileName(m.Source, param.RootDire)} => {m.NewName}");
+                }
+                catch (Exception ex)
+                {
+                    log.Error("临时文件相关重命名", ex, logArgs);
+                    continue;
+                }
+            }
+            return 0;
+        }
+        private string CalcTemporaryName(FileInfo info, int index)
+        {
+            string name = $".t.n.{index}";
+            do
+            {
+                string path = Path.Combine(info.Directory.FullName, $"{name}{info.Extension}");
+                if (!File.Exists(path))
+                {
+                    return path;
+                }
+                name += ".c";
+            } while (true);
         }
 
-        private int MoveFilePosition(ParamRenameWhole param, IList<Result> rlist)
+        private int MoveFilePosition(ParamRenameWhole param)
         {
             do
             {
                 param.Print.WriteLine($"\n请输入表达式, 指定您要移动的项与位置:");
                 param.Print.WriteLine($"说明: 如输入 'quit' 则直接跳过移动操作");
-                param.Print.WriteLine($"示例文件队列如: 1,2,3,4,5,6,7,8,10");
+                param.Print.WriteLine($"示例文件队列如: 1,2,3,4,5,6,7,8,9.10");
                 param.Print.WriteLine($"表达式: '7>2' 表示将第7位的文件项移动到第2位, 结果如下: 1,7,2,3,4,5,6,8,9,10");
                 param.Print.WriteLine($"表达式: '7..9>2' 移动第7位到第9位文件项到第2位, 结果如下: 1,7,8,9,2,3,4,5,6,10");
                 param.Print.WriteLine($"表达式: '5,7,9>2' , 移动第5,7,9项到第2项, 结果如下: 1,5,7,9,2,3,4,6,8,10");
+                param.Print.WriteLine($"表达式: '2,6>4' , 移动第2,6项到第4项, 结果如下: 1,3,4,2,6,5,7,8,9,10");
                 param.Print.Write($"请输入: ");
                 string expression = Console.ReadLine()?.Trim()?.ToLower();
                 if (string.IsNullOrEmpty(expression))
@@ -214,7 +284,8 @@ namespace DocumentDealWithCommand.Logic.Implementation
                     param.Print.WriteLine(analysisResult.ErrorMsg, EPrintColor.Red);
                     continue;
                 }
-                param.NeedHandleFileInventory = MoveArray(param.NeedHandleFileInventory, analysisResult.TargetIndex, analysisResult.NeedOperationItemPositionIndex);
+                param.NeedHandleFileInventory = MoveArray(param.NeedHandleFileInventory,
+                    analysisResult.TargetIndex, analysisResult.NeedOperationItemPositionIndex);
                 return OnExecute(param);
             } while (true);
         }
@@ -308,18 +379,59 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// </summary>
         /// <typeparam name="T">数组数据类型</typeparam>
         /// <param name="list">数组队列</param>
-        /// <param name="target_index">移动到的目标位置</param>
-        /// <param name="source_indexs">需要移动的项位置标识</param>
+        /// <param name="targetIndex">移动到的目标位置</param>
+        /// <param name="positionIndexs">需要移动的项位置标识</param>
         /// <returns></returns>
-        public T[] MoveArray<T>(T[] list, uint target_index, uint[] source_indexs)
+        public T[] MoveArray<T>(T[] list, uint targetIndex, uint[] positionIndexs)
         {
-            return list;
+            positionIndexs = positionIndexs.OrderBy(b => b).ToArray();
+            T[] rlist = new T[list.Length];
+            for (int i = 0; i < positionIndexs.Length; i++)
+            {
+                rlist[targetIndex + i] = list[positionIndexs[i]];
+            }
+            int i_list = 0;
+            int i_rlist = 0;
+            int i_position = 0;
+            while (i_list < list.Length && i_rlist < rlist.Length)
+            {
+                if (targetIndex <= i_rlist && i_rlist <= (targetIndex + positionIndexs.Length - 1))
+                {
+                    i_rlist++;
+                    continue;
+                }
+                if (i_position < positionIndexs.Length && i_list == positionIndexs[i_position])
+                {
+                    i_list++;
+                    i_position++;
+                    continue;
+                }
+                rlist[i_rlist] = list[i_list];
+                i_rlist++;
+                i_list++;
+            }
+            return rlist;
         }
 
-        private int DeleteFile(ParamRenameWhole param, IList<Result> rlist)
+        private int DeleteFile(ParamRenameWhole param)
         {
-            param.Print.WriteLine("未实现操作文件清单删除项操作", EPrintColor.Red);
-            return 2;
+            do
+            {
+                param.Print.WriteLine($"\n请输入您要删除的项位置序号:");
+                param.Print.WriteLine($"如输入 'quit' 则直接跳过删除操作");
+                param.Print.Write($"请输入: ");
+                string input_index = Console.ReadLine()?.Trim()?.ToLower();
+                if (input_index == "quit")
+                    return OnExecute(param);
+                if (string.IsNullOrEmpty(input_index) || !uint.TryParse(input_index, out uint index))
+                {
+                    param.Print.WriteLine($"无法识别您输入的内容: {input_index}");
+                    continue;
+                }
+                var list = new List<FileInfo>(param.NeedHandleFileInventory);
+                list.RemoveAt((int)index);
+                param.NeedHandleFileInventory = list.ToArray();
+            } while (true);
         }
     }
 }
