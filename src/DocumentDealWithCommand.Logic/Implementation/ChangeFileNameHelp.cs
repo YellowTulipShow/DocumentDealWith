@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
-
-using DocumentDealWithCommand.Logic.Models;
 
 using YTS.ConsolePrint;
 using YTS.Log;
+
+using DocumentDealWithCommand.Logic.Models;
 
 namespace DocumentDealWithCommand.Logic.Implementation
 {
@@ -56,8 +55,9 @@ namespace DocumentDealWithCommand.Logic.Implementation
                         m.Source.MoveTo(temporaryNamePath);
                         continue;
                     }
+                    string show_name = m.Source.ToShowFileName(rootDire);
                     m.Source.MoveTo(newFile.FullName);
-                    print.WriteLine($"重命名: {m.Source.ToShowFileName(rootDire)} => {m.Result}");
+                    print.WriteLine($"重命名: {show_name} => {m.Result}");
                 }
                 catch (Exception ex)
                 {
@@ -84,8 +84,9 @@ namespace DocumentDealWithCommand.Logic.Implementation
                         logArgs["m.Result"] = m.Result;
                     } while (true);
                     FileInfo newFile = new FileInfo(newFilePath);
+                    string show_name = m.Source.ToShowFileName(rootDire);
                     File.Move(temporaryNamePath, newFile.FullName);
-                    print.WriteLine($"重命名: {m.Source.ToShowFileName(rootDire)} => {m.Result}");
+                    print.WriteLine($"重命名: {show_name} => {m.Result}");
                 }
                 catch (Exception ex)
                 {

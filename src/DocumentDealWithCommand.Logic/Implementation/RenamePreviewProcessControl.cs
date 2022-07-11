@@ -57,22 +57,23 @@ namespace DocumentDealWithCommand.Logic.Implementation
                     print.WriteLine($"[0]: 开始重命名, 无需做额外操作");
                     print.WriteLine($"[1]: 在队列调整文件的位置");
                     print.WriteLine($"[2]: 在队列中删除目标文件");
-                    print.WriteLine($"[q]: 终止重命名操作");
-                    int input = Console.Read();
-                    print.WriteLine($"您输入的数字: [{input}]");
-                    if ('0' == input)
+                    print.WriteLine($"[quit]: 终止重命名操作");
+                    print.Write($"请输入: ");
+                    string input = Console.ReadLine();
+                    print.WriteLine(input);
+                    if ("0" == input)
                         return rlist;
-                    if ('1' == input)
+                    if ("1" == input)
                     {
                         datas = MoveFilePosition(datas);
                         break;
                     }
-                    if ('2' == input)
+                    if ("2" == input)
                     {
                         datas = DeleteFile(datas);
                         break;
                     }
-                    if ('q' == input)
+                    if ("quit" == input)
                     {
                         print.WriteLine("您选择了终止操作, 已退出操作");
                         return null;
@@ -84,23 +85,24 @@ namespace DocumentDealWithCommand.Logic.Implementation
             } while (true);
         }
 
-
         private IList<FileInfo> MoveFilePosition(IList<FileInfo> datas)
         {
             do
             {
                 print.WriteLine($"\n请输入表达式, 指定您要移动的项与位置:");
                 print.WriteLine($"说明: 如输入 'quit' 则直接跳过移动操作");
-                print.WriteLine($"示例文件队列如: 1,2,3,4,5,6,7,8,9.10");
-                print.WriteLine($"表达式: '7>2' 表示将第7位的文件项移动到第2位, 结果如下: 1,7,2,3,4,5,6,8,9,10");
-                print.WriteLine($"表达式: '7..9>2' 移动第7位到第9位文件项到第2位, 结果如下: 1,7,8,9,2,3,4,5,6,10");
-                print.WriteLine($"表达式: '5,7,9>2' , 移动第5,7,9项到第2项, 结果如下: 1,5,7,9,2,3,4,6,8,10");
-                print.WriteLine($"表达式: '2,6>4' , 移动第2,6项到第4项, 结果如下: 1,3,4,2,6,5,7,8,9,10");
+                
                 print.Write($"请输入: ");
-                string expression = Console.ReadLine()?.Trim()?.ToLower();
+                string expression = Console.ReadLine();
+                expression = expression?.Trim()?.ToLower();
                 if (string.IsNullOrEmpty(expression))
                 {
-                    print.WriteLine("请您输入有效的表达式", EPrintColor.Red);
+                    print.WriteLine("\n请您输入有效的表达式", EPrintColor.Red);
+                    print.WriteLine("示例文件队列如:                                           1,2,3,4,5,6,7,8,9.10");
+                    print.WriteLine("表达式: '7>2'      表示将第7位的文件项移动到第2位  结果如下: 1,7,2,3,4,5,6,8,9,10");
+                    print.WriteLine("表达式: '7..9>2'   移动第7位到第9位文件项到第2位   结果如下: 1,7,8,9,2,3,4,5,6,10");
+                    print.WriteLine("表达式: '5,7,9>2'  移动第5,7,9项到第2项           结果如下: 1,5,7,9,2,3,4,6,8,10");
+                    print.WriteLine("表达式: '2,6>4'    移动第2,6项到第4项             结果如下: 1,3,4,2,6,5,7,8,9,10");
                     continue;
                 }
                 if (expression == "quit")
@@ -112,8 +114,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
                     print.WriteLine(analysisResult.ErrorMsg, EPrintColor.Red);
                     continue;
                 }
-                datas = MoveArray(datas,
-                    analysisResult.TargetIndex, analysisResult.NeedOperationItemPositionIndex);
+                datas = MoveArray(datas, analysisResult.TargetIndex, analysisResult.NeedOperationItemPositionIndex);
                 return datas;
             } while (true);
         }
@@ -239,6 +240,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
 
         private IList<FileInfo> DeleteFile(IList<FileInfo> datas)
         {
+            datas = new List<FileInfo>(datas);
             do
             {
                 print.WriteLine($"\n请输入您要删除的项位置序号:");
