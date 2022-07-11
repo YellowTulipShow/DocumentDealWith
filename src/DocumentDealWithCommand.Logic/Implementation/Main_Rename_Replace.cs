@@ -4,22 +4,22 @@ using YTS.ConsolePrint;
 using YTS.Log;
 
 using DocumentDealWithCommand.Logic.Models;
+using System.IO;
 
 namespace DocumentDealWithCommand.Logic.Implementation
 {
     /// <summary>
     /// 实现命令类: 重命名 - 替换
     /// </summary>
-    public class Main_Rename_Replace : AbsMain, IMain<ParamRenameReplace>
+    public class Main_Rename_Replace : AbsMainReanme<ParamRenameReplace>
     {
         /// <inheritdoc/>
         public Main_Rename_Replace(ILog log) : base(log) { }
 
         /// <inheritdoc/>
-        public int OnExecute(ParamRenameReplace commandParameters)
+        public override string ToResult(FileInfo data, int index)
         {
-            commandParameters.Print.WriteLine("未实现重命名-替换逻辑~~~", EPrintColor.Red);
-            return 2;
+            throw new System.NotImplementedException();
         }
     }
 }

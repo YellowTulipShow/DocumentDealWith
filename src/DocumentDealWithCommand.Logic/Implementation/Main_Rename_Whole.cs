@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 using YTS.ConsolePrint;
@@ -11,22 +9,19 @@ using DocumentDealWithCommand.Logic.Models;
 
 namespace DocumentDealWithCommand.Logic.Implementation
 {
+
     /// <summary>
     /// 实现命令类: 重命名 - 整体部分
     /// </summary>
-    public class Main_Rename_Whole : AbsMain, IMain<ParamRenameWhole>, IHandleRenameData
+    public class Main_Rename_Whole : AbsMainReanme<ParamRenameWhole>
     {
-        private readonly ChangeFileNameHelp changeHelp;
-        private ParamRenameWhole param;
-
         /// <inheritdoc/>
         public Main_Rename_Whole(ILog log) : base(log)
         {
-            changeHelp = new ChangeFileNameHelp(log);
         }
 
         /// <inheritdoc/>
-        public int OnExecute(ParamRenameWhole param)
+        public override int OnExecute(ParamRenameWhole param)
         {
             if (string.IsNullOrEmpty(param.NamingRules))
             {
@@ -38,32 +33,13 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 param.Print.WriteLine("增量必须大于0!", EPrintColor.Red);
                 return 2;
             }
-            this.param = param;
-
-            var hand = (IHandleRenameData)this;
-            IList<HandleRenameResult> rlist;
-            if (param.IsPreview)
-            {
-                var control = new RenamePreviewProcessControl(log, param.Print, hand);
-                rlist = control.OnExecutePreview(param.NeedHandleFileInventory);
-            }
-            else
-            {
-                rlist = hand.ToReanmeResult(param.NeedHandleFileInventory);
-            }
-            return changeHelp.ChangeFileName(param.Print, param.RootDire, rlist);
+            return base.OnExecute(param);
         }
 
         /// <inheritdoc/>
-        public string ToResult(FileInfo data, int index)
+        public override string ToResult(FileInfo data, int index)
         {
             return ToNewName(data.FullName, (uint)index);
-        }
-
-        /// <inheritdoc/>
-        public string ToPrint(FileInfo data)
-        {
-            return data.ToShowFileName(param.RootDire);
         }
 
         /// <summary>
@@ -104,6 +80,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
             rule = rule.Replace("#", code);
             return $"{rule}{extension}";
         }
+
         /// <summary>
         /// 计算字母组合编码结果
         /// </summary>
