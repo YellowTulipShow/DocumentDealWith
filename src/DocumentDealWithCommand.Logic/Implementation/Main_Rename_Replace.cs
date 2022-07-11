@@ -19,7 +19,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// <inheritdoc/>
         public override string ToResult(FileInfo data, int index)
         {
-            throw new System.NotImplementedException();
+            return Regex.Replace(data.Name, param.Pattern, param.Replacement);
         }
     }
 }
