@@ -315,6 +315,8 @@ namespace DocumentDealWithCommand.Logic.Test
             Test(str, "157923468", "5,7,9>2");
             Test(str, "134265789", "2,6>4");
             Test(str, "135246789", "2,4,6>4");
+            Test(str, "135246789", "2,4,6..8>4");
+            Test(str, "124678359", "2,4,6..8>2");
         }
         private void Check<T>(T[] expected, T[] actual)
         {
