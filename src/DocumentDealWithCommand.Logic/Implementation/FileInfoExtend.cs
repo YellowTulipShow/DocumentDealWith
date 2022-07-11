@@ -16,9 +16,18 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// <returns>z展示用的文件路径</returns>
         public static string ToShowFileName(this FileInfo info, DirectoryInfo rootDire = null)
         {
-            string rootDirePath = rootDire?.FullName ?? string.Empty;
-            string name = info.FullName.Replace(rootDirePath, ".");
-            name = name.Replace('\\', '/').Replace(":", "");
+            string rootDirePath = rootDire
+                ?.FullName
+                ?.Trim('\\')
+                ?.Trim('/') ?? string.Empty;
+            string name = info.FullName;
+            if (!string.IsNullOrEmpty(rootDirePath))
+                name = name.Replace(rootDirePath, ".");
+            name = name
+                .Replace('\\', '/')
+                .Replace(":", "")
+                .Trim('\\')
+                .Trim('/');
             if (Regex.IsMatch(name, @"^[a-z]/", RegexOptions.ECMAScript | RegexOptions.IgnoreCase))
                 return $"/{name}";
             return name;

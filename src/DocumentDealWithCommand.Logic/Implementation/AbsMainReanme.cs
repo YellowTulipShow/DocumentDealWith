@@ -28,7 +28,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// <inheritdoc/>
         public virtual int OnExecute(T param)
         {
-            this.param = param;
+            SetParam(param);
             var hand = (IHandleRenameData)this;
             IList<HandleRenameResult> rlist;
             if (param.IsPreview)
@@ -41,6 +41,15 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 rlist = hand.ToReanmeResult(param.NeedHandleFileInventory);
             }
             return changeHelp.ChangeFileName(param.Print, param.RootDire, rlist);
+        }
+
+        /// <summary>
+        /// 赋值参数内容
+        /// </summary>
+        /// <param name="param">参数</param>
+        public void SetParam(T param)
+        {
+            this.param = param;
         }
 
         /// <inheritdoc/>

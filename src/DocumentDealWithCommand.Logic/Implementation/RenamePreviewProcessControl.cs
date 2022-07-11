@@ -206,10 +206,10 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// <param name="targetIndex">移动到的目标位置</param>
         /// <param name="positionIndexs">需要移动的项位置标识</param>
         /// <returns></returns>
-        public IList<FileInfo> MoveArray(IList<FileInfo> list, uint targetIndex, uint[] positionIndexs)
+        public IList<T> MoveArray<T>(IList<T> list, uint targetIndex, uint[] positionIndexs)
         {
             positionIndexs = positionIndexs.OrderBy(b => b).ToArray();
-            IList<FileInfo> rlist = new List<FileInfo>(list.Count);
+            T[] rlist = new T[list.Count];
             for (int i = 0; i < positionIndexs.Length; i++)
             {
                 rlist[(int)targetIndex + i] = list[(int)positionIndexs[i]];
@@ -217,7 +217,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
             int i_list = 0;
             int i_rlist = 0;
             int i_position = 0;
-            while (i_list < list.Count && i_rlist < rlist.Count)
+            while (i_list < list.Count && i_rlist < rlist.Length)
             {
                 if (targetIndex <= i_rlist && i_rlist <= (targetIndex + positionIndexs.Length - 1))
                 {
