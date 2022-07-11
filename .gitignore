@@ -2,3 +2,4 @@
 _release_*/
 _configs/**/*.config
 !_configs/fixed/*.config
+_test/

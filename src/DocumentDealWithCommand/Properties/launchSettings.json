@@ -2,7 +2,7 @@
   "profiles": {
     "DocumentDealWithCommand": {
       "commandName": "Project",
-      "commandLineArgs": "content encode -t UTF8 --root \"D:\\\\Work\\\\YTS.ZRQ\\\\DocumentDealWith\" --path ./"
+      "commandLineArgs": "rename --root \"D:\\\\Work\\\\YTS.ZRQ\\\\DocumentDealWith\\\\_test\\\\rename\" --rule \"test_#\" --path \"./\""
     }
   }
 }
