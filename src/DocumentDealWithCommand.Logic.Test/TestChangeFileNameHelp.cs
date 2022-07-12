@@ -1,17 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using System;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Collections.Generic;
 
 using YTS.Log;
-using YTS.ConsolePrint;
 
-using CodingSupportLibrary;
-
-using DocumentDealWithCommand.Logic.Models;
 using DocumentDealWithCommand.Logic.Implementation;
 
 namespace DocumentDealWithCommand.Logic.Test
@@ -37,6 +29,7 @@ namespace DocumentDealWithCommand.Logic.Test
         public void Test_ChangeFileName()
         {
             var help = new ChangeFileNameHelp(log);
+            Assert.IsTrue(false);
         }
     }
 }

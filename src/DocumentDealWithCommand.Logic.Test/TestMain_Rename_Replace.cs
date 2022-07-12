@@ -52,13 +52,13 @@ namespace DocumentDealWithCommand.Logic.Test
             param.Pattern = @"^test_(\w+)\.(\w+)";
             param.Replacement = "$2_$1_$2.$2";
 
-            Assert.AreEqual("test_a.jpg", main.RegexReplaceFileName("jpg_a_jpg.jpg", param));
-            Assert.AreEqual("test_b.jpg", main.RegexReplaceFileName("jpg_b_jpg.jpg", param));
-            Assert.AreEqual("test_cdd.jpg", main.RegexReplaceFileName("jpg_cdd_jpg.jpg", param));
+            Assert.AreEqual("jpg_a_jpg.jpg", main.RegexReplaceFileName("test_a.jpg", param));
+            Assert.AreEqual("jpg_b_jpg.jpg", main.RegexReplaceFileName("test_b.jpg", param));
+            Assert.AreEqual("jpg_cdd_jpg.jpg", main.RegexReplaceFileName("test_cdd.jpg", param));
 
-            Assert.AreEqual("test_a.png", main.RegexReplaceFileName("png_a_png.png", param));
-            Assert.AreEqual("test_b.png", main.RegexReplaceFileName("png_b_png.png", param));
-            Assert.AreEqual("test_cdd.png", main.RegexReplaceFileName("png_cdd_png.png", param));
+            Assert.AreEqual("png_a_png.png", main.RegexReplaceFileName("test_a.png", param));
+            Assert.AreEqual("png_b_png.png", main.RegexReplaceFileName("test_b.png", param));
+            Assert.AreEqual("png_cdd_png.png", main.RegexReplaceFileName("test_cdd.png", param));
         }
     }
 }

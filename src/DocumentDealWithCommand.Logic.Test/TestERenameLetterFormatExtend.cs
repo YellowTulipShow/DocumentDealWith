@@ -1,17 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using System;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Collections.Generic;
 
 using YTS.Log;
-using YTS.ConsolePrint;
 
-using CodingSupportLibrary;
-
-using DocumentDealWithCommand.Logic.Implementation;
 using DocumentDealWithCommand.Logic.Models;
 
 namespace DocumentDealWithCommand.Logic.Test
