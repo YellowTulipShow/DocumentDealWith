@@ -90,7 +90,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
             {
                 print.WriteLine($"\n请输入表达式, 指定您要移动的项与位置:");
                 print.WriteLine($"说明: 如输入 'quit' 则直接跳过移动操作");
-                
+
                 print.Write($"请输入: ");
                 string expression = Console.ReadLine();
                 expression = expression?.Trim()?.ToLower();
@@ -113,7 +113,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
                     print.WriteLine(analysisResult.ErrorMsg, EPrintColor.Red);
                     continue;
                 }
-                datas = MoveArray(datas, analysisResult.TargetIndex, analysisResult.NeedOperationItemPositionIndex);
+                datas = MoveUserIndexItems(datas, analysisResult);
                 return datas;
             } while (true);
         }
@@ -162,7 +162,6 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 result.ErrorMsg = $"无法识别目标项标识: {targetStrValue}";
                 return result;
             }
-            targetIndex = targetIndex > 0 ? targetIndex - 1 : 0;
             string[] itemValues = targetMatch.Groups[1].Value.Split(new char[] { ',' },
                 StringSplitOptions.RemoveEmptyEntries);
             HashSet<uint> itemIndexs = new HashSet<uint>();
@@ -175,7 +174,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 {
                     if (uint.TryParse(itemValue, out uint indexvalue))
                     {
-                        itemIndexs.Add(indexvalue - 1);
+                        itemIndexs.Add(indexvalue);
                     }
                     continue;
                 }
@@ -187,7 +186,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 uint min = Math.Min(startIndex, endIndex);
                 uint max = Math.Max(startIndex, endIndex);
                 for (uint j = min; j <= max; j++)
-                    itemIndexs.Add(j - 1);
+                    itemIndexs.Add(j);
             }
             if (itemIndexs.Count() <= 0)
             {
@@ -196,47 +195,24 @@ namespace DocumentDealWithCommand.Logic.Implementation
             }
             result.IsSuccess = true;
             result.TargetIndex = targetIndex;
-            result.NeedOperationItemPositionIndex = itemIndexs.ToArray();
+            result.NeedOperationItemPositionIndex = itemIndexs
+                .OrderBy(b => b)
+                .ToArray();
             return result;
         }
+
         /// <summary>
-        /// 移动数组各项的位置
+        /// 移动用户指定标识项
         /// </summary>
-        /// <param name="list">数组队列</param>
-        /// <param name="targetIndex">移动到的目标位置</param>
-        /// <param name="positionIndexs">需要移动的项位置标识</param>
-        /// <returns></returns>
-        public IList<T> MoveArray<T>(IList<T> list, uint targetIndex, uint[] positionIndexs)
+        /// <typeparam name="T">数据队列数据类型</typeparam>
+        /// <param name="list">数据队列</param>
+        /// <param name="r">解析用户指定标识结果</param>
+        /// <returns>移动结果项</returns>
+        public IList<T> MoveUserIndexItems<T>(IList<T> list, AnalysisMoveArrayExpressionResult r)
         {
-            positionIndexs = positionIndexs.OrderBy(b => b).ToArray();
-            T[] rlist = new T[list.Count];
-            targetIndex = Math.Max(0, targetIndex);
-            targetIndex = Math.Min(targetIndex, (uint)list.Count - (uint)positionIndexs.Length);
-            for (int i = 0; i < positionIndexs.Length; i++)
-            {
-                rlist[(int)targetIndex + i] = list[(int)positionIndexs[i]];
-            }
-            int i_list = 0;
-            int i_rlist = 0;
-            int i_position = 0;
-            while (i_list < list.Count && i_rlist < rlist.Length)
-            {
-                if (targetIndex <= i_rlist && i_rlist <= (targetIndex + positionIndexs.Length - 1))
-                {
-                    i_rlist++;
-                    continue;
-                }
-                if (i_position < positionIndexs.Length && i_list == positionIndexs[i_position])
-                {
-                    i_list++;
-                    i_position++;
-                    continue;
-                }
-                rlist[i_rlist] = list[i_list];
-                i_rlist++;
-                i_list++;
-            }
-            return rlist;
+            r.TargetIndex = ArrayDataExtend.UserInputToProgramTargetIndex(r.TargetIndex, list.Count());
+            r.NeedOperationItemPositionIndex = ArrayDataExtend.UserInputToProgramTargetIndexs(r.NeedOperationItemPositionIndex, list.Count());
+            return list.MoveArray(r.TargetIndex, r.NeedOperationItemPositionIndex);
         }
 
         private IList<FileInfo> DeleteFile(IList<FileInfo> datas)
@@ -256,23 +232,21 @@ namespace DocumentDealWithCommand.Logic.Implementation
                     print.WriteLine($"无法识别您输入的内容: {input_index}");
                     continue;
                 }
-                datas = DeleteListExecute(datas, index);
+                datas = RemoveUserIndexItem(datas, index);
             } while (true);
         }
 
         /// <summary>
-        /// 删除文件项执行
+        /// 用户指定删除目标项
         /// </summary>
-        /// <param name="datas">文件队列</param>
-        /// <param name="index">选项位置标识, 从1开始</param>
-        /// <returns>返回值</returns>
-        public IList<T> DeleteListExecute<T>(IList<T> datas, uint index)
+        /// <param name="datas">数据列表</param>
+        /// <param name="index">用户输入目标位置标识(从1开始)</param>
+        /// <returns>返回删除后的列表</returns>
+        public IList<T> RemoveUserIndexItem<T>(IList<T> datas, uint index)
         {
             if (datas.IsReadOnly)
                 datas = new List<T>(datas);
-            index = index > 0 ? index - 1 : 0;
-            index = Math.Max(0, index);
-            index = Math.Min(index, (uint)datas.Count - 1);
+            index = ArrayDataExtend.UserInputToProgramTargetIndex(index, datas.Count);
             datas.RemoveAt((int)index);
             return datas;
         }

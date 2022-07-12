@@ -47,12 +47,13 @@ namespace DocumentDealWithCommand.Logic.Test
                 Assert.AreEqual(starts, result.TargetIndex);
                 Check(position, result.NeedOperationItemPositionIndex);
             }
-            Test("7>2", 1, "6");
-            Test("7..9>2", 1, "6,7,8");
-            Test("5,7,9>2", 1, "4,6,8");
-            Test("2,6>4", 3, "1,5");
-            Test("2,4,6..8>0", 0, "1,3,5,6,7");
-            Test("2,4,6..8>99", 98, "1,3,5,6,7");
+            Test("7>2", 2, "7");
+            Test("7..9>2", 2, "7,8,9");
+            Test("5,7,9>2", 2, "5,7,9");
+            Test("2,6>4", 4, "2,6");
+            Test("2,4,6..8>0", 0, "2,4,6,7,8");
+            Test("2,4,6..8>99", 99, "2,4,6,7,8");
+            Test("6..8,2,4>4", 4, "2,4,6,7,8");
         }
 
         [TestMethod]
@@ -61,9 +62,10 @@ namespace DocumentDealWithCommand.Logic.Test
             var main = new RenamePreviewProcessControl(log, null, null);
             void Test(string source, string result, string expression)
             {
+                char[] srouceArray = source.ToCharArray();
                 var analysisResult = main.AnalysisMoveArrayExpression(expression);
                 Assert.IsTrue(analysisResult.IsSuccess);
-                char[] rlist = main.MoveArray(source.ToCharArray(), analysisResult.TargetIndex, analysisResult.NeedOperationItemPositionIndex).ToArray();
+                char[] rlist = main.MoveUserIndexItems(srouceArray, analysisResult).ToArray();
                 Check(result.ToCharArray(), rlist);
             }
             const string str = "123456789";
@@ -97,12 +99,12 @@ namespace DocumentDealWithCommand.Logic.Test
         }
 
         [TestMethod]
-        public void Test_DeleteListExecute()
+        public void Test_RemoveUserIndexItem()
         {
             var main = new RenamePreviewProcessControl(log, null, null);
             void Test(string source, string result, uint index)
             {
-                char[] rlist = main.DeleteListExecute(source.ToCharArray(), index).ToArray();
+                char[] rlist = main.RemoveUserIndexItem(source.ToCharArray(), index).ToArray();
                 Check(result.ToCharArray(), rlist);
             }
             const string str = "123456789";
