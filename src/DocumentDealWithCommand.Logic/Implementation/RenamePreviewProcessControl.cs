@@ -241,13 +241,13 @@ namespace DocumentDealWithCommand.Logic.Implementation
 
         private IList<FileInfo> DeleteFile(IList<FileInfo> datas)
         {
-            datas = new List<FileInfo>(datas);
             do
             {
                 print.WriteLine($"\n请输入您要删除的项位置序号:");
                 print.WriteLine($"如输入 'quit' 则直接跳过删除操作");
                 print.Write($"请输入: ");
-                string input_index = Console.ReadLine()?.Trim()?.ToLower();
+                string input_index = Console.ReadLine();
+                input_index = input_index?.Trim()?.ToLower();
                 if (input_index == "quit")
                     return datas;
 
@@ -256,9 +256,26 @@ namespace DocumentDealWithCommand.Logic.Implementation
                     print.WriteLine($"无法识别您输入的内容: {input_index}");
                     continue;
                 }
-                datas.RemoveAt((int)index);
+                datas = DeleteListExecute(datas, index);
                 return datas;
             } while (true);
+        }
+
+        /// <summary>
+        /// 删除文件项执行
+        /// </summary>
+        /// <param name="datas">文件队列</param>
+        /// <param name="index">选项位置标识, 从1开始</param>
+        /// <returns>返回值</returns>
+        public IList<T> DeleteListExecute<T>(IList<T> datas, uint index)
+        {
+            if (datas.IsReadOnly)
+                datas = new List<T>(datas);
+            index = index > 0 ? index - 1 : 0;
+            index = Math.Max(0, index);
+            index = Math.Min(index, (uint)datas.Count - 1);
+            datas.RemoveAt((int)index);
+            return datas;
         }
     }
 }

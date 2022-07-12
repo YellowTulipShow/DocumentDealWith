@@ -2,7 +2,7 @@
   "profiles": {
     "DocumentDealWithCommand": {
       "commandName": "Project",
-      "commandLineArgs": "rename --root \"D:\\\\Work\\\\YTS.ZRQ\\\\DocumentDealWith\\\\_test\\\\rename\" --rule \"test_#\" --path \"./\""
+      "commandLineArgs": "rename --rule \"test_#\" --path \"D:\\\\Work\\\\YTS.ZRQ\\\\DocumentDealWith\\\\_test\\\\rename\""
     }
   }
 }
