@@ -289,17 +289,27 @@ namespace DocumentDealWithCommand.Logic.Test
         {
             var main = new RenamePreviewProcessControl(log, null, null);
             RenamePreviewProcessControl.AnalysisMoveArrayExpressionResult result;
-            void Test(string expression, uint starts, params uint[] position)
+            void Test(string expression, uint starts, string position_str)
             {
+                uint[] position = position_str
+                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(b =>
+                    {
+                        uint.TryParse(b, out uint v);
+                        return v;
+                    })
+                    .ToArray();
                 result = main.AnalysisMoveArrayExpression(expression);
                 Assert.IsTrue(result.IsSuccess);
                 Assert.AreEqual(starts, result.TargetIndex);
                 Check(position, result.NeedOperationItemPositionIndex);
             }
-            Test("7>2", 1, 6);
-            Test("7..9>2", 1, 6, 7, 8);
-            Test("5,7,9>2", 1, 4, 6, 8);
-            Test("2,6>4", 3, 1, 5);
+            Test("7>2", 1, "6");
+            Test("7..9>2", 1, "6,7,8");
+            Test("5,7,9>2", 1, "4,6,8");
+            Test("2,6>4", 3, "1,5");
+            Test("2,4,6..8>0", 0, "1,3,5,6,7");
+            Test("2,4,6..8>99", 98, "1,3,5,6,7");
         }
         [TestMethod]
         public void TestToNewName_MoveArray()
@@ -321,6 +331,16 @@ namespace DocumentDealWithCommand.Logic.Test
             Test(str, "135246789", "2,4,6>4");
             Test(str, "135246789", "2,4,6..8>4");
             Test(str, "124678359", "2,4,6..8>2");
+            Test(str, "135924678", "2,4,6..8>9");
+            Test(str, "135924678", "2,4,6..8>8");
+            Test(str, "135924678", "2,4,6..8>7");
+            Test(str, "135924678", "2,4,6..8>6");
+            Test(str, "135924678", "2,4,6..8>5");
+            Test(str, "135246789", "2,4,6..8>4");
+            Test(str, "132467859", "2,4,6..8>3");
+            Test(str, "124678359", "2,4,6..8>2");
+            Test(str, "246781359", "2,4,6..8>1");
+            Test(str, "246781359", "2,4,6..8>0");
         }
         private void Check<T>(T[] expected, T[] actual)
         {

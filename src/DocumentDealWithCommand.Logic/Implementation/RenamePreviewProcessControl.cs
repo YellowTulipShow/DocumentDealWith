@@ -60,9 +60,15 @@ namespace DocumentDealWithCommand.Logic.Implementation
                     print.WriteLine($"[quit]: 终止重命名操作");
                     print.Write($"请输入: ");
                     string input = Console.ReadLine();
-                    print.WriteLine(input);
+                    input = input?.Trim()?.ToLower();
+                    if ("quit" == input)
+                    {
+                        print.WriteLine("您选择了终止操作, 已退出操作");
+                        return null;
+                    }
                     if ("0" == input)
                         return rlist;
+
                     if ("1" == input)
                     {
                         datas = MoveFilePosition(datas);
@@ -73,14 +79,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
                         datas = DeleteFile(datas);
                         break;
                     }
-                    if ("quit" == input)
-                    {
-                        print.WriteLine("您选择了终止操作, 已退出操作");
-                        return null;
-                    }
-                    char.TryParse(input.ToString(), out char c);
-                    print.Write("未识别到您的输入内容: ");
-                    print.WriteLine(c.ToString(), EPrintColor.Red);
+                    print.Write($"未识别到您的输入内容! {input}", EPrintColor.Red);
                 } while (true);
             } while (true);
         }
@@ -163,7 +162,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 result.ErrorMsg = $"无法识别目标项标识: {targetStrValue}";
                 return result;
             }
-            targetIndex -= 1;
+            targetIndex = targetIndex > 0 ? targetIndex - 1 : 0;
             string[] itemValues = targetMatch.Groups[1].Value.Split(new char[] { ',' },
                 StringSplitOptions.RemoveEmptyEntries);
             HashSet<uint> itemIndexs = new HashSet<uint>();
@@ -211,6 +210,8 @@ namespace DocumentDealWithCommand.Logic.Implementation
         {
             positionIndexs = positionIndexs.OrderBy(b => b).ToArray();
             T[] rlist = new T[list.Count];
+            targetIndex = Math.Max(0, targetIndex);
+            targetIndex = Math.Min(targetIndex, (uint)list.Count - (uint)positionIndexs.Length);
             for (int i = 0; i < positionIndexs.Length; i++)
             {
                 rlist[(int)targetIndex + i] = list[(int)positionIndexs[i]];

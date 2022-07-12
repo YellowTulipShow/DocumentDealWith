@@ -40,6 +40,11 @@ namespace DocumentDealWithCommand.Logic.Implementation
             {
                 rlist = hand.ToReanmeResult(param.NeedHandleFileInventory);
             }
+            if (rlist == null || rlist.Count <= 0)
+            {
+                param.Print.WriteLine($"可操作文件列表为空, 已终止!");
+                return 0;
+            }
             return changeHelp.ChangeFileName(param.Print, param.RootDire, rlist);
         }
 

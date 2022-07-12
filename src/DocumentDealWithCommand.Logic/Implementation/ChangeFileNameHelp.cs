@@ -37,7 +37,8 @@ namespace DocumentDealWithCommand.Logic.Implementation
         {
             var logArgs = log.CreateArgDictionary();
             IDictionary<string, HandleRenameResult> temporaryNameDict = new Dictionary<string, HandleRenameResult>();
-            logArgs["执行部分"] = "非临时文件名称替代执行";
+            const string logArgsNameExecuteRegion = "执行部分";
+            logArgs[logArgsNameExecuteRegion] = "非临时文件相关重命名";
             for (int i = 0; i < rlist.Count; i++)
             {
                 try
@@ -46,26 +47,28 @@ namespace DocumentDealWithCommand.Logic.Implementation
                     logArgs["m.Source.FullName"] = m.Source.FullName;
                     logArgs["m.Result"] = m.Result;
                     DirectoryInfo dire = m.Source.Directory;
-                    string newFilePath = Path.Combine(dire.FullName, m.Result);
-                    FileInfo newFile = new FileInfo(newFilePath);
-                    if (newFile.Exists)
+                    string targetFilePath = Path.Combine(dire.FullName, m.Result);
+                    FileInfo targetFile;
+                    if (File.Exists(targetFilePath))
                     {
-                        string temporaryNamePath = CalcTemporaryName(m.Source, i);
-                        temporaryNameDict[temporaryNamePath] = m;
-                        m.Source.MoveTo(temporaryNamePath);
-                        continue;
+                        FileInfo temporaryFile = CalcTemporaryName(m.Source, i);
+                        string temporaryFilePath = temporaryFile.FullName;
+                        temporaryNameDict[temporaryFilePath] = m;
+                        targetFile = temporaryFile;
                     }
-                    string show_name = m.Source.ToShowFileName(rootDire);
-                    m.Source.MoveTo(newFile.FullName);
-                    print.WriteLine($"重命名: {show_name} => {m.Result}");
+                    else
+                    {
+                        targetFile = new FileInfo(targetFilePath);
+                    }
+                    Move(print, m.Source, targetFile, rootDire);
                 }
                 catch (Exception ex)
                 {
-                    log.Error("非临时文件名称替代执行", ex, logArgs);
+                    log.Error($"{logArgs[logArgsNameExecuteRegion]}执行出错", ex, logArgs);
                     continue;
                 }
             }
-            logArgs["执行部分"] = "临时文件相关重命名";
+            logArgs[logArgsNameExecuteRegion] = "临时文件相关重命名";
             foreach (string temporaryNamePath in temporaryNameDict.Keys)
             {
                 try
@@ -83,20 +86,19 @@ namespace DocumentDealWithCommand.Logic.Implementation
                         m.Result = Regex.Replace(m.Result, @"^(.*)\.([a-z0-9])$", @"$1_Repeat.$2");
                         logArgs["m.Result"] = m.Result;
                     } while (true);
+                    FileInfo temporaryFile = new FileInfo(temporaryNamePath);
                     FileInfo newFile = new FileInfo(newFilePath);
-                    string show_name = m.Source.ToShowFileName(rootDire);
-                    File.Move(temporaryNamePath, newFile.FullName);
-                    print.WriteLine($"重命名: {show_name} => {m.Result}");
+                    Move(print, temporaryFile, newFile, rootDire);
                 }
                 catch (Exception ex)
                 {
-                    log.Error("临时文件相关重命名", ex, logArgs);
+                    log.Error($"{logArgs[logArgsNameExecuteRegion]}执行出错", ex, logArgs);
                     continue;
                 }
             }
             return 0;
         }
-        private string CalcTemporaryName(FileInfo info, int index)
+        private FileInfo CalcTemporaryName(FileInfo info, int index)
         {
             string name = $".t.n.{index}";
             do
@@ -104,10 +106,16 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 string path = Path.Combine(info.Directory.FullName, $"{name}{info.Extension}");
                 if (!File.Exists(path))
                 {
-                    return path;
+                    return new FileInfo(path);
                 }
                 name += ".c";
             } while (true);
+        }
+        private void Move(IPrintColor print, FileInfo sourceFile, FileInfo targetFile, DirectoryInfo rootDire)
+        {
+            string show_name = sourceFile.ToShowFileName(rootDire);
+            sourceFile.MoveTo(targetFile.FullName);
+            print.WriteLine($"重命名: {show_name} => {targetFile.Name}");
         }
     }
 }

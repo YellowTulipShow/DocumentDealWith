@@ -2,7 +2,7 @@
 Set-Location $PSScriptRoot
 Set-Location ..
 
-dotnet run --project .\src\DocumentDealWithCommand\ -- rename --root "D:\\Work\\YTS.ZRQ\\DocumentDealWith\\_test\\rename" --rule "test_#" --path "./"
+dotnet run --project .\src\DocumentDealWithCommand\ -- rename --rule "test_#" --path "D:\\Work\\YTS.ZRQ\\DocumentDealWith\\_test\\rename"
 
 Set-Location $ExecutePath
 if ($PSScriptRoot -eq $ExecutePath) {
