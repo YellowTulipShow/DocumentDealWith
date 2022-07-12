@@ -12,24 +12,26 @@ namespace DocumentDealWithCommand.Logic.Implementation
     /// </summary>
     public class Main_Rename_AddOrDelete : AbsMainReanme<ParamRenameAddOrDelete>
     {
-        private readonly Regex nameRegex;
         /// <inheritdoc/>
-        public Main_Rename_AddOrDelete(ILog log) : base(log)
-        {
-            nameRegex = new Regex(@"^(.*)\.([a-z0-9])$",
-                RegexOptions.IgnoreCase | RegexOptions.ECMAScript);
-        }
+        public Main_Rename_AddOrDelete(ILog log) : base(log) { }
 
         /// <inheritdoc/>
         public override string ToResult(FileInfo data, int index)
         {
-            var logArgs = log.CreateArgDictionary();
-            logArgs["nameRegex"] = nameRegex.ToString();
-            logArgs["filePath"] = data.FullName;
-            logArgs["index"] = index;
+            MFileName mfile = FileInfoExtend.ToMFileName(data.Name);
+            return ARFileName(mfile, param);
+        }
 
-            string name = data.Name.Replace(data.Extension, string.Empty);
-            string extension = data.Extension;
+        /// <summary>
+        /// 增加删除文件名称各部分内容
+        /// </summary>
+        /// <param name="mfile">文件名称信息</param>
+        /// <param name="param">替换参数</param>
+        /// <returns>新名称</returns>
+        public string ARFileName(MFileName mfile, ParamRenameAddOrDelete param)
+        {
+            string name = mfile.Name;
+            string extension = mfile.Extension;
 
             if (!string.IsNullOrEmpty(param.BeforeAdd))
             {

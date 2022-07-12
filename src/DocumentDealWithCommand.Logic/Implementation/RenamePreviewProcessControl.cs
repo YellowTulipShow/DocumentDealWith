@@ -257,7 +257,6 @@ namespace DocumentDealWithCommand.Logic.Implementation
                     continue;
                 }
                 datas = DeleteListExecute(datas, index);
-                return datas;
             } while (true);
         }
 

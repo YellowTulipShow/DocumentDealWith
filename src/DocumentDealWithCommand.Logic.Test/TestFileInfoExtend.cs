@@ -1,15 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-using System;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Collections.Generic;
 
 using YTS.Log;
-using YTS.ConsolePrint;
-
-using CodingSupportLibrary;
 
 using DocumentDealWithCommand.Logic.Implementation;
 using DocumentDealWithCommand.Logic.Models;
@@ -41,10 +34,54 @@ namespace DocumentDealWithCommand.Logic.Test
             string filePath = @"D:\Work\YTS.ZRQ\DocumentDealWith\_test\rename\code.txt";
             FileInfo fi = new FileInfo(filePath);
             Assert.AreEqual(@"/D/Work/YTS.ZRQ/DocumentDealWith/_test/rename/code.txt", fi.ToShowFileName());
-            Assert.AreEqual(@"./rename/code.txt", fi.ToShowFileName(dire));
+            Assert.AreEqual(@"~/rename/code.txt", fi.ToShowFileName(dire));
             direPath = @"D:\Work\YTS.ZRQ\DocumentDealWith\_test\rename";
             dire = new DirectoryInfo(direPath);
-            Assert.AreEqual(@"./code.txt", fi.ToShowFileName(dire));
+            Assert.AreEqual(@"~/code.txt", fi.ToShowFileName(dire));
+        }
+
+        [TestMethod]
+        public void Test_ToMFileName()
+        {
+            void Test(string filePath, string expected_name, string expected_extension)
+            {
+                MFileName m = FileInfoExtend.ToMFileName(filePath);
+                Assert.AreEqual(expected_name, m.Name);
+                Assert.AreEqual(expected_extension, m.Extension);
+            }
+
+            Test(@"", "", "");
+            Test(@".", "", ".");
+            Test(@"txt", "txt", "");
+            Test(@".txt", "", ".txt");
+            Test(@"t.xt", "t", ".xt");
+            Test(@"tx.t", "tx", ".t");
+            Test(@"txt.", "txt", "");
+            Test(@".t.x.t.", ".t.x.t", ".");
+            Test(@".t.x.t.tt", ".t.x.t", "tt");
+            Test(@"code.txt", "code", ".txt");
+
+            Test(@".\code.txt", "code", ".txt");
+            Test(@"~\DD\code.txt", "code", ".txt");
+            Test(@"\code.txt", "code", ".txt");
+            Test(@"D\code.txt", "code", ".txt");
+            Test(@"D\code.txt", "code", ".txt");
+            Test(@"D:\code.txt", "code", ".txt");
+            Test(@"D:\rename\code.txt", "code", ".txt");
+            Test(@"D:\Work\YTS.ZRQ\DocumentDealWith\_test\rename\code.txt", "code", ".txt");
+
+            Test(@"./code.txt", "code", ".txt");
+            Test(@"~/DD/code.txt", "code", ".txt");
+            Test(@"/code.txt", "code", ".txt");
+            Test(@"D/code.txt", "code", ".txt");
+            Test(@"/D/code.txt", "code", ".txt");
+            Test(@"/D/code.txt", "code", ".txt");
+            Test(@"/D/code.txt", "code", ".txt");
+            Test(@"/D/rename/code.txt", "code", ".txt");
+            Test(@"/D/Work/YTS.ZRQ/DocumentDealWith/_test/rename/code.txt", "code", ".txt");
+            Test(@"/D:/code.txt", "code", ".txt");
+            Test(@"/D:/rename/code.txt", "code", ".txt");
+            Test(@"/D:/Work/YTS.ZRQ/DocumentDealWith/_test/rename/code.txt", "code", ".txt");
         }
     }
 }

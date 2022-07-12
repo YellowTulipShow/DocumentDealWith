@@ -1,15 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using System;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Collections.Generic;
 
 using YTS.Log;
 using YTS.ConsolePrint;
-
-using CodingSupportLibrary;
 
 using DocumentDealWithCommand.Logic.Implementation;
 using DocumentDealWithCommand.Logic.Models;
@@ -66,6 +61,13 @@ namespace DocumentDealWithCommand.Logic.Test
             Assert.AreEqual("test.jpg", main.ToNewName("test.jpg", 0));
             Assert.AreEqual("test.jpg", main.ToNewName("test.jpg", 1));
             Assert.AreEqual("test.jpg", main.ToNewName("test.jpg", 2));
+
+            Assert.AreEqual("test.jpg", main.ToNewName("\\test.jpg", 2));
+            Assert.AreEqual("test.jpg", main.ToNewName("D:\\test.jpg", 2));
+            Assert.AreEqual("test.jpg", main.ToNewName("D:\\File\\test.jpg", 2));
+            Assert.AreEqual("test.jpg", main.ToNewName("/test.jpg", 2));
+            Assert.AreEqual("test.jpg", main.ToNewName("/file/test.jpg", 2));
+            Assert.AreEqual("test.jpg", main.ToNewName("/var/File/test.jpg", 2));
 
             param.NamingRules = "*_#";
 

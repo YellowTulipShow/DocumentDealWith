@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 
 using YTS.ConsolePrint;
 using YTS.Log;
@@ -83,7 +82,8 @@ namespace DocumentDealWithCommand.Logic.Implementation
                         newFilePath = Path.Combine(dire.FullName, m.Result);
                         if (!File.Exists(newFilePath))
                             break;
-                        m.Result = Regex.Replace(m.Result, @"^(.*)\.([a-z0-9])$", @"$1_Repeat.$2");
+                        MFileName mfile = FileInfoExtend.ToMFileName(m.Result);
+                        m.Result = $"{mfile.Name}_Repeat{mfile.Extension}";
                         logArgs["m.Result"] = m.Result;
                     } while (true);
                     FileInfo temporaryFile = new FileInfo(temporaryNamePath);
