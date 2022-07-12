@@ -43,7 +43,7 @@ namespace DocumentDealWithCommand.Logic.Test
         [TestMethod]
         public void Test_ToMFileName()
         {
-            void Test(string filePath, string expected_name, string expected_extension)
+            static void Test(string filePath, string expected_name, string expected_extension)
             {
                 MFileName m = FileInfoExtend.ToMFileName(filePath);
                 Assert.AreEqual(expected_name, m.Name);
@@ -56,9 +56,9 @@ namespace DocumentDealWithCommand.Logic.Test
             Test(@".txt", "", ".txt");
             Test(@"t.xt", "t", ".xt");
             Test(@"tx.t", "tx", ".t");
-            Test(@"txt.", "txt", "");
+            Test(@"txt.", "txt", ".");
             Test(@".t.x.t.", ".t.x.t", ".");
-            Test(@".t.x.t.tt", ".t.x.t", "tt");
+            Test(@".t.x.t.tt", ".t.x.t", ".tt");
             Test(@"code.txt", "code", ".txt");
 
             Test(@".\code.txt", "code", ".txt");

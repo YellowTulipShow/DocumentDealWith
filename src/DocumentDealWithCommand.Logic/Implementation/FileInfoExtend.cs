@@ -42,18 +42,34 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// <returns>文件信息</returns>
         public static MFileName ToMFileName(string fileName)
         {
-            // 分离文件名和扩展名, 如文件名: test1.jpg
-            Match extension_match = Regex.Match(fileName, @"(\.[a-z0-9]+)$",
-                RegexOptions.IgnoreCase | RegexOptions.ECMAScript);
-            // 获取到扩展名, 如: .jpg
-            string extension = extension_match.Success ? extension_match.Groups[1].Value : "";
-            // 获取到文件名, 如: test1
-            fileName = fileName.Replace(extension, "");
-            return new MFileName()
+            MFileName m = new MFileName()
             {
-                Name = fileName,
-                Extension = extension,
+                Name = string.Empty,
+                Extension = string.Empty,
             };
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return m;
+            }
+            if (Regex.IsMatch(fileName, @"^[a-z0-9]+$"))
+            {
+                m.Name = fileName;
+                return m;
+            }
+            if (Regex.IsMatch(fileName, @"^\.[a-z0-9]+$"))
+            {
+                m.Extension = fileName;
+                return m;
+            }
+            Match match = Regex.Match(fileName, @"([^\\/]*)(\.[a-z0-9]*)$",
+                RegexOptions.IgnoreCase | RegexOptions.ECMAScript);
+            if (match.Success)
+            {
+                m.Name = match.Groups[1].Value;
+                m.Extension = match.Groups[2].Value;
+                return m;
+            }
+            return m;
         }
     }
 }
