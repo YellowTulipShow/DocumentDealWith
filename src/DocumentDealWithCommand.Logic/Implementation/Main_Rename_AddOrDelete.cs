@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using YTS.Log;
 
 using DocumentDealWithCommand.Logic.Models;
+using System;
 
 namespace DocumentDealWithCommand.Logic.Implementation
 {
@@ -43,11 +44,10 @@ namespace DocumentDealWithCommand.Logic.Implementation
             }
             if (param.IsUseExtendAdd)
             {
-                if (!string.IsNullOrEmpty(param.UseExtendAddContent) &&
-                    1 <= param.UseExtendAddStartCharIndex && param.UseExtendAddStartCharIndex <= name.Length)
+                if (!string.IsNullOrEmpty(param.UseExtendAddContent))
                 {
-                    param.UseExtendAddStartCharIndex--;
-                    name = name.Insert((int)param.UseExtendAddStartCharIndex, param.UseExtendAddContent);
+                    uint index = ArrayDataExtend.UserInputToProgramTargetIndex(param.UseExtendAddStartCharIndex, name.Length + 1);
+                    name = name.Insert((int)index, param.UseExtendAddContent);
                 }
             }
             if (!string.IsNullOrEmpty(param.DeleteContent))
@@ -57,15 +57,10 @@ namespace DocumentDealWithCommand.Logic.Implementation
             }
             if (param.IsUseExtendDelete)
             {
-                if (1 <= param.UseExtendDeleteStartCharIndex && param.UseExtendDeleteStartCharIndex <= name.Length &&
-                    1 <= param.UseExtendDeleteCount && param.UseExtendDeleteCount <= name.Length)
-                {
-                    param.UseExtendDeleteStartCharIndex--;
-                    for (int i = 0; i < param.UseExtendDeleteCount; i++)
-                    {
-                        name = name.Remove((int)param.UseExtendDeleteStartCharIndex);
-                    }
-                }
+                uint index = ArrayDataExtend.UserInputToProgramTargetIndex(param.UseExtendDeleteStartCharIndex, name.Length);
+                uint count = Math.Max(0, param.UseExtendDeleteCount);
+                count = Math.Min(count, (uint)name.Length - index);
+                name = name.Remove((int)index, (int)count);
             }
             return $"{name}{extension}";
         }

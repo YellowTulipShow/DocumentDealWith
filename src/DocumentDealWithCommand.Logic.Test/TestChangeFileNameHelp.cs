@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using System;
+using System.IO;
 using System.Text;
 
 using YTS.Log;
@@ -28,7 +30,19 @@ namespace DocumentDealWithCommand.Logic.Test
         [TestMethod]
         public void Test_ChangeFileName()
         {
+            Encoding editEncoding = Encoding.UTF8;
             var help = new ChangeFileNameHelp(log);
+            void Test(string sourceFileName, string targetFileName)
+            {
+                string expectedFilePath = $"./changeFileNameDire/{sourceFileName}.txt";
+                FileInfo codeFile = new FileInfo(Path.Combine(Environment.CurrentDirectory,
+                    $"./changeFileNameDire/{sourceFileName}.txt"));
+                if (!codeFile.Directory.Exists)
+                    codeFile.Directory.Create();
+                string text = expectedFilePath;
+                File.WriteAllText(codeFile.FullName, text, editEncoding);
+            }
+
             Assert.IsTrue(false);
         }
     }
