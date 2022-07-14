@@ -40,6 +40,10 @@ namespace DocumentDealWithCommand.Logic.Test
                 $"./changeFileNameDire"));
             if (!rootDire.Exists)
                 rootDire.Create();
+            FileInfo[] havefiles = rootDire.GetFiles();
+            for (int i = 0; i < havefiles.Length; i++)
+                havefiles[i].Delete();
+
             var r = new Random();
             string chars = "0123456789qwertyuiopasdfghjklzxcvbnm_-";
             char getChar() {
@@ -49,7 +53,7 @@ namespace DocumentDealWithCommand.Logic.Test
             for (int i = 0; i < add_count; i++)
             {
                 string name = $"{getChar()}{getChar()}_{i}.txt";
-                FileInfo addFile = new FileInfo(Path.Combine(Environment.CurrentDirectory, name));
+                FileInfo addFile = new FileInfo(Path.Combine(rootDire.FullName, name));
                 File.WriteAllText(addFile.FullName, name, editEncoding);
             }
             FileInfo[] existsFiles = rootDire.GetFiles();
@@ -67,29 +71,33 @@ namespace DocumentDealWithCommand.Logic.Test
                 });
                 dict_record[target] = item.Name;
             }
-            int execute_sign = help.ChangeFileName(null, rootDire, rlist);
+            int execute_sign = help.ChangeFileName(this, rootDire, rlist);
             Assert.AreEqual(0, execute_sign);
+            FileInfo[] filelist = rootDire.GetFiles();
+            Assert.AreEqual(dict_record.Count, filelist.Length);
+            for (int i = 0; i < filelist.Length; i++)
+            {
+                FileInfo fileInfo = filelist[i];
+                string oldName = null;
+                if (dict_record.ContainsKey(fileInfo.Name))
+                    oldName = dict_record[fileInfo.Name];
+                string repeat_name = fileInfo.Name.Replace("_Repeat", "");
+                if (dict_record.ContainsKey(repeat_name))
+                    oldName = dict_record[repeat_name];
+                Assert.IsNotNull(oldName);
+                string content = File.ReadAllText(fileInfo.FullName, editEncoding);
+                Assert.AreEqual(oldName, content);
+            }
         }
 
-        public void Write(string content, EPrintColor textColor, EPrintColor backgroundColor)
-        {
-        }
+        void IPrintColor.Write(string content, EPrintColor textColor, EPrintColor backgroundColor) { }
 
-        public void WriteLine(string content, EPrintColor textColor, EPrintColor backgroundColor)
-        {
-        }
+        void IPrintColor.WriteLine(string content, EPrintColor textColor, EPrintColor backgroundColor) { }
 
-        public int GetLineCount()
-        {
-            return 0;
-        }
+        int IPrint.GetLineCount() { return 0; }
 
-        public void Write(string content)
-        {
-        }
+        void IPrint.Write(string content) { }
 
-        public void WriteLine(string content)
-        {
-        }
+        void IPrint.WriteLine(string content) { }
     }
 }
