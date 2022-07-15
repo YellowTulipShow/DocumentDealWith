@@ -162,7 +162,26 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 result.ErrorMsg = $"无法识别目标项标识: {targetStrValue}";
                 return result;
             }
-            string[] itemValues = targetMatch.Groups[1].Value.Split(new char[] { ',' },
+            uint[] itemIndexs = CalcUserSelectedIndexs(targetMatch.Groups[1].Value);
+            if (itemIndexs.Length <= 0)
+            {
+                result.ErrorMsg = $"无法识别来源项标识, 计算结果为空: {targetMatch.Groups[1].Value}";
+                return result;
+            }
+            result.IsSuccess = true;
+            result.TargetIndex = targetIndex;
+            result.NeedOperationItemPositionIndex = itemIndexs
+            return result;
+        }
+
+        /// <summary>
+        /// 计算用户选择项位置队列项
+        /// </summary>
+        /// <param name="expression">表达式</param>
+        /// <returns>计算结果从小到大</returns>
+        public uint[] CalcUserSelectedIndexs(string expression)
+        {
+            string[] itemValues = (expression ?? string.Empty).Split(new char[] { ',' },
                 StringSplitOptions.RemoveEmptyEntries);
             HashSet<uint> itemIndexs = new HashSet<uint>();
             Regex itemValueRegex = new Regex(@"^([0-9]+)\.\.([0-9]+)$");
@@ -170,15 +189,16 @@ namespace DocumentDealWithCommand.Logic.Implementation
             {
                 string itemValue = itemValues[i];
                 Match itemValueMatch = itemValueRegex.Match(itemValue);
+
+                // 单个数字项获取
                 if (!itemValueMatch.Success)
                 {
                     if (uint.TryParse(itemValue, out uint indexvalue))
-                    {
                         itemIndexs.Add(indexvalue);
-                    }
                     continue;
                 }
 
+                // 范围数字项计算
                 if (!uint.TryParse(itemValueMatch.Groups[1].Value, out uint startIndex))
                     continue;
                 if (!uint.TryParse(itemValueMatch.Groups[2].Value, out uint endIndex))
@@ -188,17 +208,10 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 for (uint j = min; j <= max; j++)
                     itemIndexs.Add(j);
             }
-            if (itemIndexs.Count() <= 0)
-            {
-                result.ErrorMsg = $"无法识别来源项标识, 计算结果为空: {targetMatch.Groups[1].Value}";
-                return result;
-            }
-            result.IsSuccess = true;
-            result.TargetIndex = targetIndex;
-            result.NeedOperationItemPositionIndex = itemIndexs
+            // 从小到大排序
+            return itemIndexs
                 .OrderBy(b => b)
                 .ToArray();
-            return result;
         }
 
         /// <summary>
@@ -219,20 +232,29 @@ namespace DocumentDealWithCommand.Logic.Implementation
         {
             do
             {
-                print.WriteLine($"\n请输入您要删除的项位置序号:");
+                print.WriteLine($"\n请输入您要删除的项位置序号表达式:");
                 print.WriteLine($"如输入 'quit' 则直接跳过删除操作");
                 print.Write($"请输入: ");
                 string input_index = Console.ReadLine();
                 input_index = input_index?.Trim()?.ToLower();
                 if (input_index == "quit")
                     return datas;
-
-                if (string.IsNullOrEmpty(input_index) || !uint.TryParse(input_index, out uint index))
+                if (string.IsNullOrEmpty(input_index))
                 {
                     print.WriteLine($"无法识别您输入的内容: {input_index}");
                     continue;
                 }
-                datas = RemoveUserIndexItem(datas, index);
+                uint[] itemIndexs = CalcUserSelectedIndexs(input_index);
+                if (itemIndexs.Length <= 0)
+                {
+                    print.WriteLine($"无法识别来源项标识, 计算结果为空: {input_index}");
+                    continue;
+                }
+                for (int i = itemIndexs.Length - 1; i >= 0; i--)
+                {
+                    datas = RemoveUserIndexItem(datas, itemIndexs[i]);
+                }
+                return datas;
             } while (true);
         }
 
