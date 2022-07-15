@@ -45,11 +45,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
             {
                 IList<HandleRenameResult> rlist = handle.ToReanmeResult(datas);
                 print.WriteLine("\n预览:");
-                for (int i = 0; i < rlist.Count; i++)
-                {
-                    var item = rlist[i];
-                    print.WriteLine($"[{i + 1}]: {handle.ToPrint(item.Source)} => {item.Result}");
-                }
+                ShowPrintPreviewResult(rlist);
 
                 do
                 {
@@ -82,6 +78,39 @@ namespace DocumentDealWithCommand.Logic.Implementation
                     print.Write($"未识别到您的输入内容! {input}", EPrintColor.Red);
                 } while (true);
             } while (true);
+        }
+
+        private void ShowPrintPreviewResult(IList<HandleRenameResult> rlist)
+        {
+            print.Write("\n");
+            string[] rstrs = new string[rlist.Count];
+
+            int windowWidth = Console.BufferWidth;
+
+            int maxLen = -1;
+            int rlistCountStrLen = (rlist.Count - 1).ToString().Length;
+            for (int i = 0; i < rlist.Count; i++)
+            {
+                HandleRenameResult item = rlist[i];
+                string no = (i + 1).ToString().PadLeft(rlistCountStrLen, '0');
+                string str = $"  [{no}]: {handle.ToPrint(item.Source)} => {item.Result}  ";
+                rstrs[i] = str;
+                maxLen = Math.Max(maxLen, str.Length);
+            }
+            int columneCount = windowWidth / maxLen;
+            int rowCount = rstrs.Length / columneCount;
+            if (rstrs.Length % columneCount > 0)
+                rowCount++;
+            for (int i = 0; i < rstrs.Length; i++)
+            {
+                int show_sign = i % columneCount * rowCount + (i / columneCount);
+                print.Write(rstrs[show_sign].PadRight(maxLen, ' '));
+                if ((i + 1) % columneCount == 0)
+                {
+                    print.Write("\n");
+                }
+            }
+            print.Write("\n");
         }
 
         private IList<FileInfo> MoveFilePosition(IList<FileInfo> datas)
@@ -117,6 +146,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 return datas;
             } while (true);
         }
+
         /// <summary>
         /// 解析移动数组项表达式结果
         /// </summary>
