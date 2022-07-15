@@ -41,6 +41,18 @@ namespace DocumentDealWithCommand.SubCommand
                 },
                 (param, value) => param.IsPreview = value,
                 isGlobal: true);
+
+            yield return new OptionRegistration<uint, T>(
+                new Option<uint>(
+                aliases: new string[] { "--preview-column" },
+                description: "预览展示列数量",
+                getDefaultValue: () => 0)
+                {
+                    Arity = ArgumentArity.ExactlyOne,
+                    IsRequired = false,
+                },
+                (param, value) => param.PreviewColumnCount = value,
+                isGlobal: true);
         }
     }
 }

@@ -9,5 +9,10 @@
         /// 是否预览
         /// </summary>
         public bool IsPreview { get; set; }
+
+        /// <summary>
+        /// 预览展示的列数
+        /// </summary>
+        public uint PreviewColumnCount { get; set; }
     }
 }

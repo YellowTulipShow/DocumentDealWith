@@ -33,7 +33,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
             IList<HandleRenameResult> rlist;
             if (param.IsPreview)
             {
-                var control = new RenamePreviewProcessControl(log, param.Print, hand);
+                var control = new RenamePreviewProcessControl(log, param.Print, hand, param.PreviewColumnCount, param.ConsoleType);
                 rlist = control.OnExecutePreview(param.NeedHandleFileInventory);
             }
             else

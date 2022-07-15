@@ -19,6 +19,8 @@ namespace DocumentDealWithCommand.Logic.Implementation
         private readonly ILog log;
         private readonly IPrintColor print;
         private readonly IHandleRenameData handle;
+        private readonly uint previewColumnCount;
+        private readonly EConsoleType consoleType;
 
         /// <summary>
         /// 实例化预览的流程控制
@@ -26,11 +28,15 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// <param name="log">日志接口</param>
         /// <param name="print">打印输出接口</param>
         /// <param name="handle">处理重命名规则接口</param>
-        public RenamePreviewProcessControl(ILog log, IPrintColor print, IHandleRenameData handle)
+        /// <param name="previewColumnCount">预览展示列数数量</param>
+        /// <param name="consoleType">控制台类型</param>
+        public RenamePreviewProcessControl(ILog log, IPrintColor print, IHandleRenameData handle, uint previewColumnCount, EConsoleType consoleType)
         {
             this.log = log;
             this.print = print;
             this.handle = handle;
+            this.previewColumnCount = previewColumnCount;
+            this.consoleType = consoleType;
         }
 
         /// <summary>
@@ -85,8 +91,6 @@ namespace DocumentDealWithCommand.Logic.Implementation
             print.Write("\n");
             string[] rstrs = new string[rlist.Count];
 
-            int windowWidth = Console.BufferWidth;
-
             int maxLen = -1;
             int rlistCountStrLen = (rlist.Count - 1).ToString().Length;
             for (int i = 0; i < rlist.Count; i++)
@@ -97,7 +101,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 rstrs[i] = str;
                 maxLen = Math.Max(maxLen, str.Length);
             }
-            int columneCount = windowWidth / maxLen;
+            int columneCount = GetColumnCount(maxLen);
             int rowCount = rstrs.Length / columneCount;
             if (rstrs.Length % columneCount > 0)
                 rowCount++;
@@ -111,6 +115,25 @@ namespace DocumentDealWithCommand.Logic.Implementation
                 }
             }
             print.Write("\n");
+        }
+        private int GetColumnCount(int string_max_length)
+        {
+            if (previewColumnCount > 0)
+            {
+                return (int)previewColumnCount;
+            }
+            switch (consoleType)
+            {
+                case EConsoleType.CMD:
+                case EConsoleType.PowerShell:
+                    int windowWidth = Console.BufferWidth;
+                    return windowWidth / string_max_length;
+                case EConsoleType.Bash:
+                case EConsoleType.WindowGitBash:
+                    return 1;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(consoleType), $"计算展示列数量无法判断控制台类型: {consoleType}");
+            }
         }
 
         private IList<FileInfo> MoveFilePosition(IList<FileInfo> datas)

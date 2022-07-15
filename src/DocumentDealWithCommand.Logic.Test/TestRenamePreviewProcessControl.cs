@@ -7,6 +7,7 @@ using System.Text;
 using YTS.Log;
 
 using DocumentDealWithCommand.Logic.Implementation;
+using YTS.ConsolePrint;
 
 namespace DocumentDealWithCommand.Logic.Test
 {
@@ -14,12 +15,15 @@ namespace DocumentDealWithCommand.Logic.Test
     public class TestRenamePreviewProcessControl
     {
         private ILog log;
+        private RenamePreviewProcessControl main;
+
         [TestInitialize]
         public void Init()
         {
             var logFile = ILogExtend.GetLogFilePath("TestRenamePreviewProcessControl");
             log = new FilePrintLog(logFile, Encoding.UTF8)
                 .Connect(new BasicJSONConsolePrintLog());
+            main = new RenamePreviewProcessControl(log, null, null, 1, EConsoleType.PowerShell);
         }
 
         [TestCleanup]
@@ -30,7 +34,7 @@ namespace DocumentDealWithCommand.Logic.Test
         [TestMethod]
         public void Test_AnalysisMoveArrayExpression()
         {
-            var main = new RenamePreviewProcessControl(log, null, null);
+            var main = new RenamePreviewProcessControl(log, null, null, 1, EConsoleType.PowerShell);
             RenamePreviewProcessControl.AnalysisMoveArrayExpressionResult result;
             void Test(string expression, uint starts, string position_str)
             {
@@ -59,7 +63,6 @@ namespace DocumentDealWithCommand.Logic.Test
         [TestMethod]
         public void Test_MoveArray()
         {
-            var main = new RenamePreviewProcessControl(log, null, null);
             void Test(string source, string result, string expression)
             {
                 char[] srouceArray = source.ToCharArray();
@@ -101,7 +104,6 @@ namespace DocumentDealWithCommand.Logic.Test
         [TestMethod]
         public void Test_RemoveUserIndexItem()
         {
-            var main = new RenamePreviewProcessControl(log, null, null);
             void Test(string source, string result, uint index)
             {
                 char[] rlist = main.RemoveUserIndexItem(source.ToCharArray(), index).ToArray();
