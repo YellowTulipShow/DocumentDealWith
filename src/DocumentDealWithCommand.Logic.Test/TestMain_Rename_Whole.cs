@@ -46,7 +46,6 @@ namespace DocumentDealWithCommand.Logic.Test
                 UseLetterFormat = ERenameLetterFormat.Lower,
                 IsChangeExtension = false,
                 ChangeExtensionValue = null,
-                IsAutomaticallyResolveRenameConflicts = true,
             };
         }
 

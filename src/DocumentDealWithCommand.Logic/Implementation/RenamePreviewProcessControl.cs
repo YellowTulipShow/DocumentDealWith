@@ -170,7 +170,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
             }
             result.IsSuccess = true;
             result.TargetIndex = targetIndex;
-            result.NeedOperationItemPositionIndex = itemIndexs
+            result.NeedOperationItemPositionIndex = itemIndexs;
             return result;
         }
 

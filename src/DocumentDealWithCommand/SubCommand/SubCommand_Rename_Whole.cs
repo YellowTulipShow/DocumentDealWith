@@ -144,17 +144,6 @@ namespace DocumentDealWithCommand.SubCommand
                     IsRequired = false,
                 },
                 (param, value) => param.ChangeExtensionValue = value);
-
-            yield return new OptionRegistration<bool, ParamRenameWhole>(
-                new Option<bool>(
-                aliases: new string[] { "--is-auto-conflict-resolution" },
-                description: "是否自动解决重命名冲突",
-                getDefaultValue: () => true)
-                {
-                    Arity = ArgumentArity.ExactlyOne,
-                    IsRequired = false,
-                },
-                (param, value) => param.IsAutomaticallyResolveRenameConflicts = value);
         }
     }
 }
