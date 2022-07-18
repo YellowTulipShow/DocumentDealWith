@@ -6,8 +6,7 @@ using System.Text;
 
 using YTS.Log;
 using YTS.ConsolePrint;
-
-using CodingSupportLibrary;
+using YTS.CodingSupportLibrary;
 
 using DocumentDealWithCommand.Logic.Models;
 

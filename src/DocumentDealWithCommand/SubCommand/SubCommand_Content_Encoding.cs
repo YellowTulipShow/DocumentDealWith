@@ -2,8 +2,7 @@
 using System.CommandLine;
 
 using YTS.Log;
-
-using CodingSupportLibrary;
+using YTS.CodingSupportLibrary;
 
 using DocumentDealWithCommand.Logic;
 using DocumentDealWithCommand.Logic.Models;

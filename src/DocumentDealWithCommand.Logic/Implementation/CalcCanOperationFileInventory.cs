@@ -5,8 +5,7 @@ using System.Text;
 using System.Linq;
 
 using YTS.Log;
-
-using CodingSupportLibrary;
+using YTS.CodingSupportLibrary;
 
 namespace DocumentDealWithCommand.Logic.Implementation
 {

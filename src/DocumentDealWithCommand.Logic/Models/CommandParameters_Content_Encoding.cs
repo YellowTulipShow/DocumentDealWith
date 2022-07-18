@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-using CodingSupportLibrary;
+﻿using YTS.CodingSupportLibrary;
 
 namespace DocumentDealWithCommand.Logic.Models
 {
