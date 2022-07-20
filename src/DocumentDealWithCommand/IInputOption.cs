@@ -2,7 +2,7 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
 
-namespace CommandParamUse
+namespace DocumentDealWithCommand
 {
     /// <summary>
     /// 接口: 命令输入

@@ -6,9 +6,118 @@ using System.CommandLine.Parsing;
 
 using YTS.Log;
 using YTS.ConsolePrint;
+using System.Collections.Generic;
+using System.CommandLine.Invocation;
 
 namespace DocumentDealWithCommand
 {
+    public class MainCommandParamOptions : IConvertCommandOptionToParameter<GlobalOptionsValue>
+    {
+        public IEnumerable<IInputOption<GlobalOptionsValue>> GetInputs()
+        {
+            yield return new InputOption<string, GlobalOptionsValue>(
+                GetOption_Config(),
+                (param, value) => param.Config = value, true);
+            yield return new InputOption<string, GlobalOptionsValue>(
+                GetOption_RootDire(),
+                (param, value) => param.RootDire = value, true);
+            yield return new InputOption<EConsoleType, GlobalOptionsValue>(
+                GetOption_ConsoleType(),
+                (param, value) => param.ConsoleType = value, true);
+            yield return new InputOption<string[], GlobalOptionsValue>(
+                GetOption_Files(),
+                (param, value) => param.Files = value, true);
+            yield return new InputOption<bool, GlobalOptionsValue>(
+                GetOption_Recurse(),
+                (param, value) => param.PathIsRecurse = value, true);
+            yield return new InputOption<string, GlobalOptionsValue>(
+                GetOption_FileText(),
+                (param, value) => param.FileText = value, true);
+        }
+
+        private Option<string> GetOption_Config()
+        {
+            var option = new Option<string>(
+                aliases: new string[] { "--config" },
+                description: "配置文件读取路径",
+                getDefaultValue: () =>
+                {
+                    // 当前用户配置地址
+                    string dire = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                    string file = Path.Combine(dire, ".command_document_dealwith_config.json");
+                    return file;
+                })
+            {
+                Arity = ArgumentArity.ExactlyOne,
+            };
+            return option;
+        }
+        private Option<string> GetOption_RootDire()
+        {
+            var option = new Option<string>(
+                aliases: new string[] { "--root" },
+                description: "操作文件所属路径",
+                getDefaultValue: () => Environment.CurrentDirectory)
+            {
+                Arity = ArgumentArity.ZeroOrOne,
+            };
+            return option;
+        }
+        private Option<EConsoleType> GetOption_ConsoleType()
+        {
+            var option = new Option<EConsoleType>(
+                aliases: new string[] { "--console" },
+                description: "输出打印配置, 控制台类型",
+                getDefaultValue: () => EConsoleTypeExtend.GetDefalutConsoleType())
+            {
+                Arity = ArgumentArity.ZeroOrOne,
+            };
+            return option;
+        }
+        private Option<string[]> GetOption_Files()
+        {
+            var option = new Option<string[]>(
+                aliases: new string[] { "--files" },
+                description: "操作文件路径")
+            {
+                Arity = ArgumentArity.ZeroOrMore,
+                AllowMultipleArgumentsPerToken = true,
+            };
+            return option;
+        }
+        private Option<string> GetOption_Path()
+        {
+            var option = new Option<string>(
+                aliases: new string[] { "--path" },
+                description: "操作文件所属路径")
+            {
+                Arity = ArgumentArity.ZeroOrOne,
+            };
+            return option;
+        }
+        private Option<bool> GetOption_Recurse()
+        {
+            var option = new Option<bool>(
+                aliases: new string[] { "--recurse" },
+                description: "是否递归查询, 用于与 --path 参数配合查询")
+            {
+                Arity = ArgumentArity.ZeroOrOne,
+            };
+            return option;
+        }
+        private Option<string> GetOption_FileText()
+        {
+            var option = new Option<string>(
+                aliases: new string[] { "--txt" },
+                description: "操作文件组合清单文件路径")
+            {
+                Arity = ArgumentArity.ZeroOrOne,
+            };
+            return option;
+        }
+    }
+
+
     /// <summary>
     /// 命令参数解析器
     /// </summary>
@@ -36,25 +145,12 @@ namespace DocumentDealWithCommand
             logArgs["CommandInputArgs"] = args;
             try
             {
-                GlobalOptions globalOptions = new GlobalOptions()
-                {
-                    Config = GetOption_Config(),
-                    RootDire = GetOption_RootDire(),
-                    ConsoleType = GetOption_ConsoleType(),
-                    Files = GetOption_Files(),
-                    Path = GetOption_Path(),
-                    PathIsRecurse = GetOption_Recurse(),
-                    FileText = GetOption_FileText(),
-                };
                 RootCommand rootCMD = new RootCommand("文档文件相关操作命令");
-                rootCMD.AddGlobalOption(globalOptions.Config);
-                rootCMD.AddGlobalOption(globalOptions.RootDire);
-                rootCMD.AddGlobalOption(globalOptions.ConsoleType);
-                rootCMD.AddGlobalOption(globalOptions.Files);
-                rootCMD.AddGlobalOption(globalOptions.Path);
-                rootCMD.AddGlobalOption(globalOptions.PathIsRecurse);
-                rootCMD.AddGlobalOption(globalOptions.FileText);
-
+                IConvertCommandOptionToParameter paramOptions = new MainCommandParamOptions();
+                foreach (var item in paramOptions.GetGlobalInputs())
+                {
+                    rootCMD.AddGlobalOption(item.GetOption());
+                }
                 ISubCommand[] subCommands = new ISubCommand[]
                 {
                     new SubCommand.SubCommand_Content(log, globalOptions),
@@ -74,91 +170,5 @@ namespace DocumentDealWithCommand
             }
         }
 
-        private Option<string> GetOption_Config()
-        {
-            var option = new Option<string>(
-                aliases: new string[] { "--config" },
-                description: "配置文件读取路径",
-                getDefaultValue: () =>
-                {
-                    // 当前用户配置地址
-                    string dire = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                    string file = Path.Combine(dire, ".command_document_dealwith_config.json");
-                    return file;
-                })
-            {
-                Arity = ArgumentArity.ExactlyOne,
-            };
-            return option;
-        }
-
-        private Option<string> GetOption_RootDire()
-        {
-            var option = new Option<string>(
-                aliases: new string[] { "--root" },
-                description: "操作文件所属路径",
-                getDefaultValue: () => Environment.CurrentDirectory)
-            {
-                Arity = ArgumentArity.ZeroOrOne,
-            };
-            return option;
-        }
-
-        private Option<EConsoleType> GetOption_ConsoleType()
-        {
-            var option = new Option<EConsoleType>(
-                aliases: new string[] { "--console" },
-                description: "输出打印配置, 控制台类型",
-                getDefaultValue: () => EConsoleTypeExtend.GetDefalutConsoleType())
-            {
-                Arity = ArgumentArity.ZeroOrOne,
-            };
-            return option;
-        }
-
-        private Option<string[]> GetOption_Files()
-        {
-            var option = new Option<string[]>(
-                aliases: new string[] { "--files" },
-                description: "操作文件路径")
-            {
-                Arity = ArgumentArity.ZeroOrMore,
-                AllowMultipleArgumentsPerToken = true,
-            };
-            return option;
-        }
-
-        private Option<string> GetOption_Path()
-        {
-            var option = new Option<string>(
-                aliases: new string[] { "--path" },
-                description: "操作文件所属路径")
-            {
-                Arity = ArgumentArity.ZeroOrOne,
-            };
-            return option;
-        }
-
-        private Option<bool> GetOption_Recurse()
-        {
-            var option = new Option<bool>(
-                aliases: new string[] { "--recurse" },
-                description: "是否递归查询, 用于与 --path 参数配合查询")
-            {
-                Arity = ArgumentArity.ZeroOrOne,
-            };
-            return option;
-        }
-
-        private Option<string> GetOption_FileText()
-        {
-            var option = new Option<string>(
-                aliases: new string[] { "--txt" },
-                description: "操作文件组合清单文件路径")
-            {
-                Arity = ArgumentArity.ZeroOrOne,
-            };
-            return option;
-        }
     }
 }
