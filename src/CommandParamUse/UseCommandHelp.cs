@@ -3,6 +3,7 @@ using System.Linq;
 using System.CommandLine;
 
 using YTS.Log;
+using System.Collections.Generic;
 
 namespace CommandParamUse
 {
@@ -25,18 +26,25 @@ namespace CommandParamUse
         /// <summary>
         /// 解析执行
         /// </summary>
+        /// <typeparam name="P">参数类型</typeparam>
         /// <param name="args">用户传入的命令行参数</param>
         /// <param name="root">根命令配置项</param>
         /// <returns>执行返回编码</returns>
-        public int OnParser(string[] args, IRootCommand root)
+        public int OnParser<P>(string[] args, IRootCommand<P> root) where P : IParam
         {
             var logArgs = log.CreateArgDictionary();
-            logArgs["UserInputArgs"] = args;
-            logArgs["IRootCommand.Type"] = root.GetType().Name;
             try
             {
-                RootCommand cmd = ConfigContent(root);
+                logArgs["UserInputArgs"] = args;
+                logArgs["IRootCommand.Type"] = root.GetType().Name;
+                RootCommand cmd = root.ToCommand();
+                cmd = ConfigContent(cmd, root);
                 return cmd.Invoke(args);
+            }
+            catch (ILogParamException ex)
+            {
+                log.Error("解释命令出错", ex, logArgs, ex.GetParam());
+                return -1;
             }
             catch (Exception ex)
             {
@@ -45,21 +53,25 @@ namespace CommandParamUse
             }
         }
 
-        private TC ConfigContent<TC>(ICommand<TC> root) where TC : Command
+        private TC ConfigContent<TC, P>(TC cmd, ICommand<P> root)
+            where TC : Command
+            where P : IParam
         {
             var logArgs = log.CreateArgDictionary();
             try
             {
-                TC cmd = root.GetCommand();
                 // 创建子命令对象
-                ISubCommand[] subCommands = root.GetSubCommands()?.ToArray() ?? new ISubCommand[] { };
-                foreach (ISubCommand sub in subCommands)
+                IList<ISubCommand<P>> subCommands = root.GetSubCommands<P>();
+                foreach (ISubCommand<P> sub in subCommands)
                 {
-                    Command subCmd = ConfigContent(sub);
+                    Command subCmd = sub.ToCommand();
+                    subCmd = ConfigContent(subCmd, sub);
                     cmd.AddCommand(subCmd);
                 }
 
-                IExecute exe = root.GetExecute();
+                IParamConfig<P> paramConfig = root.GetParamConfig();
+
+                IExecute<P> exe = root.GetExecute();
                 logArgs["IExecute(exe).Type"] = exe.GetType().Name;
                 IInputOption[] options_global = exe.GetGlobalInputs()?.ToArray() ?? new IInputOption[] { };
                 foreach (var item in options_global)

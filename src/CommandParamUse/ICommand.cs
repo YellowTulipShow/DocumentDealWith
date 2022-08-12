@@ -1,46 +1,52 @@
 ﻿using System.Collections.Generic;
-using System.CommandLine;
 
 namespace CommandParamUse
 {
     /// <summary>
     /// 接口: 命令
     /// </summary>
-    public interface ICommand
+    public interface ICommand<P> where P: IParam
     {
+        /// <summary>
+        /// 获取命令描述
+        /// </summary>
+        /// <returns>字符串描述</returns>
+        string GetDescription();
+
+        /// <summary>
+        /// 获取子命令
+        /// </summary>
+        /// <typeparam name="SubP">子命令参数类型</typeparam>
+        /// <returns>子命令列表</returns>
+        IList<ISubCommand<SubP>> GetSubCommands<SubP>() where SubP : P;
+
         /// <summary>
         /// 获取执行方法
         /// </summary>
         /// <returns>执行对象</returns>
-        IExecute GetExecute();
+        IExecute<P> GetExecute();
 
         /// <summary>
-        /// 获取子命令项
+        /// 获取参数配置
         /// </summary>
-        IEnumerable<ISubCommand> GetSubCommands();
-    }
-
-    /// <summary>
-    /// 接口: 命令
-    /// </summary>
-    /// <typeparam name="TCmd">命令类型</typeparam>
-    public interface ICommand<TCmd> : ICommand
-        where TCmd : Command
-    {
-        /// <summary>
-        /// 获取命令
-        /// </summary>
-        /// <returns></returns>
-        TCmd GetCommand();
+        /// <returns>配置项</returns>
+        IParamConfig<P> GetParamConfig();
     }
 
     /// <summary>
     /// 根命令
     /// </summary>
-    public interface IRootCommand : ICommand<RootCommand> { }
+    public interface IRootCommand<P> : ICommand<P> where P : IParam { }
 
     /// <summary>
     /// 子命令
     /// </summary>
-    public interface ISubCommand : ICommand<Command> { }
+    public interface ISubCommand<P> : ICommand<P> where P : IParam
+    {
+        /// <summary>
+        /// 获取命令标识
+        /// </summary>
+        /// <returns>字符串标识</returns>
+        string GetNameSign();
+    }
 }
