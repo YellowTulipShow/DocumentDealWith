@@ -13,28 +13,6 @@ namespace CommandParamUse
     public static class UseCommandHelpExtend
     {
         /// <summary>
-        /// 转换为实体根命令
-        /// </summary>
-        /// <typeparam name="P">命令参数类型</typeparam>
-        /// <param name="root">根命令对象</param>
-        /// <returns>实体根命令</returns>
-        public static RootCommand ToCommand<P>(this IRootCommand<P> root) where P : IParam
-        {
-            return new RootCommand(root.GetDescription());
-        }
-
-        /// <summary>
-        /// 转换为实体命令
-        /// </summary>
-        /// <typeparam name="P">命令参数类型</typeparam>
-        /// <param name="root">命令对象</param>
-        /// <returns>实体命令</returns>
-        public static Command ToCommand<P>(this ISubCommand<P> root) where P : IParam
-        {
-            return new Command(root.GetNameSign(), root.GetDescription());
-        }
-
-        /// <summary>
         /// 解析执行
         /// </summary>
         /// <typeparam name="P">参数类型</typeparam>
@@ -48,9 +26,7 @@ namespace CommandParamUse
             try
             {
                 logArgs["UserInputArgs"] = args;
-                logArgs["IRootCommand.Type"] = root.GetType().Name;
-                RootCommand cmd = root.ToCommand();
-                cmd = ConfigContent(cmd, root, log);
+                RootCommand cmd = root.GetCommand();
                 return cmd.Invoke(args);
             }
             catch (ILogParamException ex)
@@ -65,25 +41,34 @@ namespace CommandParamUse
             }
         }
 
-        private static TC ConfigContent<TC, P>(this TC cmd, ICommand<P> root, ILog log)
-            where TC : Command
-            where P : IParam
+        private static TCmd ConfigContent<TCmd, TParam>(this TCmd cmd, IParamCommand<TCmd, TParam> root)
+            where TCmd : Command
+            where TParam : IParam
         {
-            var logArgs = log.CreateArgDictionary();
-            try
+            IDictionary<string, object> logArgs = new Dictionary<string, object>
             {
-                // 创建子命令对象
-                IList<ISubCommand<P>> subCommands = root.GetSubCommands<P>();
-                foreach (ISubCommand<P> sub in subCommands)
+                ["TC.TypeName"] = typeof(TCmd).Name,
+                ["P.TypeName"] = typeof(TParam).Name,
+                ["TC:Command(cmd).Type"] = cmd?.GetType()?.Name,
+                ["P:IParam(root).Type"] = root?.GetType()?.Name
+            };
+
+            // 创建子命令对象
+            IEnumerable<ISubCommand> subCommands = root.GetSubCommands();
+            if (subCommands != null)
+            {
+                foreach (ISubCommand sub in subCommands)
                 {
-                    Command subCmd = sub.ToCommand();
-                    subCmd = ConfigContent(subCmd, sub, log);
+                    Command subCmd = sub.GetCommand();
                     cmd.AddCommand(subCmd);
                 }
-                IParamConfig<P> paramConfig = root.GetParamConfig();
-                IExecute<P> exe = root.GetExecute();
-                logArgs["IExecute(exe).Type"] = exe.GetType().Name;
-                IParamConfig<P> pConfig = root.GetParamConfig();
+            }
+            IExecute<TParam> exe = root.GetExecute();
+            logArgs["IExecute(exe).Type"] = exe?.GetType()?.Name;
+            IParamConfig<TParam> pConfig = root.GetParamConfig();
+            logArgs["IParamConfig(pConfig).Type"] = exe?.GetType()?.Name;
+            if (pConfig != null)
+            {
                 ConfigInputOptions(cmd, pConfig.GetGlobalInputs(), (cmd, option) => cmd.AddGlobalOption(option));
                 if (exe != null)
                 {
@@ -92,25 +77,20 @@ namespace CommandParamUse
                     {
                         try
                         {
-                            P param = pConfig.CreateParam();
+                            TParam param = pConfig.CreateParam();
                             FillParam(context, param, pConfig.GetGlobalInputs());
                             FillParam(context, param, pConfig.GetInputs());
                             context.ExitCode = exe.OnExecute(param);
                         }
                         catch (Exception ex)
                         {
-                            log.Error($"{cmd.Description} - 执行出错", ex, logArgs);
                             context.ExitCode = 1;
+                            throw new ILogParamException(logArgs, "生成参数执行逻辑出错", ex);
                         }
                     });
                 }
-                return cmd;
             }
-            catch (Exception ex)
-            {
-                log.Error("填充命令内容出错", ex, logArgs);
-                throw ex;
-            }
+            return cmd;
         }
 
         private static void ConfigInputOptions<TC, P>(TC cmd, IEnumerable<IInputOption<P>> inputs, Action<TC, Option> fillFunc)
@@ -136,6 +116,20 @@ namespace CommandParamUse
                     item.FillParam(context, param);
                 }
             }
+        }
+
+        public static RootCommand ToCommand<P>(this IRootCommand<P> root) where P : IParam
+        {
+            RootCommand cmd = new RootCommand(root.GetDescription());
+            cmd = ConfigContent(cmd, root);
+            return cmd;
+        }
+
+        public static Command ToCommand<P>(this ISubCommand<P> root) where P : IParam
+        {
+            Command cmd = new Command(root.GetNameSign(), root.GetDescription());
+            cmd = ConfigContent(cmd, root);
+            return cmd;
         }
     }
 }
