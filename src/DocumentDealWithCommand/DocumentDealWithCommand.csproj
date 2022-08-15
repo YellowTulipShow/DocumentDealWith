@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CommandParamUse\CommandParamUse.csproj" />
     <ProjectReference Include="..\DocumentDealWithCommand.Logic\DocumentDealWithCommand.Logic.csproj" />
   </ItemGroup>
 

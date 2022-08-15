@@ -8,31 +8,39 @@ using YTS.Log;
 using YTS.ConsolePrint;
 using System.Collections.Generic;
 using System.CommandLine.Invocation;
+using CommandParamUse;
 
 namespace DocumentDealWithCommand
 {
-    public class MainCommandParamOptions : IConvertCommandOptionToParameter<GlobalOptionsValue>
+    public class MainCommandParamOptions : AddParamConfig<GlobalOptionsValue>
     {
-        public IEnumerable<IInputOption<GlobalOptionsValue>> GetInputs()
+        public MainCommandParamOptions() : base(new GlobalOptionsValue())
         {
-            yield return new InputOption<string, GlobalOptionsValue>(
-                GetOption_Config(),
-                (param, value) => param.Config = value, true);
-            yield return new InputOption<string, GlobalOptionsValue>(
-                GetOption_RootDire(),
-                (param, value) => param.RootDire = value, true);
-            yield return new InputOption<EConsoleType, GlobalOptionsValue>(
-                GetOption_ConsoleType(),
-                (param, value) => param.ConsoleType = value, true);
-            yield return new InputOption<string[], GlobalOptionsValue>(
-                GetOption_Files(),
-                (param, value) => param.Files = value, true);
-            yield return new InputOption<bool, GlobalOptionsValue>(
-                GetOption_Recurse(),
-                (param, value) => param.PathIsRecurse = value, true);
-            yield return new InputOption<string, GlobalOptionsValue>(
-                GetOption_FileText(),
-                (param, value) => param.FileText = value, true);
+            AddInputs();
+        }
+
+        private void AddInputs()
+        {
+            AddInputOption(new InputOption<string, GlobalOptionsValue>(
+                GetOption_Config(), (param, value) => param.Config = value), true);
+
+            AddInputOption(new InputOption<string, GlobalOptionsValue>(
+                GetOption_RootDire(), (param, value) => param.RootDire = value), true);
+
+            AddInputOption(new InputOption<EConsoleType, GlobalOptionsValue>(
+                GetOption_ConsoleType(), (param, value) => param.ConsoleType = value), true);
+
+            AddInputOption(new InputOption<string[], GlobalOptionsValue>(
+                GetOption_Files(), (param, value) => param.Files = value), true);
+
+            AddInputOption(new InputOption<string, GlobalOptionsValue>(
+                GetOption_Path(), (param, value) => param.Path = value), true);
+
+            AddInputOption(new InputOption<bool, GlobalOptionsValue>(
+                GetOption_Recurse(), (param, value) => param.PathIsRecurse = value), true);
+
+            AddInputOption(new InputOption<string, GlobalOptionsValue>(
+                GetOption_FileText(), (param, value) => param.FileText = value), true);
         }
 
         private Option<string> GetOption_Config()
@@ -117,7 +125,6 @@ namespace DocumentDealWithCommand
         }
     }
 
-
     /// <summary>
     /// 命令参数解析器
     /// </summary>
@@ -169,6 +176,5 @@ namespace DocumentDealWithCommand
                 return -1;
             }
         }
-
     }
 }
