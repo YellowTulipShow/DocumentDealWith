@@ -122,7 +122,7 @@ namespace CommandParamUse.Test
                 int rcode = cmd.OnParser(args, log);
                 Assert.AreEqual(code, rcode);
             };
-            //test(0, new string[] { });
+            test(1, new string[] { });
             test(4, new string[] { "rename" });
             test(5, new string[] { "rename", "--name='AAA'" });
             test(6, new string[] { "rename", "--name='AAA'", "--target='AAA'" });

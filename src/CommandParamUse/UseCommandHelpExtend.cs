@@ -41,6 +41,26 @@ namespace CommandParamUse
             }
         }
 
+        /// <summary>
+        /// 转为实体命令
+        /// </summary>
+        public static RootCommand ToCommand<P>(this IRootCommand<P> root) where P : IParam
+        {
+            RootCommand cmd = new RootCommand(root.GetDescription());
+            cmd = ConfigContent(cmd, root);
+            return cmd;
+        }
+
+        /// <summary>
+        /// 转为实体命令
+        /// </summary>
+        public static Command ToCommand<P>(this ISubCommand<P> root) where P : IParam
+        {
+            Command cmd = new Command(root.GetNameSign(), root.GetDescription());
+            cmd = ConfigContent(cmd, root);
+            return cmd;
+        }
+
         private static TCmd ConfigContent<TCmd, TParam>(this TCmd cmd, IParamCommand<TCmd, TParam> root)
             where TCmd : Command
             where TParam : IParam
@@ -116,20 +136,6 @@ namespace CommandParamUse
                     item.FillParam(context, param);
                 }
             }
-        }
-
-        public static RootCommand ToCommand<P>(this IRootCommand<P> root) where P : IParam
-        {
-            RootCommand cmd = new RootCommand(root.GetDescription());
-            cmd = ConfigContent(cmd, root);
-            return cmd;
-        }
-
-        public static Command ToCommand<P>(this ISubCommand<P> root) where P : IParam
-        {
-            Command cmd = new Command(root.GetNameSign(), root.GetDescription());
-            cmd = ConfigContent(cmd, root);
-            return cmd;
         }
     }
 }

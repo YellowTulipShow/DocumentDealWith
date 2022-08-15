@@ -9,7 +9,6 @@ namespace CommandParamUse
     /// <typeparam name="T">类型</typeparam>
     public interface ICommand<T> where T : Command
     {
-
         /// <summary>
         /// 获取命令
         /// </summary>
