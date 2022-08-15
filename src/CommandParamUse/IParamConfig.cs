@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace CommandParamUse
 {
@@ -9,5 +7,19 @@ namespace CommandParamUse
     /// </summary>
     public interface IParamConfig<P> where P : IParam
     {
+        /// <summary>
+        /// 生成创建参数对象
+        /// </summary>
+        public P CreateParam();
+
+        /// <summary>
+        /// 获取全局配置输入项
+        /// </summary>
+        public IEnumerable<IInputOption<P>> GetGlobalInputs();
+
+        /// <summary>
+        /// 获取配置输入项
+        /// </summary>
+        public IEnumerable<IInputOption<P>> GetInputs();
     }
 }

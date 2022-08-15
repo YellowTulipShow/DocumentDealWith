@@ -26,7 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-    <PackageReference Include="YTS.Log" Version="0.1.2" />
+    <PackageReference Include="YTS.Log" Version="0.1.3" />
   </ItemGroup>
 
   <ItemGroup>
