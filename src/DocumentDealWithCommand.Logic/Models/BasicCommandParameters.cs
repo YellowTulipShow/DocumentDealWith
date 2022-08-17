@@ -1,18 +1,20 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Reflection;
 using System.Collections.Generic;
 
 using Newtonsoft.Json;
 
 using YTS.ConsolePrint;
-using System;
-using System.Reflection;
+
+using CommandParamUse;
 
 namespace DocumentDealWithCommand.Logic.Models
 {
     /// <summary>
     /// 抽象类: 基础名称传入参数
     /// </summary>
-    public class BasicCommandParameters : IParameters
+    public class BasicCommandParameters : IParam
     {
         /// <summary>
         /// 实例化参数

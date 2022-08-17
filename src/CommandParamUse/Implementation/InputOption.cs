@@ -2,7 +2,7 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
 
-namespace CommandParamUse
+namespace CommandParamUse.Implementation
 {
     /// <summary>
     /// 命令输入

@@ -1,16 +1,28 @@
 ﻿using System.Collections.Generic;
 
-namespace CommandParamUse
+namespace CommandParamUse.Implementation
 {
+
     /// <summary>
-    /// 添加参数配置实现类
+    /// 实现类: 添加参数配置实现类
     /// </summary>
     /// <typeparam name="P">参数对象</typeparam>
     public class AddParamConfig<P> : IParamConfig<P> where P : IParam
     {
-        private readonly P param;
-        private readonly IList<IInputOption<P>> inputs_global;
-        private readonly IList<IInputOption<P>> inputs;
+        /// <summary>
+        /// 参数对象
+        /// </summary>
+        protected readonly P param;
+
+        /// <summary>
+        /// 全局输入项
+        /// </summary>
+        protected readonly IList<IInputOption<P>> inputs_global;
+
+        /// <summary>
+        /// 正常输入项
+        /// </summary>
+        protected readonly IList<IInputOption<P>> inputs;
 
         /// <summary>
         /// 实例化: 添加参数配置实现类

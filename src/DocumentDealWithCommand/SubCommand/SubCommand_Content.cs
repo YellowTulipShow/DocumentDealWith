@@ -4,35 +4,43 @@ using System.Collections.Generic;
 using YTS.Log;
 
 using DocumentDealWithCommand.Logic.Models;
+using CommandParamUse;
 
 namespace DocumentDealWithCommand.SubCommand
 {
     /// <summary>
     /// 子命令: 内容相关操作
     /// </summary>
-    public class SubCommand_Content : AbsSubCommandImplementationVersion<BasicCommandParameters>, ISubCommand
+    public class SubCommand_Content : ICommandSub<GlobalOptionsValue>
     {
-        /// <inheritdoc/>
-        public SubCommand_Content(ILog log, GlobalOptions globalOptions)
-            : base(log, globalOptions) { }
+        private readonly ILog log;
 
         /// <inheritdoc/>
-        public override string CommandNameSign() => "content";
-
-        /// <inheritdoc/>
-        public override string CommandDescription() => "内容操作";
-
-        /// <inheritdoc/>
-        public override IEnumerable<ISubCommand> SetSubCommands()
+        public SubCommand_Content(ILog log)
         {
-            yield return new SubCommand_Content_Encoding(log, globalOptions);
-            yield return new SubCommand_Content_NewLine(log, globalOptions);
+            this.log = log;
         }
 
         /// <inheritdoc/>
-        protected override string[] GetConfigAllowExtensions(Configs config)
+        public string GetNameSign() => "content";
+
+        /// <inheritdoc/>
+        public string GetDescription() => "内容操作";
+
+        /// <inheritdoc/>
+        public IExecute<GlobalOptionsValue> GetExecute() => null;
+
+        /// <inheritdoc/>
+        public IParamConfig<GlobalOptionsValue> GetParamConfig()
         {
-            return CalcAllowExtensions(config);
+            return new MainCommandParamConfig();
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<ICommandSub> GetSubCommands()
+        {
+            yield return new SubCommand_Content_Encoding(log);
+            yield return new SubCommand_Content_NewLine(log);
         }
 
         /// <summary>
@@ -43,5 +51,6 @@ namespace DocumentDealWithCommand.SubCommand
             return (config.AllowExtension.Global ?? new string[] { }).Concat(
                 config.AllowExtension.ContentCommand ?? new string[] { }).ToArray();
         }
+
     }
 }

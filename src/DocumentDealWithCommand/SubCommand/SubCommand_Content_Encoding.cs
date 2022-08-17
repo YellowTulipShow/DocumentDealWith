@@ -4,51 +4,63 @@ using System.CommandLine;
 using YTS.Log;
 using YTS.CodingSupportLibrary;
 
-using DocumentDealWithCommand.Logic;
+using CommandParamUse;
+using CommandParamUse.Implementation;
+
 using DocumentDealWithCommand.Logic.Models;
 using DocumentDealWithCommand.Logic.Implementation;
 
 namespace DocumentDealWithCommand.SubCommand
 {
+    /// <inheritdoc/>
+    public class SubCommandParamConfig_Content_Encoding : AddParamConfigDefalutValue<CommandParameters_Content_Encoding>
+    {
+        /// <inheritdoc/>
+        public SubCommandParamConfig_Content_Encoding() : base()
+        {
+            new Option<ESupportEncoding>(
+                aliases: new string[] { "-t", "--target" },
+                description: "目标编码配置")
+            {
+                Arity = ArgumentArity.ExactlyOne,
+                IsRequired = true,
+            }.Set(this, (param, value) => param.Target = value);
+        }
+    }
+
+
     /// <summary>
     /// 子命令: 内容 - 编码修改
     /// </summary>
-    public class SubCommand_Content_Encoding : AbsSubCommandImplementationVersion<CommandParameters_Content_Encoding>, ISubCommand
+    public class SubCommand_Content_Encoding : ICommandSub<CommandParameters_Content_Encoding>
     {
-        /// <inheritdoc/>
-        public SubCommand_Content_Encoding(ILog log, GlobalOptions globalOptions)
-            : base(log, globalOptions) { }
+        private readonly ILog log;
 
         /// <inheritdoc/>
-        public override string CommandNameSign() => "encode";
+        public SubCommand_Content_Encoding(ILog log)
+        {
+            this.log = log;
+        }
 
         /// <inheritdoc/>
-        public override string CommandDescription() => "重新配置编码";
+        public string GetNameSign() => "encode";
 
         /// <inheritdoc/>
-        public override IMain<CommandParameters_Content_Encoding> HandlerLogic()
+        public string GetDescription() => "重新配置编码";
+
+        /// <inheritdoc/>
+        public IExecute<CommandParameters_Content_Encoding> GetExecute()
         {
             return new Main_Content_Encoding(log);
         }
 
         /// <inheritdoc/>
-        protected override string[] GetConfigAllowExtensions(Configs config)
+        public IParamConfig<CommandParameters_Content_Encoding> GetParamConfig()
         {
-            return SubCommand_Content.CalcAllowExtensions(config);
+            return new SubCommandParamConfig_Content_Encoding();
         }
 
         /// <inheritdoc/>
-        public override IEnumerable<IOptionRegistration<CommandParameters_Content_Encoding>> SetOptions()
-        {
-            yield return new OptionRegistration<ESupportEncoding, CommandParameters_Content_Encoding>(
-                new Option<ESupportEncoding>(
-                aliases: new string[] { "-t", "--target" },
-                description: "目标编码配置")
-                {
-                    Arity = ArgumentArity.ExactlyOne,
-                    IsRequired = true,
-                },
-                (param, value) => param.Target = value);
-        }
+        public IEnumerable<ICommandSub> GetSubCommands() => null;
     }
 }

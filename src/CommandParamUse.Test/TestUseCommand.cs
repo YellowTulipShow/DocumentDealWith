@@ -24,7 +24,7 @@ namespace CommandParamUse.Test
         {
             public string Name { get; set; }
         }
-        public class RootCommand : IRootCommand<GlobalParam>
+        public class RootCommand : ICommandRoot<GlobalParam>
         {
             public string GetDescription() => "∏˘√¸¡Ó√Ë ˆ";
 
@@ -35,7 +35,7 @@ namespace CommandParamUse.Test
                 return new RootCommandConfig<GlobalParam>(new GlobalParam());
             }
 
-            public IEnumerable<ISubCommand> GetSubCommands()
+            public IEnumerable<ICommandSub> GetSubCommands()
             {
                 yield return new SubCommand_Rename();
             }
@@ -60,7 +60,7 @@ namespace CommandParamUse.Test
         {
             public string Target { get; set; }
         }
-        public class SubCommand_Rename : ISubCommand<RenameParam>
+        public class SubCommand_Rename : ICommandSub<RenameParam>
         {
             public string GetNameSign() => "rename";
 
@@ -76,7 +76,7 @@ namespace CommandParamUse.Test
                 return new SubCommand_RenameConfig<RenameParam>(new RenameParam());
             }
 
-            public IEnumerable<ISubCommand> GetSubCommands() => null;
+            public IEnumerable<ICommandSub> GetSubCommands() => null;
         }
         public class SubCommand_RenameConfig<P> : RootCommandConfig<P> where P : RenameParam
         {
@@ -116,7 +116,7 @@ namespace CommandParamUse.Test
         [TestMethod]
         public void Test_Use()
         {
-            IRootCommand<GlobalParam> cmd = new RootCommand();
+            ICommandRoot<GlobalParam> cmd = new RootCommand();
             void test(int code, string[] args)
             {
                 int rcode = cmd.OnParser(args, log);

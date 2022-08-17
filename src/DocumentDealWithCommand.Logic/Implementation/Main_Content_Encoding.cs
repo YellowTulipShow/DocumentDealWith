@@ -8,6 +8,7 @@ using YTS.Log;
 using YTS.ConsolePrint;
 using YTS.CodingSupportLibrary;
 
+using CommandParamUse;
 using DocumentDealWithCommand.Logic.Models;
 
 namespace DocumentDealWithCommand.Logic.Implementation
@@ -15,7 +16,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
     /// <summary>
     /// 实现命令类: 内容操作 - 编码修改
     /// </summary>
-    public class Main_Content_Encoding : AbsMain, IMain<CommandParameters_Content_Encoding>
+    public class Main_Content_Encoding : AbsMain, IExecute<CommandParameters_Content_Encoding>
     {
         /// <inheritdoc/>
         public Main_Content_Encoding(ILog log) : base(log)
