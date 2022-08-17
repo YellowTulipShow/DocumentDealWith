@@ -10,7 +10,7 @@ using CommandParamUse.Implementation;
 namespace DocumentDealWithCommand
 {
     /// <inheritdoc/>
-    public class MainCommandParamConfig : AddParamConfigDefalutValue<GlobalOptionsValue>
+    public abstract class MainCommandParamConfig<P> : AddParamConfigDefalutValue<P> where P : GlobalOptionsValue, new()
     {
         /// <inheritdoc/>
         public MainCommandParamConfig() : base()

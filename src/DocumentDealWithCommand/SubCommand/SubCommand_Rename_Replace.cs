@@ -3,64 +3,70 @@ using System.CommandLine;
 
 using YTS.Log;
 
-using DocumentDealWithCommand.Logic;
+using CommandParamUse;
+
 using DocumentDealWithCommand.Logic.Models;
 using DocumentDealWithCommand.Logic.Implementation;
 
 namespace DocumentDealWithCommand.SubCommand
 {
+    /// <inheritdoc/>
+    public class SubCommandParamConfig_Rename_Replace : SubCommandParamConfig_Rename<ParamRenameReplace>
+    {
+        /// <inheritdoc/>
+        public SubCommandParamConfig_Rename_Replace() : base()
+        {
+            new Option<string>(
+                aliases: new string[] { "--pattern" },
+                description: "匹配项, 支持正则表达式")
+            {
+                Arity = ArgumentArity.ExactlyOne,
+                IsRequired = true,
+            }
+            .Set(this, (param, value) => param.Pattern = value);
+
+            new Option<string>(
+                aliases: new string[] { "--replacement" },
+                description: "替换内容")
+            {
+                Arity = ArgumentArity.ExactlyOne,
+                IsRequired = true,
+            }
+            .Set(this, (param, value) => param.Replacement = value);
+        }
+    }
     /// <summary>
     /// 子命令: 重命名 - 替换
     /// </summary>
-    public class SubCommand_Rename_Replace : AbsSubCommand_Rename<ParamRenameReplace>, ISubCommand
+    public class SubCommand_Rename_Replace : ICommandSub<ParamRenameReplace>
     {
-        /// <inheritdoc/>
-        public SubCommand_Rename_Replace(ILog log, GlobalOptions globalOptions)
-            : base(log, globalOptions) { }
+        private readonly ILog log;
 
         /// <inheritdoc/>
-        public override string CommandNameSign() => "replace";
+        public SubCommand_Rename_Replace(ILog log)
+        {
+            this.log = log;
+        }
 
         /// <inheritdoc/>
-        public override string CommandDescription() => "替换";
+        public string GetNameSign() => "replace";
 
         /// <inheritdoc/>
-        public override IMain<ParamRenameReplace> HandlerLogic()
+        public string GetDescription() => "替换";
+
+        /// <inheritdoc/>
+        public IExecute<ParamRenameReplace> GetExecute()
         {
             return new Main_Rename_Replace(log);
         }
 
         /// <inheritdoc/>
-        public override IEnumerable<IOptionRegistration<ParamRenameReplace>> SetOptions()
+        public IParamConfig<ParamRenameReplace> GetParamConfig()
         {
-            var base_list = base.SetOptions();
-            if (base_list != null)
-            {
-                foreach (var base_item in base_list)
-                {
-                    yield return base_item;
-                }
-            }
-
-            yield return new OptionRegistration<string, ParamRenameReplace>(
-                new Option<string>(
-                aliases: new string[] { "--pattern" },
-                description: "匹配项, 支持正则表达式")
-                {
-                    Arity = ArgumentArity.ExactlyOne,
-                    IsRequired = true,
-                },
-                (param, value) => param.Pattern = value);
-
-            yield return new OptionRegistration<string, ParamRenameReplace>(
-                new Option<string>(
-                aliases: new string[] { "--replacement" },
-                description: "替换内容")
-                {
-                    Arity = ArgumentArity.ExactlyOne,
-                    IsRequired = true,
-                },
-                (param, value) => param.Replacement = value);
+            return new SubCommandParamConfig_Rename_Replace();
         }
+
+        /// <inheritdoc/>
+        public IEnumerable<ICommandSub> GetSubCommands() => null;
     }
 }

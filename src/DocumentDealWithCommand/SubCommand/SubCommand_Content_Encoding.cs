@@ -28,7 +28,6 @@ namespace DocumentDealWithCommand.SubCommand
         }
     }
 
-
     /// <summary>
     /// 子命令: 内容 - 编码修改
     /// </summary>

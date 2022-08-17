@@ -6,12 +6,15 @@ using System.Text;
 
 using YTS.Log;
 
+using CommandParamUse.Implementation;
+
 namespace CommandParamUse.Test
 {
     [TestClass]
     public class TestUseCommand
     {
         private ILog log;
+
         [TestInitialize]
         public void Init()
         {
@@ -44,7 +47,7 @@ namespace CommandParamUse.Test
         {
             public RootCommandConfig(P param) : base(param)
             {
-                AddInputOption(new InputOption<string, P>(new Option<string>(
+                new Option<string>(
                     aliases: new string[] { "--name" },
                     description: "Ãû³ÆÅäÖÃ",
                     getDefaultValue: () =>
@@ -53,7 +56,7 @@ namespace CommandParamUse.Test
                     })
                 {
                     Arity = ArgumentArity.ExactlyOne,
-                }, (param, value) => param.Name = value), true);
+                }.SetGlobal(this, (param, value) => param.Name = value);
             }
         }
         public class RenameParam : GlobalParam
@@ -82,7 +85,7 @@ namespace CommandParamUse.Test
         {
             public SubCommand_RenameConfig(P param) : base(param)
             {
-                AddInputOption(new InputOption<string, P>(new Option<string>(
+                new Option<string>(
                     aliases: new string[] { "--target" },
                     description: "Ä¿±êÅäÖÃ",
                     getDefaultValue: () =>
@@ -91,7 +94,7 @@ namespace CommandParamUse.Test
                     })
                 {
                     Arity = ArgumentArity.ExactlyOne,
-                }, (param, value) => param.Target = value));
+                }.Set(this, (param, value) => param.Target = value);
             }
         }
         public class SubCommand_RenameExecute : IExecute<RenameParam>

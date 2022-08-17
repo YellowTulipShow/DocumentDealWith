@@ -7,8 +7,11 @@ namespace DocumentDealWithCommand
     /// <summary>
     /// 全局选项集合
     /// </summary>
-    public struct GlobalOptionsValue : IParam
+    public class GlobalOptionsValue : IParam
     {
+        /// <inheritdoc/>
+        public GlobalOptionsValue() { }
+
         /// <summary>
         /// 配置信息
         /// </summary>

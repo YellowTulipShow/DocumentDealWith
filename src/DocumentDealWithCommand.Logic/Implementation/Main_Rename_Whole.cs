@@ -1,14 +1,13 @@
 ﻿using System;
 using System.IO;
 
-using YTS.ConsolePrint;
 using YTS.Log;
+using YTS.ConsolePrint;
 
 using DocumentDealWithCommand.Logic.Models;
 
 namespace DocumentDealWithCommand.Logic.Implementation
 {
-
     /// <summary>
     /// 实现命令类: 重命名 - 整体部分
     /// </summary>

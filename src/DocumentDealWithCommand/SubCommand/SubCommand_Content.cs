@@ -11,7 +11,7 @@ namespace DocumentDealWithCommand.SubCommand
     /// <summary>
     /// 子命令: 内容相关操作
     /// </summary>
-    public class SubCommand_Content : ICommandSub<GlobalOptionsValue>
+    public class SubCommand_Content : ICommandSub
     {
         private readonly ILog log;
 
@@ -28,15 +28,6 @@ namespace DocumentDealWithCommand.SubCommand
         public string GetDescription() => "内容操作";
 
         /// <inheritdoc/>
-        public IExecute<GlobalOptionsValue> GetExecute() => null;
-
-        /// <inheritdoc/>
-        public IParamConfig<GlobalOptionsValue> GetParamConfig()
-        {
-            return new MainCommandParamConfig();
-        }
-
-        /// <inheritdoc/>
         public IEnumerable<ICommandSub> GetSubCommands()
         {
             yield return new SubCommand_Content_Encoding(log);
@@ -51,6 +42,5 @@ namespace DocumentDealWithCommand.SubCommand
             return (config.AllowExtension.Global ?? new string[] { }).Concat(
                 config.AllowExtension.ContentCommand ?? new string[] { }).ToArray();
         }
-
     }
 }

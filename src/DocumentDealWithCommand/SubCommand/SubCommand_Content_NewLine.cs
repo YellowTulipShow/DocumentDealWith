@@ -3,51 +3,62 @@ using System.Collections.Generic;
 
 using YTS.Log;
 
-using DocumentDealWithCommand.Logic;
+using CommandParamUse;
+using CommandParamUse.Implementation;
+
 using DocumentDealWithCommand.Logic.Models;
 using DocumentDealWithCommand.Logic.Implementation;
 
 namespace DocumentDealWithCommand.SubCommand
 {
+    /// <inheritdoc/>
+    public class SubCommandParamConfig_Content_NewLine : AddParamConfigDefalutValue<CommandParameters_Content_NewLine>
+    {
+        /// <inheritdoc/>
+        public SubCommandParamConfig_Content_NewLine() : base()
+        {
+            new Option<ENewLineType>(
+                aliases: new string[] { "-t", "--type" },
+                description: "目标换行标识")
+            {
+                Arity = ArgumentArity.ExactlyOne,
+                IsRequired = true,
+            }.Set(this, (param, value) => param.Type = value);
+        }
+    }
+
     /// <summary>
     /// 子命令: 内容 - 换行符
     /// </summary>
-    public class SubCommand_Content_NewLine : AbsSubCommandImplementationVersion<CommandParameters_Content_NewLine>, ISubCommand
+    public class SubCommand_Content_NewLine : ICommandSub<CommandParameters_Content_NewLine>
     {
-        /// <inheritdoc/>
-        public SubCommand_Content_NewLine(ILog log, GlobalOptions globalOptions)
-            : base(log, globalOptions) { }
+        private readonly ILog log;
 
         /// <inheritdoc/>
-        public override string CommandNameSign() => "newline";
+        public SubCommand_Content_NewLine(ILog log)
+        {
+            this.log = log;
+        }
 
         /// <inheritdoc/>
-        public override string CommandDescription() => "重新配置换行符";
+        public string GetNameSign() => "newline";
 
         /// <inheritdoc/>
-        public override IMain<CommandParameters_Content_NewLine> HandlerLogic()
+        public string GetDescription() => "重新配置换行符";
+
+        /// <inheritdoc/>
+        public IExecute<CommandParameters_Content_NewLine> GetExecute()
         {
             return new Main_Content_NewLine(log);
         }
 
         /// <inheritdoc/>
-        protected override string[] GetConfigAllowExtensions(Configs config)
+        public IParamConfig<CommandParameters_Content_NewLine> GetParamConfig()
         {
-            return SubCommand_Content.CalcAllowExtensions(config);
+            return new SubCommandParamConfig_Content_NewLine();
         }
 
         /// <inheritdoc/>
-        public override IEnumerable<IOptionRegistration<CommandParameters_Content_NewLine>> SetOptions()
-        {
-            yield return new OptionRegistration<ENewLineType, CommandParameters_Content_NewLine>(
-                new Option<ENewLineType>(
-                aliases: new string[] { "-t", "--type" },
-                description: "目标换行标识")
-                {
-                    Arity = ArgumentArity.ExactlyOne,
-                    IsRequired = true,
-                },
-                (param, value) => param.Type = value);
-        }
+        public IEnumerable<ICommandSub> GetSubCommands() => null;
     }
 }

@@ -16,7 +16,7 @@ namespace DocumentDealWithCommand
     /// <summary>
     /// 主命令
     /// </summary>
-    public class MainCommand : ICommandRoot<GlobalOptionsValue>
+    public class MainCommand : ICommandRoot
     {
         private readonly ILog log;
 
@@ -33,18 +33,6 @@ namespace DocumentDealWithCommand
         public string GetDescription()
         {
             return "文档文件相关操作命令";
-        }
-
-        /// <inheritdoc/>
-        public IExecute<GlobalOptionsValue> GetExecute()
-        {
-            return null;
-        }
-
-        /// <inheritdoc/>
-        public IParamConfig<GlobalOptionsValue> GetParamConfig()
-        {
-            return new MainCommandParamConfig();
         }
 
         /// <inheritdoc/>

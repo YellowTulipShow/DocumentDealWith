@@ -1,10 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
 
 using YTS.Log;
 
 using DocumentDealWithCommand.Logic.Models;
-using System;
 
 namespace DocumentDealWithCommand.Logic.Implementation
 {
