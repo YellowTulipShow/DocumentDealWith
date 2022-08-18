@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-using System.Collections.Generic;
-
-using Newtonsoft.Json;
+﻿using System.IO;
 
 using YTS.ConsolePrint;
 
@@ -17,9 +12,17 @@ namespace DocumentDealWithCommand.Logic.Models
     public class BasicCommandParameters : IParam
     {
         /// <summary>
+        /// 全局参数
+        /// </summary>
+        public readonly GlobalOptionsValue GlobalOptions;
+
+        /// <summary>
         /// 实例化参数
         /// </summary>
-        public BasicCommandParameters() { }
+        public BasicCommandParameters()
+        {
+            GlobalOptions = new GlobalOptionsValue();
+        }
 
         /// <summary>
         /// 配置信息

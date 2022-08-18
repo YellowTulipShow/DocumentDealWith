@@ -7,21 +7,23 @@ using YTS.ConsolePrint;
 using CommandParamUse;
 using CommandParamUse.Implementation;
 
+using DocumentDealWithCommand.Logic.Models;
+
 namespace DocumentDealWithCommand
 {
     /// <inheritdoc/>
-    public abstract class MainCommandParamConfig<P> : AddParamConfigDefalutValue<P> where P : GlobalOptionsValue, new()
+    public abstract class MainCommandParamConfig<P> : AddParamConfigDefalutValue<P> where P : BasicCommandParameters, new()
     {
         /// <inheritdoc/>
         public MainCommandParamConfig() : base()
         {
-            GetOption_Config().SetGlobal(this, (param, value) => param.Config = value);
-            GetOption_RootDire().SetGlobal(this, (param, value) => param.RootDire = value);
-            GetOption_ConsoleType().SetGlobal(this, (param, value) => param.ConsoleType = value);
-            GetOption_Files().SetGlobal(this, (param, value) => param.Files = value);
-            GetOption_Path().SetGlobal(this, (param, value) => param.Path = value);
-            GetOption_Recurse().SetGlobal(this, (param, value) => param.PathIsRecurse = value);
-            GetOption_FileText().SetGlobal(this, (param, value) => param.FileText = value);
+            GetOption_Config().SetGlobal(this, (param, value) => param.GlobalOptions.Config = value);
+            GetOption_RootDire().SetGlobal(this, (param, value) => param.GlobalOptions.RootDire = value);
+            GetOption_ConsoleType().SetGlobal(this, (param, value) => param.GlobalOptions.ConsoleType = value);
+            GetOption_Files().SetGlobal(this, (param, value) => param.GlobalOptions.Files = value);
+            GetOption_Path().SetGlobal(this, (param, value) => param.GlobalOptions.Path = value);
+            GetOption_Recurse().SetGlobal(this, (param, value) => param.GlobalOptions.PathIsRecurse = value);
+            GetOption_FileText().SetGlobal(this, (param, value) => param.GlobalOptions.FileText = value);
         }
 
         private Option<string> GetOption_Config()

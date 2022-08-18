@@ -15,7 +15,7 @@ using YTS.CodingSupportLibrary;
 namespace DocumentDealWithCommand.SubCommand
 {
     /// <inheritdoc/>
-    public class SubCommandParamConfig_Rename<P> : AddParamConfigDefalutValue<P> where P : AbsParamRename, new()
+    public class SubCommandParamConfig_Rename<P> : MainCommandParamConfig<P> where P : AbsParamRename, new()
     {
         /// <inheritdoc/>
         public SubCommandParamConfig_Rename() : base()
@@ -46,8 +46,8 @@ namespace DocumentDealWithCommand.SubCommand
         public SubCommandParamConfig_Rename_Whole() : base()
         {
             new Option<string>(
-                            aliases: new string[] { "--rule" },
-                            description: "命名规则")
+                aliases: new string[] { "--rule" },
+                description: "命名规则")
             {
                 Arity = ArgumentArity.ExactlyOne,
                 IsRequired = true,

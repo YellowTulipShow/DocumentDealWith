@@ -12,7 +12,7 @@ using DocumentDealWithCommand.Logic.Implementation;
 namespace DocumentDealWithCommand.SubCommand
 {
     /// <inheritdoc/>
-    public class SubCommandParamConfig_Content_NewLine : AddParamConfigDefalutValue<CommandParameters_Content_NewLine>
+    public class SubCommandParamConfig_Content_NewLine : MainCommandParamConfig<CommandParameters_Content_NewLine>
     {
         /// <inheritdoc/>
         public SubCommandParamConfig_Content_NewLine() : base()

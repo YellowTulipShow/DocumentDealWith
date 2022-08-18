@@ -2,7 +2,7 @@
 
 using CommandParamUse;
 
-namespace DocumentDealWithCommand
+namespace DocumentDealWithCommand.Logic.Models
 {
     /// <summary>
     /// 全局选项集合

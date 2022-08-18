@@ -3,6 +3,8 @@ using System.Text;
 
 using YTS.Log;
 
+using CommandParamUse;
+
 namespace DocumentDealWithCommand
 {
     class Program
@@ -14,8 +16,8 @@ namespace DocumentDealWithCommand
                 var logFile = ILogExtend.GetLogFilePath("Program");
                 ILog log = new FilePrintLog(logFile, Encoding.UTF8)
                     .Connect(new ConsolePrintLog());
-                CommandArgsParser commandArgsParser = new CommandArgsParser(log);
-                return commandArgsParser.OnParser(args);
+                ICommandRoot rootCmd = new MainCommand(log);
+                return rootCmd.OnParser(args, log);
             }
             catch (Exception ex)
             {

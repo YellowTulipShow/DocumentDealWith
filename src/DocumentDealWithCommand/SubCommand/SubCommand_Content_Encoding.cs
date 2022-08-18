@@ -13,7 +13,7 @@ using DocumentDealWithCommand.Logic.Implementation;
 namespace DocumentDealWithCommand.SubCommand
 {
     /// <inheritdoc/>
-    public class SubCommandParamConfig_Content_Encoding : AddParamConfigDefalutValue<CommandParameters_Content_Encoding>
+    public class SubCommandParamConfig_Content_Encoding : MainCommandParamConfig<CommandParameters_Content_Encoding>
     {
         /// <inheritdoc/>
         public SubCommandParamConfig_Content_Encoding() : base()
