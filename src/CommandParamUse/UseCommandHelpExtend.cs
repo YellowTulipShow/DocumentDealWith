@@ -104,6 +104,7 @@ namespace CommandParamUse
                             TParam param = pConfig.CreateParam();
                             FillParam(context, param, pConfig.GetGlobalInputs());
                             FillParam(context, param, pConfig.GetInputs());
+                            param = pConfig.ParameterProcess(param);
                             context.ExitCode = exe.OnExecute(param);
                         }
                         catch (Exception ex)

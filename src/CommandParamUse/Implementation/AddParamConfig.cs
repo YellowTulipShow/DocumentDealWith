@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using YTS.Log;
+
 namespace CommandParamUse.Implementation
 {
 
@@ -66,5 +68,8 @@ namespace CommandParamUse.Implementation
                 inputs.Add(inputOption);
             }
         }
+
+        /// <inheritdoc/>
+        public virtual P ParameterProcess(P param, ILog log) => param;
     }
 }

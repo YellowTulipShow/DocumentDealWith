@@ -39,6 +39,7 @@ namespace DocumentDealWithCommand
         public IEnumerable<ICommandSub> GetSubCommands()
         {
             yield return new SubCommand_Content(log);
+            yield return new SubCommand_Rename_Whole(log);
         }
     }
 }

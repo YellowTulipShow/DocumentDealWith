@@ -8,8 +8,9 @@ using CommandParamUse;
 using CommandParamUse.Implementation;
 
 using DocumentDealWithCommand.Logic.Models;
+using YTS.Log;
 
-namespace DocumentDealWithCommand
+namespace DocumentDealWithCommand.ParamConfigs
 {
     /// <inheritdoc/>
     public abstract class MainCommandParamConfig<P> : AddParamConfigDefalutValue<P> where P : BasicCommandParameters, new()
@@ -105,6 +106,14 @@ namespace DocumentDealWithCommand
                 Arity = ArgumentArity.ZeroOrOne,
             };
             return option;
+        }
+
+        /// <inheritdoc/>
+        public override P ParameterProcess(P param, ILog log)
+        {
+            param = base.ParameterProcess(param, log);
+            param.FillBasicCommandParameters(param.GlobalOptions, log);
+            return param;
         }
     }
 }

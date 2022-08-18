@@ -1,32 +1,15 @@
-﻿using System.CommandLine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using YTS.Log;
 
 using CommandParamUse;
-using CommandParamUse.Implementation;
 
 using DocumentDealWithCommand.Logic.Models;
 using DocumentDealWithCommand.Logic.Implementation;
+using DocumentDealWithCommand.ParamConfigs;
 
 namespace DocumentDealWithCommand.SubCommand
 {
-    /// <inheritdoc/>
-    public class SubCommandParamConfig_Content_NewLine : MainCommandParamConfig<CommandParameters_Content_NewLine>
-    {
-        /// <inheritdoc/>
-        public SubCommandParamConfig_Content_NewLine() : base()
-        {
-            new Option<ENewLineType>(
-                aliases: new string[] { "-t", "--type" },
-                description: "目标换行标识")
-            {
-                Arity = ArgumentArity.ExactlyOne,
-                IsRequired = true,
-            }.Set(this, (param, value) => param.Type = value);
-        }
-    }
-
     /// <summary>
     /// 子命令: 内容 - 换行符
     /// </summary>
