@@ -7,7 +7,7 @@ using DocumentDealWithCommand.Logic.Models;
 namespace DocumentDealWithCommand.ParamConfigs
 {
     /// <inheritdoc/>
-    public class SubCommandParamConfig_Content_NewLine : MainCommandParamConfig<CommandParameters_Content_NewLine>
+    public class SubCommandParamConfig_Content_NewLine : AbsBasicParamConfig<CommandParameters_Content_NewLine>
     {
         /// <inheritdoc/>
         public SubCommandParamConfig_Content_NewLine() : base()

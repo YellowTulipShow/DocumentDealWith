@@ -7,7 +7,7 @@ using DocumentDealWithCommand.Logic.Models;
 namespace DocumentDealWithCommand.ParamConfigs
 {
     /// <inheritdoc/>
-    public class SubCommandParamConfig_Rename<P> : MainCommandParamConfig<P> where P : AbsParamRename, new()
+    public class SubCommandParamConfig_Rename<P> : AbsBasicParamConfig<P> where P : AbsParamRename, new()
     {
         /// <inheritdoc/>
         public SubCommandParamConfig_Rename() : base()

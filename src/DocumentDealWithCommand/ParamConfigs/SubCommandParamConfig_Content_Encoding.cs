@@ -9,7 +9,7 @@ using DocumentDealWithCommand.Logic.Models;
 namespace DocumentDealWithCommand.ParamConfigs
 {
     /// <inheritdoc/>
-    public class SubCommandParamConfig_Content_Encoding : MainCommandParamConfig<CommandParameters_Content_Encoding>
+    public class SubCommandParamConfig_Content_Encoding : AbsBasicParamConfig<CommandParameters_Content_Encoding>
     {
         /// <inheritdoc/>
         public SubCommandParamConfig_Content_Encoding() : base()

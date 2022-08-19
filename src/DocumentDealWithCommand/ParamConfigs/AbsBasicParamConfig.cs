@@ -1,7 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
-using System;
 using System.Text;
+using System.CommandLine;
 
 using YTS.Log;
 using YTS.ConsolePrint;
@@ -9,20 +10,128 @@ using YTS.ConsolePrint;
 using Newtonsoft.Json;
 
 using CommandParamUse;
+using CommandParamUse.Implementation;
+
 using DocumentDealWithCommand.Logic.Models;
 using DocumentDealWithCommand.Logic.Implementation;
 
-namespace DocumentDealWithCommand.Logic.Models
+namespace DocumentDealWithCommand.ParamConfigs
 {
-    /// <summary>
-    /// 静态扩展: 全局选项集合
-    /// </summary>
-    public static class GlobalOptionsValueExtend
+    /// <inheritdoc/>
+    public abstract class AbsBasicParamConfig<P> : AddParamConfigDefalutValue<P> where P : BasicCommandParameters, new()
     {
+        /// <summary>
+        /// 日志接口
+        /// </summary>
+        protected readonly ILog log;
+
+        /// <inheritdoc/>
+        public AbsBasicParamConfig(ILog log) : base()
+        {
+            this.log = log;
+
+            GetOption_Config().SetGlobal(this, (param, value) => param.GlobalOptions.Config = value);
+            GetOption_RootDire().SetGlobal(this, (param, value) => param.GlobalOptions.RootDire = value);
+            GetOption_ConsoleType().SetGlobal(this, (param, value) => param.GlobalOptions.ConsoleType = value);
+            GetOption_Files().SetGlobal(this, (param, value) => param.GlobalOptions.Files = value);
+            GetOption_Path().SetGlobal(this, (param, value) => param.GlobalOptions.Path = value);
+            GetOption_Recurse().SetGlobal(this, (param, value) => param.GlobalOptions.PathIsRecurse = value);
+            GetOption_FileText().SetGlobal(this, (param, value) => param.GlobalOptions.FileText = value);
+        }
+
+        private Option<string> GetOption_Config()
+        {
+            var option = new Option<string>(
+                aliases: new string[] { "--config" },
+                description: "配置文件读取路径",
+                getDefaultValue: () =>
+                {
+                    // 当前用户配置地址
+                    string dire = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                    string file = Path.Combine(dire, ".command_document_dealwith_config.json");
+                    return file;
+                })
+            {
+                Arity = ArgumentArity.ExactlyOne,
+            };
+            return option;
+        }
+        private Option<string> GetOption_RootDire()
+        {
+            var option = new Option<string>(
+                aliases: new string[] { "--root" },
+                description: "操作文件所属路径",
+                getDefaultValue: () => Environment.CurrentDirectory)
+            {
+                Arity = ArgumentArity.ZeroOrOne,
+            };
+            return option;
+        }
+        private Option<EConsoleType> GetOption_ConsoleType()
+        {
+            var option = new Option<EConsoleType>(
+                aliases: new string[] { "--console" },
+                description: "输出打印配置, 控制台类型",
+                getDefaultValue: () => EConsoleTypeExtend.GetDefalutConsoleType())
+            {
+                Arity = ArgumentArity.ZeroOrOne,
+            };
+            return option;
+        }
+        private Option<string[]> GetOption_Files()
+        {
+            var option = new Option<string[]>(
+                aliases: new string[] { "--files" },
+                description: "操作文件路径")
+            {
+                Arity = ArgumentArity.ZeroOrMore,
+                AllowMultipleArgumentsPerToken = true,
+            };
+            return option;
+        }
+        private Option<string> GetOption_Path()
+        {
+            var option = new Option<string>(
+                aliases: new string[] { "--path" },
+                description: "操作文件所属路径")
+            {
+                Arity = ArgumentArity.ZeroOrOne,
+            };
+            return option;
+        }
+        private Option<bool> GetOption_Recurse()
+        {
+            var option = new Option<bool>(
+                aliases: new string[] { "--recurse" },
+                description: "是否递归查询, 用于与 --path 参数配合查询")
+            {
+                Arity = ArgumentArity.ZeroOrOne,
+            };
+            return option;
+        }
+        private Option<string> GetOption_FileText()
+        {
+            var option = new Option<string>(
+                aliases: new string[] { "--txt" },
+                description: "操作文件组合清单文件路径")
+            {
+                Arity = ArgumentArity.ZeroOrOne,
+            };
+            return option;
+        }
+
+        /// <inheritdoc/>
+        public override P ParameterProcess(P param)
+        {
+            param = base.ParameterProcess(param);
+            param = FillBasicCommandParameters(param, param.GlobalOptions);
+            return param;
+        }
+
         /// <summary>
         /// 赋值转换为基础参数
         /// </summary>
-        public static T FillBasicCommandParameters<T>(this T m, GlobalOptionsValue gOValue, ILog log)
+        private T FillBasicCommandParameters<T>(T m, GlobalOptionsValue gOValue)
             where T : BasicCommandParameters, new()
         {
             var logArgs = log.CreateArgDictionary();
@@ -91,23 +200,15 @@ namespace DocumentDealWithCommand.Logic.Models
             }
         }
 
-        private static string ToAbsPath(string path, string root)
+        private string ToAbsPath(string path, string root)
         {
             path = path?.Trim();
             root = root?.Trim();
             if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(root))
-            {
                 return null;
-            }
-
-            if (Path.IsPathRooted(path))
-            {
-                return path;
-            }
-            else
-            {
-                return Path.Combine(root, path);
-            }
+            return Path.IsPathRooted(path) ?
+                path :
+                Path.Combine(root, path);
         }
 
         /// <summary>
@@ -116,7 +217,7 @@ namespace DocumentDealWithCommand.Logic.Models
         /// <param name="configFilePath">配置文件路径指定</param>
         /// <param name="print">打印输出接口</param>
         /// <returns>配置内容</returns>
-        private static Configs ReadConfigs(string configFilePath, IPrintColor print)
+        private Configs ReadConfigs(string configFilePath, IPrintColor print)
         {
             Encoding encoding = Encoding.UTF8;
             var jsonSerializerSettings = new JsonSerializerSettings()
@@ -144,9 +245,9 @@ namespace DocumentDealWithCommand.Logic.Models
         /// <summary>
         /// 获取配置: 允许的文件名队列
         /// </summary>
-        private static string[] GetConfigAllowExtensions(Configs config)
+        public virtual string[] GetConfigAllowExtensions(Configs config)
         {
-            return null;
+            return config.AllowExtension.Global;
         }
     }
 }
