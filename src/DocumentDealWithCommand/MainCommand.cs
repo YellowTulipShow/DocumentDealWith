@@ -10,33 +10,26 @@ using YTS.Log;
 using CommandParamUse;
 
 using DocumentDealWithCommand.SubCommand;
+using DocumentDealWithCommand.Logic;
 
 namespace DocumentDealWithCommand
 {
     /// <summary>
     /// 主命令
     /// </summary>
-    public class MainCommand : ICommandRoot
+    public class MainCommand : AbsUseLog, ICommandRoot
     {
-        private readonly ILog log;
-
         /// <summary>
-        /// 实例化主命令
+        /// 实例化: 主命令
         /// </summary>
-        /// <param name="log"></param>
-        public MainCommand(ILog log)
-        {
-            this.log = log;
-        }
+        /// <param name="log">日志接口</param>
+        public MainCommand(ILog log) : base(log) { }
 
         /// <inheritdoc/>
-        public string GetDescription()
-        {
-            return "文档文件相关操作命令";
-        }
+        public string GetDescription() => "文档文件相关操作命令";
 
         /// <inheritdoc/>
-        public IEnumerable<ICommandSub> GetSubCommands()
+        public virtual IEnumerable<ICommandSub> GetSubCommands()
         {
             yield return new SubCommand_Content(log);
             yield return new SubCommand_Rename_Whole(log);

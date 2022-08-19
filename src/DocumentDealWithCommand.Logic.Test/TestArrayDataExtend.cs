@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using DocumentDealWithCommand.Logic.Implementation;
+using System.Collections.Generic;
 
 namespace DocumentDealWithCommand.Logic.Test
 {
@@ -39,7 +40,7 @@ namespace DocumentDealWithCommand.Logic.Test
         {
             int[] arr1 = new int[] { 1, 2, 3 };
             int[] arr2 = new int[] { 3, 4, 5 };
-            int[] arr3 = arr1.ConcatCanNull(arr2);
+            IList<int> arr3 = arr1.ConcatCanNull(arr2);
 
             Assert.AreEqual("1,2,3,3,4,5", string.Join(",", arr3));
             Assert.AreEqual("1,2,3", string.Join(",", arr1));

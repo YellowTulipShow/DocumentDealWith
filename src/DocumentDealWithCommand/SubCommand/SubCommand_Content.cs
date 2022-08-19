@@ -3,23 +3,20 @@ using System.Collections.Generic;
 
 using YTS.Log;
 
-using DocumentDealWithCommand.Logic.Models;
 using CommandParamUse;
+
+using DocumentDealWithCommand.Logic;
+using DocumentDealWithCommand.Logic.Models;
 
 namespace DocumentDealWithCommand.SubCommand
 {
     /// <summary>
     /// 子命令: 内容相关操作
     /// </summary>
-    public class SubCommand_Content : ICommandSub
+    public class SubCommand_Content : AbsUseLog, ICommandSub
     {
-        private readonly ILog log;
-
         /// <inheritdoc/>
-        public SubCommand_Content(ILog log)
-        {
-            this.log = log;
-        }
+        public SubCommand_Content(ILog log) : base(log) { }
 
         /// <inheritdoc/>
         public string GetNameSign() => "content";
@@ -28,7 +25,7 @@ namespace DocumentDealWithCommand.SubCommand
         public string GetDescription() => "内容操作";
 
         /// <inheritdoc/>
-        public IEnumerable<ICommandSub> GetSubCommands()
+        public virtual IEnumerable<ICommandSub> GetSubCommands()
         {
             yield return new SubCommand_Content_Encoding(log);
             yield return new SubCommand_Content_NewLine(log);

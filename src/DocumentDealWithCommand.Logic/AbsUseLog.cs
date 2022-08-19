@@ -1,11 +1,11 @@
 ﻿using YTS.Log;
 
-namespace DocumentDealWithCommand.Logic.Implementation
+namespace DocumentDealWithCommand.Logic
 {
     /// <summary>
-    /// 抽象类: 执行逻辑
+    /// 抽象类: 基础使用日志类
     /// </summary>
-    public abstract class AbsMain
+    public abstract class AbsUseLog
     {
         /// <summary>
         /// 日志接口
@@ -13,10 +13,10 @@ namespace DocumentDealWithCommand.Logic.Implementation
         protected readonly ILog log;
 
         /// <summary>
-        /// 初始化实例执行逻辑
+        /// 初始化: 基础使用日志类
         /// </summary>
         /// <param name="log">日志接口</param>
-        public AbsMain(ILog log)
+        public AbsUseLog(ILog log)
         {
             this.log = log;
         }

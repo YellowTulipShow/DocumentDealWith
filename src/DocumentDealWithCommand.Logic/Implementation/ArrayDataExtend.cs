@@ -89,9 +89,9 @@ namespace DocumentDealWithCommand.Logic.Implementation
         /// <param name="arr">原数组</param>
         /// <param name="objs">目标数组</param>
         /// <returns>结果数组</returns>
-        public static T[] ConcatCanNull<T>(this T[] arr, T[] objs)
+        public static IList<T> ConcatCanNull<T>(this IList<T> arr, IList<T> objs)
         {
-            return (arr ?? new T[] { }).Concat(objs ?? new T[] { }).ToArray();
+            return (arr ?? new List<T>()).Concat(objs ?? new List<T>()).ToArray();
         }
     }
 }

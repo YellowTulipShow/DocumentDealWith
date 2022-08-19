@@ -14,7 +14,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
     /// <summary>
     /// 实现命令类: 内容操作 - 换行符类型更改
     /// </summary>
-    public class Main_Content_NewLine : AbsMain, IExecute<CommandParameters_Content_NewLine>
+    public class Main_Content_NewLine : AbsUseLog, IExecute<CommandParameters_Content_NewLine>
     {
         private const byte LF = (byte)ENewLineType.LF;
         private const byte CR = (byte)ENewLineType.CR;

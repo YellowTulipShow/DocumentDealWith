@@ -5,6 +5,7 @@ using YTS.Log;
 using CommandParamUse;
 
 using DocumentDealWithCommand.ParamConfigs;
+using DocumentDealWithCommand.Logic;
 using DocumentDealWithCommand.Logic.Models;
 using DocumentDealWithCommand.Logic.Implementation;
 
@@ -13,15 +14,10 @@ namespace DocumentDealWithCommand.SubCommand
     /// <summary>
     /// 子命令: 重命名
     /// </summary>
-    public class SubCommand_Rename_Whole : ICommandSub<ParamRenameWhole>
+    public class SubCommand_Rename_Whole : AbsUseLog, ICommandSub<ParamRenameWhole>
     {
-        private readonly ILog log;
-
         /// <inheritdoc/>
-        public SubCommand_Rename_Whole(ILog log)
-        {
-            this.log = log;
-        }
+        public SubCommand_Rename_Whole(ILog log) : base(log) { }
 
         /// <inheritdoc/>
         public string GetNameSign() => "rename";
@@ -30,7 +26,7 @@ namespace DocumentDealWithCommand.SubCommand
         public string GetDescription() => "内容操作";
 
         /// <inheritdoc/>
-        public IExecute<ParamRenameWhole> GetExecute()
+        public virtual IExecute<ParamRenameWhole> GetExecute()
         {
             return new Main_Rename_Whole(log);
         }
@@ -42,7 +38,7 @@ namespace DocumentDealWithCommand.SubCommand
         }
 
         /// <inheritdoc/>
-        public IEnumerable<ICommandSub> GetSubCommands()
+        public virtual IEnumerable<ICommandSub> GetSubCommands()
         {
             yield return new SubCommand_Rename_Replace(log);
             yield return new SubCommand_Rename_AddOrDelete(log);

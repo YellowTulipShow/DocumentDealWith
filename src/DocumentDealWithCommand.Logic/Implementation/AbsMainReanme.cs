@@ -9,7 +9,7 @@ using DocumentDealWithCommand.Logic.Models;
 namespace DocumentDealWithCommand.Logic.Implementation
 {
     /// <inheritdoc/>
-    public abstract class AbsMainReanme<T> : AbsMain, IExecute<T>, IHandleRenameData where T : AbsParamRename, new()
+    public abstract class AbsMainReanme<T> : AbsUseLog, IExecute<T>, IHandleRenameData where T : AbsParamRename, new()
     {
         /// <summary>
         /// 更改文件名称执行方法

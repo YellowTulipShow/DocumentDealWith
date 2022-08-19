@@ -1,4 +1,6 @@
-﻿using DocumentDealWithCommand.Logic.Models;
+﻿using System.Linq;
+
+using DocumentDealWithCommand.Logic.Models;
 using DocumentDealWithCommand.Logic.Implementation;
 
 namespace DocumentDealWithCommand.ParamConfigs
@@ -13,7 +15,8 @@ namespace DocumentDealWithCommand.ParamConfigs
         public override string[] GetConfigAllowExtensions(Configs config)
         {
             return base.GetConfigAllowExtensions(config)
-                .ConcatCanNull(config.AllowExtension.ContentCommand);
+                .ConcatCanNull(config.AllowExtension.ContentCommand)
+                .ToArray();
         }
     }
 }

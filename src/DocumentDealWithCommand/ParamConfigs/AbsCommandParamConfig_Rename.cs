@@ -1,4 +1,5 @@
-﻿using System.CommandLine;
+﻿using System.Linq;
+using System.CommandLine;
 
 using CommandParamUse;
 
@@ -36,7 +37,8 @@ namespace DocumentDealWithCommand.ParamConfigs
         public override string[] GetConfigAllowExtensions(Configs config)
         {
             return base.GetConfigAllowExtensions(config)
-                .ConcatCanNull(config.AllowExtension.RenameCommand);
+                .ConcatCanNull(config.AllowExtension.RenameCommand)
+                .ToArray();
         }
     }
 }

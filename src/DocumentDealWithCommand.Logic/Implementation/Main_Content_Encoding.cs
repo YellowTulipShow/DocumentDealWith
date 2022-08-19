@@ -16,7 +16,7 @@ namespace DocumentDealWithCommand.Logic.Implementation
     /// <summary>
     /// 实现命令类: 内容操作 - 编码修改
     /// </summary>
-    public class Main_Content_Encoding : AbsMain, IExecute<CommandParameters_Content_Encoding>
+    public class Main_Content_Encoding : AbsUseLog, IExecute<CommandParameters_Content_Encoding>
     {
         /// <inheritdoc/>
         public Main_Content_Encoding(ILog log) : base(log)
