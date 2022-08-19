@@ -1,9 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using System.Text;
-
-using YTS.Log;
-
 using DocumentDealWithCommand.Logic.Implementation;
 
 namespace DocumentDealWithCommand.Logic.Test
@@ -11,24 +7,16 @@ namespace DocumentDealWithCommand.Logic.Test
     [TestClass]
     public class TestArrayDataExtend
     {
-        private ILog log;
         [TestInitialize]
-        public void Init()
-        {
-            var logFile = ILogExtend.GetLogFilePath("TestArrayDataExtend");
-            log = new FilePrintLog(logFile, Encoding.UTF8)
-                .Connect(new BasicJSONConsolePrintLog());
-        }
+        public void Init() { }
 
         [TestCleanup]
-        public void Clean()
-        {
-        }
+        public void Clean() { }
 
         [TestMethod]
         public void Test_UserInputToProgramTargetIndex()
         {
-            void Test(int totalListCount, uint userInputIndex, uint programTargetIndex)
+            static void Test(int totalListCount, uint userInputIndex, uint programTargetIndex)
             {
                 uint r = ArrayDataExtend.UserInputToProgramTargetIndex(userInputIndex, totalListCount);
                 Assert.AreEqual(r, programTargetIndex);
@@ -44,6 +32,33 @@ namespace DocumentDealWithCommand.Logic.Test
             Test(8, 8, 7);
             Test(8, 9, 7);
             Test(8, 10, 7);
+        }
+
+        [TestMethod]
+        public void Test_ConcatCanNull()
+        {
+            int[] arr1 = new int[] { 1, 2, 3 };
+            int[] arr2 = new int[] { 3, 4, 5 };
+            int[] arr3 = arr1.ConcatCanNull(arr2);
+
+            Assert.AreEqual("1,2,3,3,4,5", string.Join(",", arr3));
+            Assert.AreEqual("1,2,3", string.Join(",", arr1));
+            Assert.AreEqual("3,4,5", string.Join(",", arr2));
+
+            arr3 = arr1.ConcatCanNull(null);
+            Assert.AreEqual("1,2,3", string.Join(",", arr3));
+            Assert.AreEqual("1,2,3", string.Join(",", arr1));
+            Assert.AreEqual("3,4,5", string.Join(",", arr2));
+
+            arr3 = ((int[])null).ConcatCanNull(arr2);
+            Assert.AreEqual("3,4,5", string.Join(",", arr3));
+            Assert.AreEqual("1,2,3", string.Join(",", arr1));
+            Assert.AreEqual("3,4,5", string.Join(",", arr2));
+
+            arr3 = ((int[])null).ConcatCanNull(null);
+            Assert.AreEqual("", string.Join(",", arr3));
+            Assert.AreEqual("1,2,3", string.Join(",", arr1));
+            Assert.AreEqual("3,4,5", string.Join(",", arr2));
         }
     }
 }
