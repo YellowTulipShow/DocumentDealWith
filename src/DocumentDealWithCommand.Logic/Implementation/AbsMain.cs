@@ -1,11 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-
-using DocumentDealWithCommand.Logic.Models;
-
-using YTS.ConsolePrint;
-using YTS.Log;
+﻿using YTS.Log;
 
 namespace DocumentDealWithCommand.Logic.Implementation
 {

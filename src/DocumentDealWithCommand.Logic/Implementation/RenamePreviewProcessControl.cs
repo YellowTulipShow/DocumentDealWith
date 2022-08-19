@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-using YTS.ConsolePrint;
 using YTS.Log;
+using YTS.ConsolePrint;
 
 using DocumentDealWithCommand.Logic.Models;
 

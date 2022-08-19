@@ -1,11 +1,12 @@
-﻿using System.IO;
-using System;
+﻿using System;
+using System.IO;
 using System.Collections.Generic;
 
-using YTS.ConsolePrint;
 using YTS.Log;
+using YTS.ConsolePrint;
 
 using CommandParamUse;
+
 using DocumentDealWithCommand.Logic.Models;
 
 namespace DocumentDealWithCommand.Logic.Implementation

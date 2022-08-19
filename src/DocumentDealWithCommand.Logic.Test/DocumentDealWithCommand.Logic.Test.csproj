@@ -15,6 +15,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\DocumentDealWithCommand.Logic\DocumentDealWithCommand.Logic.csproj" />
+        <ProjectReference Include="..\DocumentDealWithCommand\DocumentDealWithCommand.csproj" />
     </ItemGroup>
 
 </Project>
