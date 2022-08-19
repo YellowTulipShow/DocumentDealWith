@@ -38,7 +38,7 @@ namespace DocumentDealWithCommand.SubCommand
         /// <inheritdoc/>
         public IParamConfig<CommandParameters_Content_Encoding> GetParamConfig()
         {
-            return new SubCommandParamConfig_Content_Encoding();
+            return new SubCommandParamConfig_Content_Encoding(log);
         }
 
         /// <inheritdoc/>

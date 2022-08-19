@@ -7,10 +7,10 @@ using DocumentDealWithCommand.Logic.Models;
 namespace DocumentDealWithCommand.ParamConfigs
 {
     /// <inheritdoc/>
-    public class SubCommandParamConfig_Rename_Whole : SubCommandParamConfig_Rename<ParamRenameWhole>
+    public class SubCommandParamConfig_Rename_Whole : AbsCommandParamConfig_Rename<ParamRenameWhole>
     {
         /// <inheritdoc/>
-        public SubCommandParamConfig_Rename_Whole() : base()
+        public SubCommandParamConfig_Rename_Whole(YTS.Log.ILog log) : base(log)
         {
             new Option<string>(
                 aliases: new string[] { "--rule" },

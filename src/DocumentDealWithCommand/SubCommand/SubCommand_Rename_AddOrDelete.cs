@@ -39,7 +39,7 @@ namespace DocumentDealWithCommand.SubCommand
         /// <inheritdoc/>
         public IParamConfig<ParamRenameAddOrDelete> GetParamConfig()
         {
-            return new SubCommandParamConfig_Rename_AddOrDelete();
+            return new SubCommandParamConfig_Rename_AddOrDelete(log);
         }
 
         /// <inheritdoc/>

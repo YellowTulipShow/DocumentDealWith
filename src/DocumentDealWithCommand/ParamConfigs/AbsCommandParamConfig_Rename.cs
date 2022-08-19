@@ -3,14 +3,15 @@
 using CommandParamUse;
 
 using DocumentDealWithCommand.Logic.Models;
+using DocumentDealWithCommand.Logic.Implementation;
 
 namespace DocumentDealWithCommand.ParamConfigs
 {
     /// <inheritdoc/>
-    public class SubCommandParamConfig_Rename<P> : AbsBasicParamConfig<P> where P : AbsParamRename, new()
+    public abstract class AbsCommandParamConfig_Rename<P> : AbsBasicParamConfig<P> where P : AbsParamRename, new()
     {
         /// <inheritdoc/>
-        public SubCommandParamConfig_Rename() : base()
+        public AbsCommandParamConfig_Rename(YTS.Log.ILog log) : base(log)
         {
             new Option<bool>(
                 aliases: new string[] { "--is-preview" },
@@ -29,6 +30,13 @@ namespace DocumentDealWithCommand.ParamConfigs
                 Arity = ArgumentArity.ExactlyOne,
                 IsRequired = false,
             }.SetGlobal(this, (param, value) => param.PreviewColumnCount = value);
+        }
+
+        /// <inheritdoc/>
+        public override string[] GetConfigAllowExtensions(Configs config)
+        {
+            return base.GetConfigAllowExtensions(config)
+                .ConcatCanNull(config.AllowExtension.RenameCommand);
         }
     }
 }

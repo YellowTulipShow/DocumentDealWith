@@ -38,7 +38,7 @@ namespace DocumentDealWithCommand.SubCommand
         /// <inheritdoc/>
         public IParamConfig<CommandParameters_Content_NewLine> GetParamConfig()
         {
-            return new SubCommandParamConfig_Content_NewLine();
+            return new SubCommandParamConfig_Content_NewLine(log);
         }
 
         /// <inheritdoc/>

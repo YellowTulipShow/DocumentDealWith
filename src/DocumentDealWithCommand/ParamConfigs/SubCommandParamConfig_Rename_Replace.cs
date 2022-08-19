@@ -7,10 +7,10 @@ using DocumentDealWithCommand.Logic.Models;
 namespace DocumentDealWithCommand.ParamConfigs
 {
     /// <inheritdoc/>
-    public class SubCommandParamConfig_Rename_Replace : SubCommandParamConfig_Rename<ParamRenameReplace>
+    public class SubCommandParamConfig_Rename_Replace : AbsCommandParamConfig_Rename<ParamRenameReplace>
     {
         /// <inheritdoc/>
-        public SubCommandParamConfig_Rename_Replace() : base()
+        public SubCommandParamConfig_Rename_Replace(YTS.Log.ILog log) : base(log)
         {
             new Option<string>(
                 aliases: new string[] { "--pattern" },

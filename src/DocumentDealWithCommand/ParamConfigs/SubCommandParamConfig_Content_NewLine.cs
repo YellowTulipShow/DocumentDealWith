@@ -7,10 +7,10 @@ using DocumentDealWithCommand.Logic.Models;
 namespace DocumentDealWithCommand.ParamConfigs
 {
     /// <inheritdoc/>
-    public class SubCommandParamConfig_Content_NewLine : AbsBasicParamConfig<CommandParameters_Content_NewLine>
+    public class SubCommandParamConfig_Content_NewLine : AbsCommandParamConfig_Content<CommandParameters_Content_NewLine>
     {
         /// <inheritdoc/>
-        public SubCommandParamConfig_Content_NewLine() : base()
+        public SubCommandParamConfig_Content_NewLine(YTS.Log.ILog log) : base(log)
         {
             new Option<ENewLineType>(
                 aliases: new string[] { "-t", "--type" },

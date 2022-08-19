@@ -38,7 +38,7 @@ namespace DocumentDealWithCommand.SubCommand
         /// <inheritdoc/>
         public IParamConfig<ParamRenameWhole> GetParamConfig()
         {
-            return new SubCommandParamConfig_Rename_Whole();
+            return new SubCommandParamConfig_Rename_Whole(log);
         }
 
         /// <inheritdoc/>

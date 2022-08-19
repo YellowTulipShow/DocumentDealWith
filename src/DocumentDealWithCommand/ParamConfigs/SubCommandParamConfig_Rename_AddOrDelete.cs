@@ -7,10 +7,10 @@ using DocumentDealWithCommand.Logic.Models;
 namespace DocumentDealWithCommand.ParamConfigs
 {
     /// <inheritdoc/>
-    public class SubCommandParamConfig_Rename_AddOrDelete : SubCommandParamConfig_Rename<ParamRenameAddOrDelete>
+    public class SubCommandParamConfig_Rename_AddOrDelete : AbsCommandParamConfig_Rename<ParamRenameAddOrDelete>
     {
         /// <inheritdoc/>
-        public SubCommandParamConfig_Rename_AddOrDelete() : base()
+        public SubCommandParamConfig_Rename_AddOrDelete(YTS.Log.ILog log) : base(log)
         {
             new Option<string>(
                 aliases: new string[] { "--before" },

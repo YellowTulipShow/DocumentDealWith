@@ -9,10 +9,10 @@ using DocumentDealWithCommand.Logic.Models;
 namespace DocumentDealWithCommand.ParamConfigs
 {
     /// <inheritdoc/>
-    public class SubCommandParamConfig_Content_Encoding : AbsBasicParamConfig<CommandParameters_Content_Encoding>
+    public class SubCommandParamConfig_Content_Encoding : AbsCommandParamConfig_Content<CommandParameters_Content_Encoding>
     {
         /// <inheritdoc/>
-        public SubCommandParamConfig_Content_Encoding() : base()
+        public SubCommandParamConfig_Content_Encoding(YTS.Log.ILog log) : base(log)
         {
             new Option<ESupportEncoding>(
                 aliases: new string[] { "-t", "--target" },

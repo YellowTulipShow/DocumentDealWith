@@ -81,5 +81,17 @@ namespace DocumentDealWithCommand.Logic.Implementation
             }
             return rlist;
         }
+
+        /// <summary>
+        /// 连接数组对象
+        /// </summary>
+        /// <typeparam name="T">数组类型</typeparam>
+        /// <param name="arr">原数组</param>
+        /// <param name="objs">目标数组</param>
+        /// <returns>结果数组</returns>
+        public static T[] ConcatCanNull<T>(this T[] arr, T[] objs)
+        {
+            return (arr ?? new T[] { }).Concat(objs ?? new T[] { }).ToArray();
+        }
     }
 }
