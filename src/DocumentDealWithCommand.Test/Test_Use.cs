@@ -5,13 +5,13 @@ using System.Text;
 using System.Collections.Generic;
 
 using YTS.Log;
+using YTS.ConsolePrint;
+using YTS.CodingSupportLibrary;
 
 using CommandParamUse;
 
 using DocumentDealWithCommand.Test.OverrideClass;
 using DocumentDealWithCommand.Logic.Models;
-using YTS.ConsolePrint;
-using YTS.CodingSupportLibrary;
 
 namespace DocumentDealWithCommand.Test
 {
@@ -118,7 +118,6 @@ namespace DocumentDealWithCommand.Test
                 Assert.AreEqual(@"D:\D\template\test\1.txt", param.NeedHandleFileInventory[0].FullName);
                 Assert.AreEqual(ESupportEncoding.UTF16_BigEndian, param.Target);
             });
-
             args = (@"content encode --console PowerShell" +
                     @" --root D:\ --target UTF16_BigEndian" +
                     @" --files /D/template/test/1.txt /D/template/test/Mall_UserInfoController.cs"
@@ -132,6 +131,22 @@ namespace DocumentDealWithCommand.Test
                 Assert.AreEqual(@"D:\D\template\test\1.txt", param.NeedHandleFileInventory[0].FullName);
                 Assert.AreEqual(@"D:\D\template\test\Mall_UserInfoController.cs", param.NeedHandleFileInventory[1].FullName);
                 Assert.AreEqual(ESupportEncoding.UTF16_BigEndian, param.Target);
+            });
+
+            args = (@"rename --console PowerShell --root D:\Work\YTS.ZRQ\DocumentDealWith\_test\rename" +
+                    @" --path ./ --recurse=true" +
+                    @" --rule #_#" +
+                    @" --is-preview=true --preview-column=20"
+                    ).Split(" ");
+            test<ParamRenameWhole>(args, param =>
+            {
+                Assert.AreEqual(EConsoleType.PowerShell, param.ConsoleType);
+                Assert.AreEqual(@"D:\Work\YTS.ZRQ\DocumentDealWith\_test\rename", param.RootDire.FullName);
+                Assert.IsNotNull(param.NeedHandleFileInventory);
+                Assert.IsTrue(param.NeedHandleFileInventory.Length > 0);
+                Assert.AreEqual(true, param.IsPreview);
+                Assert.AreEqual((uint)20, param.PreviewColumnCount);
+                Assert.AreEqual("#_#", param.NamingRules);
             });
         }
     }
