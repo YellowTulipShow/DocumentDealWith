@@ -23,7 +23,7 @@ namespace DocumentDealWithCommand.SubCommand
         public string GetNameSign() => "rename";
 
         /// <inheritdoc/>
-        public string GetDescription() => "内容操作";
+        public string GetDescription() => "重命名操作";
 
         /// <inheritdoc/>
         public virtual IExecute<ParamRenameWhole> GetExecute()
