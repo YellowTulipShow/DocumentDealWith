@@ -86,7 +86,9 @@ namespace DocumentDealWithCommand.Test
                 Assert.AreEqual(0, code);
             };
 
-            string[] args = @"content encode --console PowerShell --root D:\ --target UTF16_BigEndian --files C:\code.txt".Split(" ");
+            string[] args;
+
+            args = @"content encode --console PowerShell --root D:\ --target UTF16_BigEndian --files C:\\code.txt".Split(" ");
             test<CommandParameters_Content_Encoding>(args, param =>
             {
                 Assert.AreEqual(EConsoleType.PowerShell, param.ConsoleType);
@@ -94,6 +96,41 @@ namespace DocumentDealWithCommand.Test
                 Assert.IsNotNull(param.NeedHandleFileInventory);
                 Assert.IsTrue(param.NeedHandleFileInventory.Length == 1);
                 Assert.AreEqual(@"C:\code.txt", param.NeedHandleFileInventory[0].FullName);
+                Assert.AreEqual(ESupportEncoding.UTF16_BigEndian, param.Target);
+            });
+            args = @"content encode --console PowerShell --root D:\ --target UTF16_BigEndian --files D:\template\test\1.txt".Split(" ");
+            test<CommandParameters_Content_Encoding>(args, param =>
+            {
+                Assert.AreEqual(EConsoleType.PowerShell, param.ConsoleType);
+                Assert.AreEqual("D:\\", param.RootDire.FullName);
+                Assert.IsNotNull(param.NeedHandleFileInventory);
+                Assert.IsTrue(param.NeedHandleFileInventory.Length == 1);
+                Assert.AreEqual(@"D:\template\test\1.txt", param.NeedHandleFileInventory[0].FullName);
+                Assert.AreEqual(ESupportEncoding.UTF16_BigEndian, param.Target);
+            });
+            args = @"content encode --console PowerShell --root D:\ --target UTF16_BigEndian --files /D/template/test/1.txt".Split(" ");
+            test<CommandParameters_Content_Encoding>(args, param =>
+            {
+                Assert.AreEqual(EConsoleType.PowerShell, param.ConsoleType);
+                Assert.AreEqual("D:\\", param.RootDire.FullName);
+                Assert.IsNotNull(param.NeedHandleFileInventory);
+                Assert.IsTrue(param.NeedHandleFileInventory.Length == 1);
+                Assert.AreEqual(@"D:\D\template\test\1.txt", param.NeedHandleFileInventory[0].FullName);
+                Assert.AreEqual(ESupportEncoding.UTF16_BigEndian, param.Target);
+            });
+
+            args = (@"content encode --console PowerShell" +
+                    @" --root D:\ --target UTF16_BigEndian" +
+                    @" --files /D/template/test/1.txt /D/template/test/Mall_UserInfoController.cs"
+                    ).Split(" ");
+            test<CommandParameters_Content_Encoding>(args, param =>
+            {
+                Assert.AreEqual(EConsoleType.PowerShell, param.ConsoleType);
+                Assert.AreEqual("D:\\", param.RootDire.FullName);
+                Assert.IsNotNull(param.NeedHandleFileInventory);
+                Assert.IsTrue(param.NeedHandleFileInventory.Length == 2);
+                Assert.AreEqual(@"D:\D\template\test\1.txt", param.NeedHandleFileInventory[0].FullName);
+                Assert.AreEqual(@"D:\D\template\test\Mall_UserInfoController.cs", param.NeedHandleFileInventory[1].FullName);
                 Assert.AreEqual(ESupportEncoding.UTF16_BigEndian, param.Target);
             });
         }
